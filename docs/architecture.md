@@ -1,6 +1,8 @@
 # Architecture
 
-One Nest process serves two surfaces. The JSON API lives under `/api`. HTML pages live at the root. Nest owns routes and data. React owns the HTML: it server-renders the document and hydrates only the islands a page actually rendered.
+Current-state map of **today’s NestJS host example** (`examples/nestjs`) plus `@archipielago/*` packages in this monorepo. Host-agnostic product model (concepts, install, wiring, authoring): [docs/archipielago/guide/](./archipielago/guide/README.md). API routes and HTML pages under `examples/nestjs` are that example’s surfaces; SSR/islands engines live in the packages.
+
+In the Nest example, one Nest process serves two surfaces. The JSON API lives under `/api`. HTML pages live at the root. Nest owns routes and data. React owns the HTML: it server-renders the document and hydrates only the islands a page actually rendered.
 
 A controller picks a page name and a plain props object. It does not import `.tsx`. See [ADR-0001](./adr/0001-one-nest-process.md) and [ADR-0002](./adr/0002-islands-ssr-ui.md). Decision index: [docs/adr/](./adr/README.md).
 
@@ -378,7 +380,7 @@ flowchart LR
 
 ## Adding a page or island
 
-Follow [how-to-web-ui.md](./how-to-web-ui.md) (`pnpm scaffold:web-ui` or the `create-web-ui` agent skill).
+Portable rules: [archipielago/guide/authoring.md](./archipielago/guide/authoring.md). Nest-example / dogfood cookbook: [how-to-web-ui.md](./how-to-web-ui.md) (`pnpm scaffold:web-ui` or the `create-web-ui` agent skill).
 
 ## Agent plans
 
@@ -394,6 +396,7 @@ tip of `main` does not. The `plan-files` CI job fails while a file remains.
 ## Related docs
 
 - [Architecture Decision Records](./adr/README.md) — durable tradeoffs (ADR-0001–ADR-0017).
-- [How to add web UI](./how-to-web-ui.md) — SSR vs island vs module styles; handpicked icons; anti-patterns; scaffold.
+- [Guide authoring](./archipielago/guide/authoring.md) — host-agnostic island vs SSR rules.
+- [How to add web UI](./how-to-web-ui.md) — Nest-example / dogfood cookbook; handpicked icons; scaffold.
 - [Testing and coverage](./testing-and-coverage.md) — unit/e2e/coverage policy; Testcontainers for e2e ([ADR-0010](./adr/0010-e2e-testcontainers.md)).
 - [Known tech debt](./known-tech-debt.md) — deferred work (TD-IDs). Shared island client state is TD-008; below-the-fold hydrate is TD-010.

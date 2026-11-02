@@ -2,7 +2,7 @@
 
 Ordered, **host-agnostic** steps to embed Archipielago. Replace “host” with
 your HTTP framework. Nest-specific mapping: [nestjs.md](./nestjs.md). Concepts:
-[concepts.md](./concepts.md).
+[concepts.md](./concepts.md). Product UI rules after wiring: [authoring.md](./authoring.md).
 
 ## Host owns vs package owns
 

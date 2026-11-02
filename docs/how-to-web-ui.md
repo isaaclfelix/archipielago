@@ -1,6 +1,10 @@
-# How to add web UI (pages, islands, styles)
+# How to add web UI (Nest example / dogfood cookbook)
 
-Canonical decision tree for HTML UI in this Nest + islands app. Follow it when scaffolding by hand, via `pnpm scaffold:web-ui`, or with the `create-web-ui` agent skill. Delivery mechanics: [architecture.md](./architecture.md#styles). Why three lanes / forms sibling / island `<style>`: [ADR-0013](./adr/0013-css-three-lanes.md), [ADR-0014](./adr/0014-forms-sibling-stylesheet.md), [ADR-0015](./adr/0015-island-css-sibling-style.md). Product Nest UI vs Archipielago engines: [ADR-0029](./adr/0029-archipielago-in-repo-isolation.md) (SSR props quirk still [ADR-0023](./adr/0023-web-host-ui-protocol.md)); tree in [architecture.md](./architecture.md).
+Cookbook for HTML UI in **`examples/nestjs`**—the NestJS host example and future dogfood website. Use it when developing this example’s UI, or when you want to **replicate this implementation style**. Follow it when scaffolding by hand, via `pnpm scaffold:web-ui`, or with the `create-web-ui` agent skill.
+
+This is **not** the primary guide for installing or wiring `@archipielago/*` in an arbitrary host. Package consumers: [docs/archipielago/guide/](./archipielago/guide/README.md) (concepts → install → wiring → **authoring** → nestjs). The scaffolder remains example-local for now ([TD-035](./known-tech-debt.md)).
+
+Delivery mechanics: [architecture.md](./architecture.md#styles). Why three lanes / forms sibling / island `<style>`: [ADR-0013](./adr/0013-css-three-lanes.md), [ADR-0014](./adr/0014-forms-sibling-stylesheet.md), [ADR-0015](./adr/0015-island-css-sibling-style.md). Product Nest UI vs Archipielago engines: [ADR-0029](./adr/0029-archipielago-in-repo-isolation.md) (SSR props quirk still [ADR-0023](./adr/0023-web-host-ui-protocol.md)); tree in [architecture.md](./architecture.md).
 
 ## Where things live
 
@@ -95,7 +99,7 @@ Scaffold: `pnpm scaffold:web-ui --name about --mode page` (writes protocol SSR p
 1. Folder under `src/web/ui/islands/<name>/` with `<name>.tsx` (default export), thin `index.ts`, JSON-serializable props.
 2. Optional: colocated `<name>.module.scss` (import tokens via `@ui/styles/tokens`) — never re-import the shell sheet or Bootstrap CSS-emitting partials (including forms/validation).
 3. Refresh the islands manifest per `archipielago.config.ts` ([ADR-0030](./adr/0030-archipielago-host-config.md)):
-   - **`auto`** (this sample): **scaffold runs `pnpm islands:sync`**. Hand-added folders: run `pnpm islands:sync` **or** restart `pnpm start:dev` (sync runs at process start). Do not hand-edit the generated manifest.
+   - **`auto`** (this Nest example): **scaffold runs `pnpm islands:sync`**. Hand-added folders: run `pnpm islands:sync` **or** restart `pnpm start:dev` (sync runs at process start). Do not hand-edit the generated manifest.
    - **`manual`**: scaffold **warns** with the entry to add; sync refuses to overwrite. You own the manifest (commit it if you want — gitignore is optional).
      App bootstrap / hydrate entry calls `registerIslands` so Archipielago engines can build HTML; Nest never reads the manifest. Hydrate loaders discover conventional folders via glob — no registry map edit ([ADR-0028](./adr/0028-island-filesystem-manifest.md)).
 4. Render `<Island name="…" component={…} props={…} />` from a page (directory-import the island barrel; import `Island` from `@archipielago/react/runtime/island/island`). Do **not** wire CSS context yourself — the framework fills it after the name-collection pass and emits a sibling `<style data-css-island>` for used islands (deduped by name).

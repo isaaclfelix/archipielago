@@ -1,7 +1,8 @@
 # Concepts
 
 Host-agnostic mental model for Archipielago. NestJS is only one host; see
-[wiring.md](./wiring.md) for the ordered integration steps and
+[wiring.md](./wiring.md) for the ordered integration steps,
+[authoring.md](./authoring.md) for product UI rules, and
 [nestjs.md](./nestjs.md) for how the Nest example applies them.
 
 ## Ownership split

@@ -47,5 +47,6 @@ stay at the monorepo root ([ADR-0032](../../adr/0032-archipielago-pnpm-monorepo.
 
 ## Authoring UI in the example
 
-Adding pages and islands: [how-to-web-ui.md](../../how-to-web-ui.md) (paths are
-under `examples/nestjs`). Prefer `pnpm scaffold:web-ui` for new UI pieces.
+Host-agnostic rules: [authoring.md](./authoring.md). Nest-example / dogfood
+cookbook (paths under `examples/nestjs`): [how-to-web-ui.md](../../how-to-web-ui.md).
+Prefer `pnpm scaffold:web-ui` for new UI pieces in this example ([TD-035](../../known-tech-debt.md)).

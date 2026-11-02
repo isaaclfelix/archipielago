@@ -7,46 +7,46 @@ todos:
     status: completed
   - id: readme-rewrite
     content: Rewrite root README—product entry, mission/vision/workflow links, light roadmap invite, Nest example runbook
-    status: pending
+    status: completed
   - id: contributing-workflow-link
     content: Add light CONTRIBUTING.md pointer to docs/archipielago/workflow.md (keep workflow on root README too)
-    status: pending
+    status: completed
   - id: nestjs-example-readme
     content: Add examples/nestjs/README.md with Nest host Database / Run / Observability onboarding
-    status: pending
+    status: completed
   - id: package-readmes
     content: Add short packages/{core,react,vite,nestjs}/README.md stubs pointing at docs/archipielago
-    status: pending
+    status: completed
   - id: guide-reading-order
     content: Guide start-here order concepts→install→wiring→authoring→nestjs (product README + guide/README.md; no renames)
-    status: pending
+    status: completed
   - id: guide-authoring
     content: Add docs/archipielago/guide/authoring.md host-agnostic UI authoring (island vs SSR shape)
-    status: pending
+    status: completed
   - id: how-to-web-ui-reframe
     content: Reframe how-to-web-ui.md as Nest-example / dogfood website cookbook (not package-consumer docs)
-    status: pending
+    status: completed
   - id: product-docs-tense
     content: Update vision/roadmap(/product README) to present-tense monorepo + Nest example wording
-    status: pending
+    status: completed
   - id: architecture-intro
     content: 'Add architecture.md framing: Nest example current-state vs host-agnostic guides'
-    status: pending
+    status: completed
   - id: package-description
     content: Fill root package.json description
-    status: pending
+    status: completed
   - id: td-root-scripts
     content: 'Add TD-034: root pnpm scripts hardwired to Nest example without per-host namespaces'
-    status: pending
+    status: completed
   - id: td-scaffolder
     content: 'Add TD-035 + unscheduled late roadmap milestone for web-ui scaffolder extraction/config'
-    status: pending
+    status: completed
   - id: td-sample-identifiers
     content: 'Add TD-036: rename leftover sample-nestjs-* runtime identifiers (Docker, Observe serviceId, …)'
-    status: pending
+    status: completed
   - id: adr-historical-immutability
     content: 'Add ADR-0033: do not rewrite historical ADR narrative; supersede or link instead'
-    status: pending
+    status: completed
   - id: delete-plan-before-merge
     content: Delete this plan file in a later commit before merge (ADR-0031 / plan-files CI)
     status: pending
@@ -251,18 +251,18 @@ Next free id after ADR-0032 is **0033**.
 ## Todos
 
 - [x] `branch-plan` — Create docs/archipielago-product-repo-framing branch and save plan under .cursor/plans/ (completed)
-- [ ] `readme-rewrite` — Rewrite root README—product entry, mission/vision/workflow links, light roadmap invite, Nest example runbook (pending)
-- [ ] `contributing-workflow-link` — Add light CONTRIBUTING.md pointer to docs/archipielago/workflow.md (keep workflow on root README too) (pending)
-- [ ] `nestjs-example-readme` — Add examples/nestjs/README.md with Nest host Database / Run / Observability onboarding (pending)
-- [ ] `package-readmes` — Add short packages/{core,react,vite,nestjs}/README.md stubs pointing at docs/archipielago (pending)
-- [ ] `guide-reading-order` — Guide start-here order concepts→install→wiring→authoring→nestjs (product README + guide/README.md; no renames) (pending)
-- [ ] `guide-authoring` — Add docs/archipielago/guide/authoring.md host-agnostic UI authoring (island vs SSR shape) (pending)
-- [ ] `how-to-web-ui-reframe` — Reframe how-to-web-ui.md as Nest-example / dogfood website cookbook (not package-consumer docs) (pending)
-- [ ] `product-docs-tense` — Update vision/roadmap(/product README) to present-tense monorepo + Nest example wording (pending)
-- [ ] `architecture-intro` — Add architecture.md framing: Nest example current-state vs host-agnostic guides (pending)
-- [ ] `package-description` — Fill root package.json description (pending)
-- [ ] `td-root-scripts` — Add TD-034: root pnpm scripts hardwired to Nest example without per-host namespaces (pending)
-- [ ] `td-scaffolder` — Add TD-035 + unscheduled late roadmap milestone for web-ui scaffolder extraction/config (pending)
-- [ ] `td-sample-identifiers` — Add TD-036: rename leftover sample-nestjs-* runtime identifiers (Docker, Observe serviceId, …) (pending)
-- [ ] `adr-historical-immutability` — Add ADR-0033: do not rewrite historical ADR narrative; supersede or link instead (pending)
+- [x] `readme-rewrite` — Rewrite root README—product entry, mission/vision/workflow links, light roadmap invite, Nest example runbook (completed)
+- [x] `contributing-workflow-link` — Add light CONTRIBUTING.md pointer to docs/archipielago/workflow.md (keep workflow on root README too) (completed)
+- [x] `nestjs-example-readme` — Add examples/nestjs/README.md with Nest host Database / Run / Observability onboarding (completed)
+- [x] `package-readmes` — Add short packages/{core,react,vite,nestjs}/README.md stubs pointing at docs/archipielago (completed)
+- [x] `guide-reading-order` — Guide start-here order concepts→install→wiring→authoring→nestjs (product README + guide/README.md; no renames) (completed)
+- [x] `guide-authoring` — Add docs/archipielago/guide/authoring.md host-agnostic UI authoring (island vs SSR shape) (completed)
+- [x] `how-to-web-ui-reframe` — Reframe how-to-web-ui.md as Nest-example / dogfood website cookbook (not package-consumer docs) (completed)
+- [x] `product-docs-tense` — Update vision/roadmap(/product README) to present-tense monorepo + Nest example wording (completed)
+- [x] `architecture-intro` — Add architecture.md framing: Nest example current-state vs host-agnostic guides (completed)
+- [x] `package-description` — Fill root package.json description (completed)
+- [x] `td-root-scripts` — Add TD-034: root pnpm scripts hardwired to Nest example without per-host namespaces (completed)
+- [x] `td-scaffolder` — Add TD-035 + unscheduled late roadmap milestone for web-ui scaffolder extraction/config (completed)
+- [x] `td-sample-identifiers` — Add TD-036: rename leftover sample-nestjs-* runtime identifiers (Docker, Observe serviceId, …) (completed)
+- [x] `adr-historical-immutability` — Add ADR-0033: do not rewrite historical ADR narrative; supersede or link instead (completed)
 - [ ] `delete-plan-before-merge` — Delete this plan file in a later commit before merge (ADR-0031 / plan-files CI) (pending)

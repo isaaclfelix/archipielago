@@ -3,6 +3,8 @@
 - **Status:** Proposed | Accepted | Superseded by [ADR-NNNN](./NNNN-slug.md)
 - **Date:** YYYY-MM-DD
 
+<!-- Do not rewrite Accepted ADR bodies for branding later—supersede or link ([ADR-0033](./0033-historical-adr-immutability.md)). -->
+
 ## Context
 
 What forces and constraints led to a decision.
