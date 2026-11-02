@@ -1,16 +1,24 @@
-# sample-nestjs-project
+# Archipielago
 
-A Nest application with two surfaces in one process. The JSON API lives under `/api` (Zod validation, Swagger). React server-renders HTML at the root and hydrates islands from lazy chunks.
+**Archipielago** is an embeddable islands rendering layer for backend apps that already own routing, auth, and data. It server-renders React pages, hydrates only interactive islands, and plugs into the host through thin adapters.
 
-This repo is a **pnpm monorepo**: Archipielago engines live in `packages/*`; the Nest sample app lives in `examples/nestjs` ([ADR-0032](./docs/adr/0032-archipielago-pnpm-monorepo.md)). Root `pnpm` scripts filter into the example. How the two sides fit together: [docs/architecture.md](./docs/architecture.md).
+This repository is the **Archipielago monorepo**: framework packages under `packages/*`, a NestJS host example under `examples/nestjs`, shared tooling, and in-repo docs as the source of truth ([ADR-0032](./docs/adr/0032-archipielago-pnpm-monorepo.md)). Root `pnpm` scripts filter into the Nest example today ([TD-034](./docs/known-tech-debt.md)).
+
+Product home: [docs/archipielago/README.md](./docs/archipielago/README.md).
+
+## Examples
+
+To run something locally, use the NestJS host example:
+
+- [examples/nestjs/README.md](./examples/nestjs/README.md) — database, run, observability, and Nest-example URLs
 
 ## Prerequisites
 
 - A **Unix** environment. Local development is tested on **Ubuntu 26.04 LTS under WSL2**. macOS and native Windows (outside WSL) are not verified yet ([ADR-0022](./docs/adr/0022-unix-wsl-playwright-browser-cache.md), **TD-027** in [docs/known-tech-debt.md](./docs/known-tech-debt.md)).
 - [pnpm](https://pnpm.io/installation) 12. This repo uses pnpm, not npm or Yarn.
 - Node.js 24.22.0. That version is pinned in [`.node-version`](./.node-version). `package.json` requires Node `>=24.7.0`.
-- [Docker](https://docs.docker.com/get-docker/) for e2e (Testcontainers) and for the optional local database.
-- [GNU Make](https://www.gnu.org/software/make/) for local database helpers ([`examples/nestjs/Makefile`](./examples/nestjs/Makefile)). Not required for `pnpm test` / CI unit jobs.
+- [Docker](https://docs.docker.com/get-docker/) for e2e (Testcontainers) and for the optional local database in the Nest example.
+- [GNU Make](https://www.gnu.org/software/make/) for Nest example database helpers ([`examples/nestjs/Makefile`](./examples/nestjs/Makefile)). Not required for `pnpm test` / CI unit jobs.
 
 Install pnpm first, then install Node with pnpm's runtime manager and put `node` on your PATH:
 
@@ -36,50 +44,6 @@ pnpm install
 ```
 
 `pnpm install` installs Git hooks, builds `@archipielago/{core,vite,nestjs}`, and runs the Nest example `postinstall` (`prisma generate` + islands sync). Commit, branch, and lint rules are in [CONTRIBUTING.md](./CONTRIBUTING.md).
-
-## Database
-
-PostgreSQL via Prisma in the Nest example. Copy the example env file and keep `DATABASE_URL` pointed at local Compose (defaults match the Makefile):
-
-```bash
-cp examples/nestjs/.env.example examples/nestjs/.env
-```
-
-```bash
-# start Postgres (Docker Compose)
-make -C examples/nestjs db-up
-
-# apply migrations
-make -C examples/nestjs db-migrate-deploy
-
-# optional demo row
-make -C examples/nestjs db-seed
-```
-
-Other Make targets (from `examples/nestjs`): `db-down`, `db-logs`, `db-migrate` (dev), `db-reset`, `db-studio`. Persistence: [docs/architecture.md](./docs/architecture.md#persistence), [ADR-0005](./docs/adr/0005-persistence-postgres-prisma.md).
-
-E2E does **not** use Compose. `pnpm test:e2e` starts Postgres with Testcontainers (Docker required).
-
-## Run
-
-```bash
-# development, with reload (DB should be up)
-pnpm start:dev
-
-# development, one shot
-pnpm start
-
-# production (build first)
-pnpm build
-pnpm start:prod
-```
-
-The app listens on port 3000 unless `PORT` is set.
-
-- Home page: [http://localhost:3000/](http://localhost:3000/)
-- Greeting: [http://localhost:3000/api](http://localhost:3000/api)
-- Swagger UI: [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
-- OpenAPI document: [http://localhost:3000/api/docs-json](http://localhost:3000/api/docs-json)
 
 ## Checks
 
@@ -110,32 +74,25 @@ Local-only helpers, not separate CI jobs:
 | `pnpm test:watch`   | Re-run unit tests on change.          |
 | `pnpm test:debug`   | Unit tests with the Node inspector.   |
 
-## Observability
-
-The app is instrumented with [NestJS Observe](https://observe.nestjs.com). To exercise that integration on your machine, request keys and put them in `.env`. Skip this section otherwise.
-
-Request keys with:
-
-```bash
-npx @nestjs/observe link
-```
-
-Approve the printed code at [observe.nestjs.com/link](https://observe.nestjs.com/link). Then copy the Nest example env file (if you have not already) and fill in the two values:
-
-```bash
-cp examples/nestjs/.env.example examples/nestjs/.env
-```
-
-`examples/nestjs/.env` is gitignored. `start`, `start:dev`, and `start:debug` load it. In production, set `OBSERVE_APP_KEY` and `OBSERVE_APP_SECRET` in the environment instead of using that file.
-
 ## Documentation
 
-- [CONTRIBUTING.md](./CONTRIBUTING.md) — branch names, commit messages, hooks, formatting, and lint.
-- [docs/architecture.md](./docs/architecture.md) — current-state map of the JSON API and React page layer.
+### Philosophy and process
+
+- [docs/archipielago/mission.md](./docs/archipielago/mission.md) — human-first AI assist, developer-first OSS, community standards.
+- [docs/archipielago/vision.md](./docs/archipielago/vision.md) — product philosophy, market position, ownership split.
+- [docs/archipielago/workflow.md](./docs/archipielago/workflow.md) — recommended AI-assisted contribution flow.
+- [docs/archipielago/roadmap.md](./docs/archipielago/roadmap.md) — current roadmap status and phases.
+
+### Product and current state
+
+- [docs/archipielago/README.md](./docs/archipielago/README.md) — product home and guide start-here.
+- [docs/archipielago/guide/](./docs/archipielago/guide/README.md) — host-agnostic concepts → install → wiring → authoring → Nest mapping.
+- [docs/architecture.md](./docs/architecture.md) — current-state map of the Nest host example and packages.
 - [docs/adr/](./docs/adr/README.md) — Architecture Decision Records (durable tradeoffs).
-- [docs/how-to-web-ui.md](./docs/how-to-web-ui.md) — how to add pages, islands, styles, and icons.
+- [docs/how-to-web-ui.md](./docs/how-to-web-ui.md) — Nest-example / dogfood website UI cookbook (pages, islands, styles, icons).
 - [docs/testing-and-coverage.md](./docs/testing-and-coverage.md) — unit tests, e2e, coverage thresholds, and CI.
-- [docs/known-tech-debt.md](./docs/known-tech-debt.md) — behavior we have not built yet, and how that debt is tracked.
+- [docs/known-tech-debt.md](./docs/known-tech-debt.md) — deferred work (TD-IDs).
+- [CONTRIBUTING.md](./CONTRIBUTING.md) — branch names, commit messages, hooks, formatting, and lint.
 
 ## Agents
 

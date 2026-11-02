@@ -1,5 +1,7 @@
 # Contributing
 
+Recommended AI-assisted contribution flow (conversation → plan → execute → review → merge): [docs/archipielago/workflow.md](./docs/archipielago/workflow.md). Product philosophy: [mission.md](./docs/archipielago/mission.md), [vision.md](./docs/archipielago/vision.md).
+
 ## Git workflow
 
 ### Branch names
