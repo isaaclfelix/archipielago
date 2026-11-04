@@ -1,8 +1,8 @@
 # Authoring
 
-Host-agnostic rules for **product UI** in a host that embeds Archipielago: when something is an island vs an SSR-only tree, how islands are shaped, where page props live, and how CSS lanes split.
+Host-agnostic rules for **product UI** in a host that embeds Archipielago: how to know when something should be built with an island vs when to use an SSR-only component, how islands are shaped, where page props live, and how CSS lanes split.
 
-This page is for package consumers and second-host authors. Concrete Nest folders, scaffold commands, and dogfood-site style live in [how-to-web-ui.md](../../how-to-web-ui.md) (Nest example cookbook). Nest file mapping: [nestjs.md](./nestjs.md). Concepts: [concepts.md](./concepts.md). Wiring: [wiring.md](./wiring.md).
+Use this document to understand how to implement Archipielago in your own host. If you're using NestJS, you can also peek at our example project on the examples/nestjs folder. Since that example host is also the current host of the Archipielago website, you can also pay us a visit there to see the components in action.
 
 ## Interactivity boundary
 
@@ -11,7 +11,7 @@ This page is for package consumers and second-host authors. Concrete Nest folder
 | Static / SSR-only markup (no client state, no hydrate-worthy events) | Page or server-rendered child in the host product UI tree              |
 | Client interactivity (`useState`, clicks, browser APIs)              | An **island** registered with Archipielago and rendered via `<Island>` |
 
-Do not invent an island only to attach shared Bootstrap/form CSS—use opt-in page sibling stylesheets when that is the product policy ([ADR-0013](../../adr/0013-css-three-lanes.md), [ADR-0014](../../adr/0014-forms-sibling-stylesheet.md)).
+Using an Archipielago Island for CSS-only optimization meant for an islands architecture is an anti-pattern: a non interactive component doesn't need a CSS style imported through an Island and then injected as a sibling style tag through the framework's runtime. Style tags or linked stylesheets can be loaded from the SSR side already.
 
 ## Islands are conventional; SSR trees are freer
 
