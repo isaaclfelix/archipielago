@@ -86,10 +86,10 @@ Local-only helpers, not separate CI jobs:
 ### Product and current state
 
 - [docs/archipielago/README.md](./docs/archipielago/README.md) — product home and guide start-here.
-- [docs/archipielago/guide/](./docs/archipielago/guide/README.md) — host-agnostic concepts → install → wiring → authoring → Nest mapping.
+- [docs/archipielago/guide/](./docs/archipielago/guide/README.md) — concepts → install → Nest demo → Nest or DIY wiring → authoring.
 - [docs/architecture.md](./docs/architecture.md) — current-state map of the Nest host example and packages.
 - [docs/adr/](./docs/adr/README.md) — Architecture Decision Records (durable tradeoffs).
-- [docs/how-to-web-ui.md](./docs/how-to-web-ui.md) — Nest-example / dogfood website UI cookbook (pages, islands, styles, icons).
+- [docs/how-to-web-ui.md](./docs/how-to-web-ui.md) — dogfood / Nest-example website UI cookbook (maintainer workflow; optional if you copy that style).
 - [docs/testing-and-coverage.md](./docs/testing-and-coverage.md) — unit tests, e2e, coverage thresholds, and CI.
 - [docs/known-tech-debt.md](./docs/known-tech-debt.md) — deferred work (TD-IDs).
 - [CONTRIBUTING.md](./CONTRIBUTING.md) — branch names, commit messages, hooks, formatting, and lint.

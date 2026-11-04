@@ -15,16 +15,18 @@ This repository is the **Archipielago monorepo**: framework packages under `pack
 
 ### Guide (start here for host integration)
 
-Read the guide in order—**concepts → install → wiring → authoring → nestjs**. Nest is a **worked mapping** of the host-agnostic steps so you can wire other hosts even without more `examples/*`. Landing page: [guide/README.md](./guide/README.md).
+Read **concepts → install → nestjs** (see Nest working), then either stay on Nest or DIY with **wiring**, then keep **authoring** as the post-connect cheat sheet. Landing page: [guide/README.md](./guide/README.md).
 
-| Doc                                        | Purpose                                                      |
-| ------------------------------------------ | ------------------------------------------------------------ |
-| [guide/concepts.md](./guide/concepts.md)   | Host-agnostic primitives and ownership split                 |
-| [guide/install.md](./guide/install.md)     | Workspace install today; future `0.0.1` publish              |
-| [guide/wiring.md](./guide/wiring.md)       | Ordered host-agnostic integration steps                      |
-| [guide/authoring.md](./guide/authoring.md) | Portable product UI rules (islands vs SSR trees, props, CSS) |
-| [guide/nestjs.md](./guide/nestjs.md)       | Nest example mapped onto those steps                         |
+| Doc                                        | Purpose                                                               |
+| ------------------------------------------ | --------------------------------------------------------------------- |
+| [guide/concepts.md](./guide/concepts.md)   | Host-agnostic primitives and ownership split                          |
+| [guide/install.md](./guide/install.md)     | Workspace install today; future `0.0.1` publish                       |
+| [guide/nestjs.md](./guide/nestjs.md)       | Demonstration + Nest host recipe in this repo                         |
+| [guide/wiring.md](./guide/wiring.md)       | DIY host-agnostic integration (when your host is not the Nest recipe) |
+| [guide/authoring.md](./guide/authoring.md) | Post-connect quick reference (islands vs SSR, props, CSS)             |
 
-Nest-example / dogfood **website** UI cookbook (in-repo implementers and anyone copying this style—not primary package-consumer docs): [how-to-web-ui.md](../how-to-web-ui.md).
+`examples/nestjs` is both the documented Nest recipe and the future dogfood website host.
+
+Dogfood / Nest-example **website** UI cookbook (maintainer workflow; optional if you copy this example’s UI style—not required on the consumer spine): [how-to-web-ui.md](../how-to-web-ui.md).
 
 Layout: `@archipielago/{core,react,vite,nestjs}` in `packages/*`; Nest host in `examples/nestjs` ([ADR-0032](../adr/0032-archipielago-pnpm-monorepo.md)). Current-state map: [architecture.md](../architecture.md). Durable decisions: [docs/adr/](../adr/README.md).

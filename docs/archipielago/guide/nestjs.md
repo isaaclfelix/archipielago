@@ -1,8 +1,12 @@
 # NestJS example
 
-How [examples/nestjs](../../../examples/nestjs) applies the host-agnostic
-steps from [wiring.md](./wiring.md). This page maps concepts onto Nest files; it
-does **not** redefine the primitives ([concepts.md](./concepts.md)).
+Demonstration and documented Nest host recipe after [install.md](./install.md).
+[examples/nestjs](../../../examples/nestjs) shows the concepts from
+[concepts.md](./concepts.md) connected end to end—and is also the host for the
+future dogfood website. This page maps those pieces onto Nest files; it does
+**not** redefine the primitives.
+
+Runbook (database, start, URLs): [examples/nestjs/README.md](../../../examples/nestjs/README.md).
 
 | Wiring step                    | Nest example                                                                                    |
 | ------------------------------ | ----------------------------------------------------------------------------------------------- |
@@ -43,10 +47,13 @@ Nest types stay out of `@archipielago/core`, `react`, and `vite`.
 | Storybook    | `pnpm storybook`    |
 
 Root scripts filter into `@archipielago/example-nestjs`. Shared lint/format/CI
-stay at the monorepo root ([ADR-0032](../../adr/0032-archipielago-pnpm-monorepo.md)).
+stay at the monorepo root. [Learn why](../../adr/0032-archipielago-pnpm-monorepo.md).
 
-## Authoring UI in the example
+## Next steps
 
-Host-agnostic rules: [authoring.md](./authoring.md). Nest-example / dogfood
-cookbook (paths under `examples/nestjs`): [how-to-web-ui.md](../../how-to-web-ui.md).
-Prefer `pnpm scaffold:web-ui` for new UI pieces in this example ([TD-035](../../known-tech-debt.md)).
+- **Nest as your host** — keep [authoring.md](./authoring.md) for SSR vs island
+  and CSS lanes. Folder conventions and scaffold for this example’s UI style:
+  [how-to-web-ui.md](../../how-to-web-ui.md) (maintainer cookbook; use it if you
+  follow our patterns).
+- **Another host** — transfer the same contract with [wiring.md](./wiring.md),
+  then [authoring.md](./authoring.md).
