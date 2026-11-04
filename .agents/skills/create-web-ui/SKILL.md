@@ -1,36 +1,15 @@
 ---
 name: create-web-ui
 description: >-
-  Scaffold Nest SSR pages or interactive islands under examples/nestjs/src/web/
-  (dogfood / Nest-example website UI only). Use when editing that tree—not for
-  arbitrary host consumers. Follows docs/how-to-web-ui.md; refuses CSS-module
-  and island-only-for-styling anti-patterns. Consumers: docs/archipielago/guide/.
+  Scaffold Nest SSR pages or interactive islands under examples/nestjs/src/web/.
+  Use when the user asks to add UI, a page section, a component, an island, web
+  styles, or “scaffold web UI.” Follows docs/how-to-web-ui.md; refuses
+  CSS-module and island-only-for-styling anti-patterns.
 ---
 
 # Create Web UI
 
-**Audience:** maintainers (and Nest hosts copying this style) changing HTML UI
-under `examples/nestjs`. For package-consumer hosts, follow
-[docs/archipielago/guide/](../../../docs/archipielago/guide/README.md)—do not
-treat this skill as the integrate-Archipielago path.
-
-Bootstrap HTML UI in the Nest example **without inventing a parallel CSS or
-island pattern**. Source of truth for the decision tree:
-[docs/how-to-web-ui.md](../../../docs/how-to-web-ui.md). Delivery mechanics:
-[docs/architecture.md](../../../docs/architecture.md) (Styles). Layout: Nest
-thin `web.*` + `@archipielago/nestjs`, Vite `ui/`, wire `protocol/`
-([ADR-0023](../../../docs/adr/0023-web-host-ui-protocol.md),
-[ADR-0032](../../../docs/adr/0032-archipielago-pnpm-monorepo.md)). Relative
-imports under `examples/nestjs/src/web/ui/` are **extensionless**
-([ADR-0024](../../../docs/adr/0024-dual-import-resolution.md)); do not emit
-Nest-style `.js` suffixes into UI stubs. Components live in **per-component
-folders** with thin `index.ts` barrels
-([ADR-0025](../../../docs/adr/0025-per-component-folders.md)). Scaffold also
-emits a colocated Storybook stub
-([ADR-0026](../../../docs/adr/0026-storybook-ui-workshop.md)). Imports that
-leave a component folder use `@ui` / `@protocol` / `@api`
-([ADR-0027](../../../docs/adr/0027-ui-path-aliases.md)); engines use
-`@archipielago/*` **package** imports.
+Bootstrap HTML UI in the Nest example (`examples/nestjs`) **without inventing a parallel CSS or island pattern**. Source of truth for the decision tree: [docs/how-to-web-ui.md](../../../docs/how-to-web-ui.md). Delivery mechanics: [docs/architecture.md](../../../docs/architecture.md) (Styles). Layout: Nest thin `web.*` + `@archipielago/nestjs`, Vite `ui/`, wire `protocol/` ([ADR-0023](../../../docs/adr/0023-web-host-ui-protocol.md), [ADR-0032](../../../docs/adr/0032-archipielago-pnpm-monorepo.md)). Relative imports under `examples/nestjs/src/web/ui/` are **extensionless** ([ADR-0024](../../../docs/adr/0024-dual-import-resolution.md)); do not emit Nest-style `.js` suffixes into UI stubs. Components live in **per-component folders** with thin `index.ts` barrels ([ADR-0025](../../../docs/adr/0025-per-component-folders.md)). Scaffold also emits a colocated Storybook stub ([ADR-0026](../../../docs/adr/0026-storybook-ui-workshop.md)). Imports that leave a component folder use `@ui` / `@protocol` / `@api` ([ADR-0027](../../../docs/adr/0027-ui-path-aliases.md)); engines use `@archipielago/*` **package** imports.
 
 Prefer the shared scaffolder so humans and agents stay aligned (from the repo root):
 
