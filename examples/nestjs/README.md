@@ -2,7 +2,7 @@
 
 First runnable NestJS **host example** for Archipielago. It consumes `@archipielago/{core,react,vite,nestjs}`, serves a JSON API under `/api`, and React SSR + islands at the root.
 
-Shared workspace prereqs, `pnpm install`, and contributor checks: [root README](../../README.md). Product wiring (host-agnostic): [docs/archipielago/guide/](../../docs/archipielago/guide/README.md). Nest mapping: [guide/nestjs.md](../../docs/archipielago/guide/nestjs.md). UI cookbook for this example / dogfood site: [how-to-web-ui.md](../../docs/how-to-web-ui.md).
+Shared workspace prereqs, `pnpm install`, and contributor checks: [root README](../../README.md). Product guide: [docs/archipielago/guide/](../../docs/archipielago/guide/README.md). Nest demonstration / recipe: [guide/nestjs.md](../../docs/archipielago/guide/nestjs.md). Dogfood website UI cookbook (maintainer workflow; optional if you copy this style): [how-to-web-ui.md](../../docs/how-to-web-ui.md).
 
 Root `pnpm start`, `test`, `storybook`, and similar scripts currently filter into this package ([TD-034](../../docs/known-tech-debt.md)).
 
@@ -74,4 +74,8 @@ cp .env.example .env
 
 ## Authoring UI in this example
 
-Prefer `pnpm scaffold:web-ui` (from the repo root) or the `create-web-ui` agent skill. Steps and conventions: [how-to-web-ui.md](../../docs/how-to-web-ui.md). The scaffolder remains example-local for now ([TD-035](../../docs/known-tech-debt.md)).
+Host-agnostic cheat sheet: [guide/authoring.md](../../docs/archipielago/guide/authoring.md).
+For this example’s / dogfood website UI folders and scaffold, prefer
+`pnpm scaffold:web-ui` (from the repo root) or the `create-web-ui` agent skill
+and follow [how-to-web-ui.md](../../docs/how-to-web-ui.md). The scaffolder remains
+example-local for now ([TD-035](../../docs/known-tech-debt.md)).

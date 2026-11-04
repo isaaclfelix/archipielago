@@ -1,10 +1,24 @@
 # How to add web UI (Nest example / dogfood cookbook)
 
-Cookbook for HTML UI in **`examples/nestjs`**—the NestJS host example and future dogfood website. Use it when developing this example’s UI, or when you want to **replicate this implementation style**. Follow it when scaffolding by hand, via `pnpm scaffold:web-ui`, or with the `create-web-ui` agent skill.
+Maintainer cookbook for HTML UI in **`examples/nestjs`**—the NestJS host example
+and future dogfood website. This is the workflow site maintainers use day to
+day. If you choose Nest and want the same folder conventions, feel free to
+follow it; that choice is not required beyond what Archipielago needs to run.
+Scaffold by hand, via `pnpm scaffold:web-ui`, or with the `create-web-ui` agent
+skill.
 
-This is **not** the primary guide for installing or wiring `@archipielago/*` in an arbitrary host. Package consumers: [docs/archipielago/guide/](./archipielago/guide/README.md) (concepts → install → wiring → **authoring** → nestjs). The scaffolder remains example-local for now ([TD-035](./known-tech-debt.md)).
+This is **not** on the package-consumer spine. Integrate via
+[docs/archipielago/guide/](./archipielago/guide/README.md)
+(concepts → install → Nest demo → Nest or DIY wiring → authoring). The
+scaffolder remains example-local for now ([TD-035](./known-tech-debt.md)).
 
-Delivery mechanics: [architecture.md](./architecture.md#styles). Why three lanes / forms sibling / island `<style>`: [ADR-0013](./adr/0013-css-three-lanes.md), [ADR-0014](./adr/0014-forms-sibling-stylesheet.md), [ADR-0015](./adr/0015-island-css-sibling-style.md). Product Nest UI vs Archipielago engines: [ADR-0029](./adr/0029-archipielago-in-repo-isolation.md) (SSR props quirk still [ADR-0023](./adr/0023-web-host-ui-protocol.md)); tree in [architecture.md](./architecture.md).
+Delivery mechanics: [architecture.md](./architecture.md#styles). Tree and
+package split: [architecture.md](./architecture.md). Optional depth:
+[Learn why (CSS lanes)](./adr/0013-css-three-lanes.md) ·
+[Learn why (forms sibling)](./adr/0014-forms-sibling-stylesheet.md) ·
+[Learn why (island style tags)](./adr/0015-island-css-sibling-style.md) ·
+[Learn why (in-repo isolation)](./adr/0029-archipielago-in-repo-isolation.md) ·
+[Learn why (SSR page props)](./adr/0023-web-host-ui-protocol.md).
 
 ## Where things live
 

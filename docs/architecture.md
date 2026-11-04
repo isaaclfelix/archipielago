@@ -1,6 +1,6 @@
 # Architecture
 
-Current-state map of **today’s NestJS host example** (`examples/nestjs`) plus `@archipielago/*` packages in this monorepo. Host-agnostic product model (concepts, install, wiring, authoring): [docs/archipielago/guide/](./archipielago/guide/README.md). API routes and HTML pages under `examples/nestjs` are that example’s surfaces; SSR/islands engines live in the packages.
+Current-state map of **today’s NestJS host example** (`examples/nestjs`) plus `@archipielago/*` packages in this monorepo. Host-agnostic product guide (concepts → install → Nest demo → Nest or DIY wiring → authoring): [docs/archipielago/guide/](./archipielago/guide/README.md). API routes and HTML pages under `examples/nestjs` are that example’s surfaces; SSR/islands engines live in the packages.
 
 In the Nest example, one Nest process serves two surfaces. The JSON API lives under `/api`. HTML pages live at the root. Nest owns routes and data. React owns the HTML: it server-renders the document and hydrates only the islands a page actually rendered.
 
@@ -324,7 +324,7 @@ names and stylesheet policy remain example-owned
 
 ### Styles
 
-Authoring rules (when to island / module / sibling): [how-to-web-ui.md](./how-to-web-ui.md). Decisions: [ADR-0013](./adr/0013-css-three-lanes.md), [ADR-0014](./adr/0014-forms-sibling-stylesheet.md), [ADR-0015](./adr/0015-island-css-sibling-style.md).
+Portable rules: [archipielago/guide/authoring.md](./archipielago/guide/authoring.md). Nest-example / dogfood website cookbook: [how-to-web-ui.md](./how-to-web-ui.md). Decision depth: [Learn why (CSS lanes)](./adr/0013-css-three-lanes.md) · [Learn why (forms sibling)](./adr/0014-forms-sibling-stylesheet.md) · [Learn why (island style tags)](./adr/0015-island-css-sibling-style.md).
 
 CSS ships in **three lanes**:
 
@@ -380,7 +380,7 @@ flowchart LR
 
 ## Adding a page or island
 
-Portable rules: [archipielago/guide/authoring.md](./archipielago/guide/authoring.md). Nest-example / dogfood cookbook: [how-to-web-ui.md](./how-to-web-ui.md) (`pnpm scaffold:web-ui` or the `create-web-ui` agent skill).
+Portable quick reference: [archipielago/guide/authoring.md](./archipielago/guide/authoring.md). Dogfood / Nest-example website UI (maintainer cookbook; optional if you copy that style): [how-to-web-ui.md](./how-to-web-ui.md) (`pnpm scaffold:web-ui` or the `create-web-ui` agent skill).
 
 ## Agent plans
 
@@ -396,7 +396,7 @@ tip of `main` does not. The `plan-files` CI job fails while a file remains.
 ## Related docs
 
 - [Architecture Decision Records](./adr/README.md) — durable tradeoffs (ADR-0001–ADR-0017).
-- [Guide authoring](./archipielago/guide/authoring.md) — host-agnostic island vs SSR rules.
-- [How to add web UI](./how-to-web-ui.md) — Nest-example / dogfood cookbook; handpicked icons; scaffold.
+- [Guide authoring](./archipielago/guide/authoring.md) — post-connect island vs SSR quick reference.
+- [How to add web UI](./how-to-web-ui.md) — dogfood / Nest-example website UI cookbook; handpicked icons; scaffold.
 - [Testing and coverage](./testing-and-coverage.md) — unit/e2e/coverage policy; Testcontainers for e2e ([ADR-0010](./adr/0010-e2e-testcontainers.md)).
 - [Known tech debt](./known-tech-debt.md) — deferred work (TD-IDs). Shared island client state is TD-008; below-the-fold hydrate is TD-010.
