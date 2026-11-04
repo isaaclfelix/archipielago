@@ -324,7 +324,7 @@ names and stylesheet policy remain example-owned
 
 ### Styles
 
-Portable rules: [archipielago/guide/authoring.md](./archipielago/guide/authoring.md). Nest-example / dogfood website cookbook: [how-to-web-ui.md](./how-to-web-ui.md). Decision depth: [Learn why (CSS lanes)](./adr/0013-css-three-lanes.md) · [Learn why (forms sibling)](./adr/0014-forms-sibling-stylesheet.md) · [Learn why (island style tags)](./adr/0015-island-css-sibling-style.md).
+Portable rules: [archipielago/guide/authoring.md](./archipielago/guide/authoring.md). Nest-example / dogfood website cookbook: [how-to-web-ui.md](./how-to-web-ui.md). Decisions: [ADR-0013](./adr/0013-css-three-lanes.md), [ADR-0014](./adr/0014-forms-sibling-stylesheet.md), [ADR-0015](./adr/0015-island-css-sibling-style.md).
 
 CSS ships in **three lanes**:
 

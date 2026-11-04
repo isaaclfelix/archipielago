@@ -12,13 +12,13 @@ This is **not** on the package-consumer spine. Integrate via
 (concepts → install → Nest demo → Nest or DIY wiring → authoring). The
 scaffolder remains example-local for now ([TD-035](./known-tech-debt.md)).
 
-Delivery mechanics: [architecture.md](./architecture.md#styles). Tree and
-package split: [architecture.md](./architecture.md). Optional depth:
-[Learn why (CSS lanes)](./adr/0013-css-three-lanes.md) ·
-[Learn why (forms sibling)](./adr/0014-forms-sibling-stylesheet.md) ·
-[Learn why (island style tags)](./adr/0015-island-css-sibling-style.md) ·
-[Learn why (in-repo isolation)](./adr/0029-archipielago-in-repo-isolation.md) ·
-[Learn why (SSR page props)](./adr/0023-web-host-ui-protocol.md).
+Delivery mechanics: [architecture.md](./architecture.md#styles). Why three
+lanes / forms sibling / island `<style>`: [ADR-0013](./adr/0013-css-three-lanes.md),
+[ADR-0014](./adr/0014-forms-sibling-stylesheet.md),
+[ADR-0015](./adr/0015-island-css-sibling-style.md). Product Nest UI vs
+Archipielago engines: [ADR-0029](./adr/0029-archipielago-in-repo-isolation.md)
+(SSR props quirk still [ADR-0023](./adr/0023-web-host-ui-protocol.md)); tree in
+[architecture.md](./architecture.md).
 
 ## Where things live
 

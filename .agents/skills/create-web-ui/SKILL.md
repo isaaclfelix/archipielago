@@ -18,12 +18,19 @@ Bootstrap HTML UI in the Nest example **without inventing a parallel CSS or
 island pattern**. Source of truth for the decision tree:
 [docs/how-to-web-ui.md](../../../docs/how-to-web-ui.md). Delivery mechanics:
 [docs/architecture.md](../../../docs/architecture.md) (Styles). Layout: Nest
-thin `web.*` + `@archipielago/nestjs`, Vite `ui/`, wire `protocol/`. Relative
-imports under `examples/nestjs/src/web/ui/` are **extensionless**; do not emit
+thin `web.*` + `@archipielago/nestjs`, Vite `ui/`, wire `protocol/`
+([ADR-0023](../../../docs/adr/0023-web-host-ui-protocol.md),
+[ADR-0032](../../../docs/adr/0032-archipielago-pnpm-monorepo.md)). Relative
+imports under `examples/nestjs/src/web/ui/` are **extensionless**
+([ADR-0024](../../../docs/adr/0024-dual-import-resolution.md)); do not emit
 Nest-style `.js` suffixes into UI stubs. Components live in **per-component
-folders** with thin `index.ts` barrels. Scaffold also emits a colocated
-Storybook stub. Imports that leave a component folder use `@ui` / `@protocol` /
-`@api`; engines use `@archipielago/*` **package** imports.
+folders** with thin `index.ts` barrels
+([ADR-0025](../../../docs/adr/0025-per-component-folders.md)). Scaffold also
+emits a colocated Storybook stub
+([ADR-0026](../../../docs/adr/0026-storybook-ui-workshop.md)). Imports that
+leave a component folder use `@ui` / `@protocol` / `@api`
+([ADR-0027](../../../docs/adr/0027-ui-path-aliases.md)); engines use
+`@archipielago/*` **package** imports.
 
 Prefer the shared scaffolder so humans and agents stay aligned (from the repo root):
 
@@ -31,7 +38,7 @@ Prefer the shared scaffolder so humans and agents stay aligned (from the repo ro
 pnpm scaffold:web-ui --name <kebab> --mode page|island [--with-styles]
 ```
 
-Implementation: [examples/nestjs/scripts/scaffold-web-ui.ts](../../../examples/nestjs/scripts/scaffold-web-ui.ts). Run that script (or apply the **same** file edits it would). Do not hand-roll a different CSS delivery path. For new islands, follow `examples/nestjs/archipielago.config.ts` registration mode (auto sync vs manual manifest entry). [Learn why](../../../docs/adr/0030-archipielago-host-config.md).
+Implementation: [examples/nestjs/scripts/scaffold-web-ui.ts](../../../examples/nestjs/scripts/scaffold-web-ui.ts). Run that script (or apply the **same** file edits it would). Do not hand-roll a different CSS delivery path. For new islands, follow `examples/nestjs/archipielago.config.ts` registration mode (auto sync vs manual manifest entry) — [ADR-0030](../../../docs/adr/0030-archipielago-host-config.md).
 
 ## Ask before writing
 
