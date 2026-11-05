@@ -2,8 +2,6 @@
 
 **Archipielago** is an embeddable islands rendering layer for backend apps that already own routing, auth, and data. It server-renders React pages, hydrates only interactive islands, and plugs into the host through thin adapters.
 
-The product name honors Spanish (_archipiélago_) but **drops the accent**—Archipielago, not Archipiélago—so it reads as an international product name rather than a literal dictionary word. Do not introduce other Spanish brand words; kinship labels in the vision (mother, father, Godfather) stay English.
-
 This repository is the **Archipielago monorepo**: framework packages under `packages/*`, runnable host examples (NestJS under `examples/nestjs`), shared tooling, and eventually the public site—which dogfoods Archipielago itself. **Documentation’s home and source of truth remain in this repo** (see [mission.md](./mission.md)).
 
 | Doc                          | Purpose                                                            |
