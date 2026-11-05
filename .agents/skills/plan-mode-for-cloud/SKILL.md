@@ -43,8 +43,10 @@ from this skill.
 
    `.cursor/plans/YYYY-MM-DD-kebab-slug.md`
 
-   Use the session date in `YYYY-MM-DD`. Keep the same file when the user
-   revises that effort. Do not open a second file for a rewording.
+   Use the session date in `YYYY-MM-DD` for a new effort. If the branch
+   already has a workspace plan for this effort, resume that file (the same
+   dated slug). Do not open a second file for a rewording, a handoff, or to
+   regain Plan UI.
 
 4. Reply with the path and a short summary. Stop.
 
@@ -83,14 +85,30 @@ Body sections, in this order:
   rule in every context, not only for this skill. The `plan-files` CI job
   fails while the file is still in the tree. Check the PR template box after
   the delete.
+- **Todos** — a trailing `## Todos` checklist. Cloud writes go straight to
+  the workspace, so this checklist is required. It mirrors YAML `todos`
+  (same ids, order, and status words). Update both together.
+
+```markdown
+## Todos
+
+- [ ] `kebab-step` — What will be done (pending)
+- [x] `kebab-step` — What will be done (completed)
+```
+
+Unchecked means `pending` or `in_progress`. Checked means `completed` or
+`cancelled`. Put the status word in parentheses so preview matches the YAML.
 
 Do not put secrets, tokens, or `.env` values in the plan.
 
 ## After the user approves implementation
 
-- Implement the approved plan. Update each todo `status` in the plan file as
-  the step finishes.
-- Commit the plan file on the branch. Leave that commit in the history.
+- Implement the approved plan. Update each todo `status` in the YAML
+  frontmatter and the matching `## Todos` line as the step finishes.
+- Commit the plan file on the branch, and commit later plan diffs while the
+  file exists (iteration and mid-execution progress). When a pull request is
+  already open, push those commits so reviewers see the current plan. Leave
+  the commit that added the file in the history.
 - The pull request can be reviewed while the file is still in the tree. The
   `plan-files` check stays red until a later commit deletes it.
 - Delete the file in a new commit before merge, and check the PR template
@@ -100,6 +118,7 @@ Do not put secrets, tokens, or `.env` values in the plan.
 
 - Any use in the desktop IDE or the CLI, including as a replacement for Plan
   mode
+- A second plan file for an effort that already has one on the branch
 - A plan that exists only in the chat reply
 - A plan written under `~/.cursor/plans` or any home directory on the agent
   machine
