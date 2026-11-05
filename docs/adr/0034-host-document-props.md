@@ -34,6 +34,11 @@ supply it.
   onto host config ([ADR-0030](./0030-archipielago-host-config.md)).
 - In-repo callers were the only consumers. The example moved in the same
   change set. Packages remain `private` and `0.0.0`.
+- The example writes `csrfToken` separately on the controller, `entry-server`,
+  and `Document`. Those names are not checked across the Nest adapter
+  ([TD-037](../known-tech-debt.md)).
+- `ServerEntry` and `ArchipielagoViewService` type that bag as `object`. Only
+  `renderDocument` keeps a generic ([TD-038](../known-tech-debt.md)).
 
 ## Alternatives considered
 

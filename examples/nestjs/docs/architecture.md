@@ -266,7 +266,7 @@ This example passes the session CSRF token on `home`, `login`, and `register`:
 | Forward it    | `src/web/ui/runtime/ssr/entry-server.tsx`            | Fourth argument is `documentProps?: { csrfToken?: string }`, passed to `renderDocument` |
 | Read it       | `src/web/ui/server-components/document/document.tsx` | When `csrfToken` is set, emits `<meta name="csrf-token" content="…">`                   |
 
-`ArchipielagoViewService` copies `options.documentProps` into `entry.render` as the fourth argument. Pass 2 of SSR spreads that object onto `Document` with the asset tags.
+`ArchipielagoViewService` copies `options.documentProps` into `entry.render` as the fourth argument. Pass 2 of SSR spreads that object onto `Document` with the asset tags. The three sites each write `csrfToken`. The adapter types the bag as `object`, so a wrong key in the controller still typechecks ([TD-037](../../../docs/known-tech-debt.md)).
 
 `loadServerEntry` builds the module specifier from `ArchipielagoPaths` at runtime:
 
