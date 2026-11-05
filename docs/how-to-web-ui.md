@@ -1,6 +1,26 @@
-# How to add web UI (pages, islands, styles)
+# How to add web UI (Nest example / dogfood cookbook)
 
-Canonical decision tree for HTML UI in this Nest + islands app. Follow it when scaffolding by hand, via `pnpm scaffold:web-ui`, or with the `create-web-ui` agent skill. Delivery mechanics: [architecture.md](./architecture.md#styles). Why three lanes / forms sibling / island `<style>`: [ADR-0013](./adr/0013-css-three-lanes.md), [ADR-0014](./adr/0014-forms-sibling-stylesheet.md), [ADR-0015](./adr/0015-island-css-sibling-style.md). Product Nest UI vs Archipielago engines: [ADR-0029](./adr/0029-archipielago-in-repo-isolation.md) (SSR props quirk still [ADR-0023](./adr/0023-web-host-ui-protocol.md)); tree in [architecture.md](./architecture.md).
+Maintainer cookbook for HTML UI in **`examples/nestjs`**—the NestJS host example
+and future dogfood website. This is the workflow site maintainers use day to
+day. If you choose Nest and want the same folder conventions, feel free to
+follow it; that choice is not required beyond what Archipielago needs to run.
+Scaffold by hand, via `pnpm scaffold:web-ui`, or with the `create-web-ui` agent
+skill.
+
+This is **not** on the package-consumer spine. Integrate via
+[docs/archipielago/guide/](./archipielago/guide/README.md)
+(concepts → install → Nest demo → Nest or DIY wiring → authoring). The
+scaffolder remains example-local for now ([TD-035](./known-tech-debt.md)).
+
+Delivery mechanics:
+[examples/nestjs/docs/architecture.md](../examples/nestjs/docs/architecture.md#styles).
+Why three lanes / forms sibling / island `<style>`:
+[ADR-0013](./adr/0013-css-three-lanes.md),
+[ADR-0014](./adr/0014-forms-sibling-stylesheet.md),
+[ADR-0015](./adr/0015-island-css-sibling-style.md). Product Nest UI vs
+Archipielago engines: [ADR-0029](./adr/0029-archipielago-in-repo-isolation.md)
+(SSR props quirk still [ADR-0023](./adr/0023-web-host-ui-protocol.md)); tree in
+[examples/nestjs/docs/architecture.md](../examples/nestjs/docs/architecture.md).
 
 ## Where things live
 
@@ -95,7 +115,7 @@ Scaffold: `pnpm scaffold:web-ui --name about --mode page` (writes protocol SSR p
 1. Folder under `src/web/ui/islands/<name>/` with `<name>.tsx` (default export), thin `index.ts`, JSON-serializable props.
 2. Optional: colocated `<name>.module.scss` (import tokens via `@ui/styles/tokens`) — never re-import the shell sheet or Bootstrap CSS-emitting partials (including forms/validation).
 3. Refresh the islands manifest per `archipielago.config.ts` ([ADR-0030](./adr/0030-archipielago-host-config.md)):
-   - **`auto`** (this sample): **scaffold runs `pnpm islands:sync`**. Hand-added folders: run `pnpm islands:sync` **or** restart `pnpm start:dev` (sync runs at process start). Do not hand-edit the generated manifest.
+   - **`auto`** (this Nest example): **scaffold runs `pnpm islands:sync`**. Hand-added folders: run `pnpm islands:sync` **or** restart `pnpm start:dev` (sync runs at process start). Do not hand-edit the generated manifest.
    - **`manual`**: scaffold **warns** with the entry to add; sync refuses to overwrite. You own the manifest (commit it if you want — gitignore is optional).
      App bootstrap / hydrate entry calls `registerIslands` so Archipielago engines can build HTML; Nest never reads the manifest. Hydrate loaders discover conventional folders via glob — no registry map edit ([ADR-0028](./adr/0028-island-filesystem-manifest.md)).
 4. Render `<Island name="…" component={…} props={…} />` from a page (directory-import the island barrel; import `Island` from `@archipielago/react/runtime/island/island`). Do **not** wire CSS context yourself — the framework fills it after the name-collection pass and emits a sibling `<style data-css-island>` for used islands (deduped by name).
@@ -124,7 +144,7 @@ Login/register use react-hook-form + Zod and `useApiMutation`:
 - Spread `apiRequestDefaults` and `...getCsrfTokenHeader()` into native `fetch` (helpers in `src/web/ui/api-fetch/`; hook in `src/web/ui/hooks/`).
 - Import shared schemas from `src/shared/schemas/` and API DTOs under `src/api/.../dto` rather than duplicating password/username rules.
 - Form-level API errors: plain colored text (`.form-api-error`), not Bootstrap alerts.
-- See [architecture.md — Frontend contract](./architecture.md#frontend-contract-islands--api) for status codes and redirects.
+- See [architecture.md — Frontend contract](../examples/nestjs/docs/architecture.md#frontend-contract-islands--api) for status codes and redirects.
 - **Tests:** co-locate a browser-mode `*.spec.ts` next to interactive islands (Vitest browser project). When the UI navigates or mutates, add or extend `*.browser-e2e-spec.ts`. See [testing-and-coverage.md](./testing-and-coverage.md) and [ADR-0021](./adr/0021-vitest-browser-ui-testing.md).
 - **Storybook workshop:** co-locate `*.stories.tsx` (scaffold emits a stub). Browse with `pnpm storybook` — visual/dev only, not a second test runner ([ADR-0026](./adr/0026-storybook-ui-workshop.md)). Skip stories for `Document` (nested `html`).
 

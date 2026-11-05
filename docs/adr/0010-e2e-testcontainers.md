@@ -14,7 +14,7 @@ Use **Testcontainers** Postgres for e2e (`postgres:16-alpine`), not Compose. Mig
 ## Consequences
 
 - E2E needs Docker available.
-- Manual local DB remains Compose + Make ([architecture.md](../architecture.md#persistence)).
+- Manual local DB remains Compose + Make ([examples/nestjs/docs/architecture.md](../../examples/nestjs/docs/architecture.md#persistence)).
 - Suites stay isolated without resetting the whole Compose volume each test.
 
 ## Alternatives considered

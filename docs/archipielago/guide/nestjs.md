@@ -1,8 +1,16 @@
 # NestJS example
 
-How [examples/nestjs](../../../examples/nestjs) applies the host-agnostic
-steps from [wiring.md](./wiring.md). This page maps concepts onto Nest files; it
-does **not** redefine the primitives ([concepts.md](./concepts.md)).
+Demonstration and documented Nest host recipe.
+[examples/nestjs](../../../examples/nestjs) shows the concepts connected end to
+end—and is also the host for the future dogfood website. This page maps those
+pieces onto Nest files; it does **not** redefine the primitives.
+
+Related pages:
+
+- Before this: [install.md](./install.md)
+- Primitives: [concepts.md](./concepts.md)
+- Runbook (database, start, URLs):
+  [examples/nestjs/README.md](../../../examples/nestjs/README.md)
 
 | Wiring step                    | Nest example                                                                                    |
 | ------------------------------ | ----------------------------------------------------------------------------------------------- |
@@ -43,9 +51,13 @@ Nest types stay out of `@archipielago/core`, `react`, and `vite`.
 | Storybook    | `pnpm storybook`    |
 
 Root scripts filter into `@archipielago/example-nestjs`. Shared lint/format/CI
-stay at the monorepo root ([ADR-0032](../../adr/0032-archipielago-pnpm-monorepo.md)).
+stay at the monorepo root. [Learn why](../../adr/0032-archipielago-pnpm-monorepo.md).
 
-## Authoring UI in the example
+## Next steps
 
-Adding pages and islands: [how-to-web-ui.md](../../how-to-web-ui.md) (paths are
-under `examples/nestjs`). Prefer `pnpm scaffold:web-ui` for new UI pieces.
+- **Nest as your host** — keep [authoring.md](./authoring.md) for SSR vs island.
+  Folder conventions, CSS lanes, and scaffold for this example’s UI style:
+  [how-to-web-ui.md](../../how-to-web-ui.md) (maintainer cookbook; use it if you
+  follow our patterns).
+- **Another host** — transfer the same contract with [wiring.md](./wiring.md),
+  then [authoring.md](./authoring.md).

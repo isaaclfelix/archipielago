@@ -2,13 +2,17 @@
 
 This folder records **durable tradeoffs** we chose on purpose. It is the counterpart to [known tech debt](../known-tech-debt.md): ADRs are accepted decisions; tech debt is deferred work.
 
-Current wiring and behavior live in [architecture.md](../architecture.md). That doc stays a **current-state map** and links here with `See ADR-NNNN` where a section comes from a decision.
+Nest-example current wiring and behavior live in
+[examples/nestjs/docs/architecture.md](../../examples/nestjs/docs/architecture.md).
+That doc stays a **current-state map** and links here with `See ADR-NNNN` where
+a section comes from a decision. Monorepo orientation stub:
+[architecture.md](../architecture.md).
 
 ## Policy
 
 - When a durable tradeoff is chosen, add an ADR **in the same PR** (or immediately after). Update architecture current-state and the ADR link. Do not leave “why” only in the PR description.
 - One decision per file under `docs/adr/NNNN-short-slug.md`. Closely coupled micro-choices belong in the same ADR as Consequences, not as separate files.
-- **Superseding:** write a new ADR, set the old Status to `Superseded by ADR-…`. Do not silently rewrite history; append a short note if correcting facts on an Accepted ADR.
+- **Superseding and historical bodies:** write a new ADR, set the old Status to `Superseded by ADR-…`. Do not mass-edit Accepted ADR narratives for branding or present-tense framing—see [ADR-0033](./0033-historical-adr-immutability.md). Factual errata, Status updates, and thin cross-links remain allowed.
 - Copy [`_template.md`](./_template.md) for new records. IDs are zero-padded (`ADR-0001`, …), sorted in the table below.
 
 ## Status legend
@@ -55,3 +59,4 @@ Current wiring and behavior live in [architecture.md](../architecture.md). That 
 | ADR-0030 | Archipielago host config and islands registration mode         | Accepted                       | [0030-archipielago-host-config.md](./0030-archipielago-host-config.md)                   |
 | ADR-0031 | Project plan files for agent planning                          | Accepted                       | [0031-project-plan-files.md](./0031-project-plan-files.md)                               |
 | ADR-0032 | Archipielago pnpm monorepo packages and NestJS example         | Accepted                       | [0032-archipielago-pnpm-monorepo.md](./0032-archipielago-pnpm-monorepo.md)               |
+| ADR-0033 | Historical ADR narrative immutability                          | Accepted                       | [0033-historical-adr-immutability.md](./0033-historical-adr-immutability.md)             |

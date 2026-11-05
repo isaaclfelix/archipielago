@@ -69,20 +69,18 @@ This is a **design rule**, not a finished public API. Sketch a thin seam when is
 
 ## This repository (monorepo)
 
-This repo will become the **Archipielago monorepo**, not a throwaway demo that loses the framework to a disconnected tree.
+This repository **is** the **Archipielago monorepo**, not a throwaway demo that loses the framework to a disconnected tree. It holds:
 
-Long term it holds:
-
-1. **Framework packages** — core render contracts, React SSR/islands runtime, Vite helpers, host adapters.
-2. **Runnable host examples** — named after the framework (`nestjs`, later `express` / `hono`, etc.), not after kinship titles.
+1. **Framework packages** — core render contracts, React SSR/islands runtime, Vite helpers, host adapters under `packages/*` (`@archipielago/*`).
+2. **Runnable host examples** — named after the framework (`examples/nestjs` today; later `express` / `hono`, etc.), not after kinship titles.
 3. **Shared tooling** — pnpm workspace, Vite, oxlint, and related gates the Godfather era taught us to keep coherent across packages.
-4. **Public site** — documentation and marketing that **runs on Archipielago** (dogfooding). NestJS may host that site; that choice is independent of the Godfather metaphor and can be justified in its own note later. The site presents in-repo docs; the **repository remains the documentation source of truth** ([mission.md](./mission.md)).
+4. **Public site** (future) — documentation and marketing that **runs on Archipielago** (dogfooding). NestJS may host that site; that choice is independent of the Godfather metaphor and can be justified in its own note later. The site will present in-repo docs; the **repository remains the documentation source of truth** ([mission.md](./mission.md)).
 
 Phase 1 isolated engines under `src/archipielago/` with the Nest product under
 `src/web/` ([ADR-0029](../adr/0029-archipielago-in-repo-isolation.md)). Phase 2
-moved the engines into `packages/*` (`@archipielago/*`), relocated the consumer
-to `examples/nestjs`, and added the Nest adapter package (see
-[roadmap.md](./roadmap.md)).
+(delivered) moved the engines into `packages/*`, relocated the Nest host example
+to `examples/nestjs`, and added the Nest adapter package—see
+[roadmap.md](./roadmap.md) and [ADR-0032](../adr/0032-archipielago-pnpm-monorepo.md).
 
 ## Non-goals
 

@@ -1,21 +1,26 @@
 # Wiring
 
-Ordered, **host-agnostic** steps to embed Archipielago. Replace “host” with
-your HTTP framework. Nest-specific mapping: [nestjs.md](./nestjs.md). Concepts:
-[concepts.md](./concepts.md).
+Ordered, **host-agnostic** steps to embed Archipielago in a host that is not
+(or not only) the Nest recipe. Replace “host” with your HTTP framework.
+
+Related pages:
+
+- Prefer seeing Nest first: [nestjs.md](./nestjs.md)
+- Primitives: [concepts.md](./concepts.md)
+- After HTML renders: [authoring.md](./authoring.md)
 
 ## Host owns vs package owns
 
-| Step                                       | Host                             | Package                                          |
-| ------------------------------------------ | -------------------------------- | ------------------------------------------------ |
-| Paths / `archipielago.config.ts`           | Yes                              | `core` reads applied config / path getters       |
-| Island manifest + `registerIslands`        | Yes                              | `core` stores table                              |
-| `setIslandModules(import.meta.glob)`       | Yes (Vite file under product UI) | `react` builds loaders                           |
-| Page stylesheet registry + per-page opt-in | Yes                              | `vite` emits `<link>`s                           |
-| `entry-server` + `Document` + page map     | Yes                              | `react` `renderDocument`                         |
-| Vite config plugins / inputs               | Yes (app Vite config)            | `vite` plugins                                   |
-| Mount middleware / static                  | Yes (call helper or DIY)         | `vite` pipeline; Nest: `mountArchipielagoAssets` |
-| HTTP route → props → HTML                  | Yes                              | Adapter `render` (optional)                      |
+| Step                                       | Host                             | Package                                            |
+| ------------------------------------------ | -------------------------------- | -------------------------------------------------- |
+| Paths / `archipielago.config.ts`           | Yes                              | `core` reads applied config / path getters         |
+| Island manifest + `registerIslands`        | Yes                              | `core` stores table                                |
+| `setIslandModules(import.meta.glob)`       | Yes (Vite file under product UI) | `react` builds loaders                             |
+| Page stylesheet registry + per-page opt-in | Yes                              | `vite` emits `<link>`s                             |
+| `entry-server` + `Document` + page map     | Yes                              | `react` `renderDocument`                           |
+| Vite config plugins / inputs               | Yes (app Vite config)            | `vite` plugins                                     |
+| Mount middleware / static                  | Yes (call helper or DIY)         | `vite` pipeline; Nest adapter ships a mount helper |
+| HTTP route → props → HTML                  | Yes                              | Adapter `render` (optional)                        |
 
 ## Steps
 
@@ -55,6 +60,9 @@ your HTTP framework. Nest-specific mapping: [nestjs.md](./nestjs.md). Concepts:
 
 ## Done when
 
-Same product pages and islands can render through the host without Nest types
-inside `core` / `react` / `vite`, and asset URLs work in both Vite middleware
-and production static modes.
+Same product pages and islands can render through the host without host
+framework types inside `core` / `react` / `vite`, and asset URLs work in both
+Vite middleware and production static modes.
+
+Smoke check: one SSR-only page and one island in the page map. Then keep
+[authoring.md](./authoring.md) for SSR vs island and props.

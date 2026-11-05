@@ -2,16 +2,17 @@
 
 High-level milestones only. Later phases wait on earlier ones. Outcomes, not sprint tickets. See [vision.md](./vision.md) for product philosophy, [mission.md](./mission.md) for how we operate, and [workflow.md](./workflow.md) for the recommended contribution flow.
 
-| Phase   | Name                                | Status                                                       |
-| ------- | ----------------------------------- | ------------------------------------------------------------ |
-| 0       | Name and intent                     | Done                                                         |
-| 1       | In-repo isolation                   | Done                                                         |
-| 2       | Monorepo packages + NestJS consumer | Done ([ADR-0032](../adr/0032-archipielago-pnpm-monorepo.md)) |
-| Publish | First npm publish (`0.0.1`)         | Not started (after Phase 2; prefer after Phase 3)            |
-| 3       | Host-adapter proof                  | Not started                                                  |
-| 4       | Parent parity                       | Not started                                                  |
-| 5       | Docs site (dogfood Archipielago)    | Not started                                                  |
-| 6       | Differentiation                     | Not started                                                  |
+| Phase          | Name                                | Status                                                       |
+| -------------- | ----------------------------------- | ------------------------------------------------------------ |
+| 0              | Name and intent                     | Done                                                         |
+| 1              | In-repo isolation                   | Done                                                         |
+| 2              | Monorepo packages + NestJS consumer | Done ([ADR-0032](../adr/0032-archipielago-pnpm-monorepo.md)) |
+| Publish        | First npm publish (`0.0.1`)         | Not started (after Phase 2; prefer after Phase 3)            |
+| 3              | Host-adapter proof                  | Not started                                                  |
+| 4              | Parent parity                       | Not started                                                  |
+| 5              | Docs site (dogfood Archipielago)    | Not started                                                  |
+| 6              | Differentiation                     | Not started                                                  |
+| Author tooling | Configurable web-ui scaffolder      | Not started (unscheduled; prefer late—see below)             |
 
 ## Phase 0 — Name and intent
 
@@ -40,7 +41,7 @@ Historical layout (pre-[ADR-0032](../adr/0032-archipielago-pnpm-monorepo.md)); c
 
 - This repository becomes an Archipielago **pnpm monorepo**: framework packages, shared tooling (Vite, oxlint, etc.), and a NestJS host example that depends on those packages ([ADR-0032](../adr/0032-archipielago-pnpm-monorepo.md)).
 - Package IDs: `@archipielago/core`, `@archipielago/react`, `@archipielago/vite`, `@archipielago/nestjs`.
-- Host example paths and package ids use **`nestjs`** (respect the framework’s name)—not “Godfather” or other nicknames. Nest sample lives under `examples/nestjs`.
+- Host example paths and package ids use **`nestjs`** (respect the framework’s name)—not “Godfather” or other nicknames. Nest example lives under `examples/nestjs`.
 - Published surface starts minimal (workspace packages with explicit `exports` / peers); **npm registry publish is deferred** to the Publish milestone below.
 - NestJS adapter is the first proof that HTTP and DI live outside core.
 - Shared tooling stays workspace-owned so host examples and packages do not fork lint/build stacks.
@@ -57,7 +58,7 @@ Historical layout (pre-[ADR-0032](../adr/0032-archipielago-pnpm-monorepo.md)); c
 - Same UI artifacts render through a second non-monopolizing host example in the monorepo (Express or Hono preferred) without changing pages, islands, or hydrate core.
 - Public `Renderer` → `RenderResult` contract is refined from real second-host friction; that is when the integration boundary counts as **proven**.
 - Resolve **TD-031** (explicit Vite/server handle instead of process global) and **TD-032** (hosts that assemble from `RenderResult.assets`) from that friction—do not invent those APIs in Phase 2 without a second consumer.
-- Non-Nest hosts should call `setArchipielagoPaths` explicitly; Nest sample path defaults must not become the undocumented public layout law ([ADR-0030](../adr/0030-archipielago-host-config.md)).
+- Non-Nest hosts should call `setArchipielagoPaths` explicitly; Nest example path defaults must not become the undocumented public layout law ([ADR-0030](../adr/0030-archipielago-host-config.md)).
 
 ## Phase 4 — Parent parity
 
@@ -88,3 +89,12 @@ No commitment to ship Astro’s routing, content collections, or multi-framework
 ## Phase 6 — Differentiation
 
 Placeholder only. Novel product ideas ship **after** Phase 4 parity. Decide the bets then; do not invent them in this document.
+
+## Author tooling — Configurable web-ui scaffolder
+
+Unscheduled (no calendar date; not a Phase 3–5 blocker). Prefer late—after dogfood site / second-host pressure is clearer.
+
+- Extract today’s Nest-example scaffolder (`examples/nestjs/scripts/scaffold-web-ui.ts`, root `pnpm scaffold:web-ui`) into its own package or under `@archipielago/nestjs` (or similar).
+- Near term, consumers can still target this example’s folder conventions.
+- Later, enough config that other hosts are not forced into dogfood layout.
+- Tracked as [TD-035](../known-tech-debt.md).

@@ -80,8 +80,12 @@ When a task has more than one logical slice, finish one slice, run the checks th
 
 In the desktop IDE or the CLI, plan with built-in Plan mode and **Save to workspace** so the file is under `.cursor/plans/`. Do not follow [`.agents/skills/plan-mode-for-cloud/SKILL.md`](.agents/skills/plan-mode-for-cloud/SKILL.md) there. On a Cloud Agent or at cursor.com/agents, when the user asks for a plan before implementation, follow that skill. In every context, commit `.cursor/plans/YYYY-MM-DD-kebab-slug.md` on the branch and delete it in a later commit before merge ([ADR-0031](docs/adr/0031-project-plan-files.md)). The `plan-files` CI job fails while any file remains. Check the PR template box only after that delete, or when the PR never added a plan. When planning or executing work that locks a **durable architectural tradeoff** (folder layout, auth model, persistence choice, SSR/CSS contract, etc.):
 
-- Record it as an ADR under [`docs/adr/`](docs/adr/) in the **same change set** as the code (or immediately after), following [`docs/adr/README.md`](docs/adr/README.md) (template, index row, supersede rules).
-- Update [`docs/architecture.md`](docs/architecture.md) current-state (and how-to / AGENTS paths when they drift) so “how it works now” stays accurate.
+- Record it as an ADR under [`docs/adr/`](docs/adr/) in the **same change set** as the code (or immediately after), following [`docs/adr/README.md`](docs/adr/README.md) (template, index row, supersede rules). Do **not** mass-edit Accepted ADR bodies for branding or present-tense framing—supersede or link instead ([ADR-0033](docs/adr/0033-historical-adr-immutability.md)).
+- Update Nest-example current-state in
+  [`examples/nestjs/docs/architecture.md`](examples/nestjs/docs/architecture.md)
+  (and how-to / AGENTS paths when they drift) so “how it works now” stays
+  accurate. Repo-wide agent-plan rules live in
+  [`docs/archipielago/workflow.md`](docs/archipielago/workflow.md#agent-plans).
 - Do **not** leave the decision only in a Cursor plan file, chat transcript, or PR description.
 - Skip ADRs for ephemeral implementation detail that is not a lasting tradeoff.
 
@@ -102,7 +106,7 @@ Follow these conventions when adding or refactoring application code so reviews 
 
 When adding or changing browser-facing pages under `examples/nestjs/src/web/`:
 
-- Follow [docs/how-to-web-ui.md](docs/how-to-web-ui.md) for the SSR vs island vs CSS-module decision tree and anti-patterns. Host-agnostic install/wiring: [docs/archipielago/guide/](docs/archipielago/guide/concepts.md).
+- Follow [docs/how-to-web-ui.md](docs/how-to-web-ui.md) for the SSR vs island vs CSS-module decision tree and anti-patterns. Host-agnostic guide: [docs/archipielago/guide/](docs/archipielago/guide/README.md) (incl. [authoring.md](docs/archipielago/guide/authoring.md)).
 - Prefer `pnpm scaffold:web-ui` or the `create-web-ui` agent skill over hand-wiring registry, loaders, and entry-server maps. Layout: Nest thin `web.*` + `@archipielago/nestjs`, Vite `ui/`, wire `protocol/` ([ADR-0023](docs/adr/0023-web-host-ui-protocol.md), [ADR-0032](docs/adr/0032-archipielago-pnpm-monorepo.md)).
 - Product UI uses **one folder per component** with a kebab implementation file and thin `index.ts` re-export ([ADR-0025](docs/adr/0025-per-component-folders.md)); no fat barrels or component-as-only-`index.tsx`. Island registry imports the concrete `.tsx` path helpers share with the manifest key.
 - Colocate `*.stories.tsx` for the Storybook workshop (`pnpm storybook`); Vitest remains QA ([ADR-0026](docs/adr/0026-storybook-ui-workshop.md)). Do not treat Storybook as Chromatic/visual-regression unless a later decision says so.
