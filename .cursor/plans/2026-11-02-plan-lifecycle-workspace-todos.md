@@ -16,7 +16,7 @@ todos:
     status: completed
   - id: workflow-iteration
     content: Update docs/archipielago/workflow.md Planning/Iteration—commit plan updates; body Todos
-    status: pending
+    status: completed
   - id: architecture-agent-plans
     content: Align docs/architecture.md Agent plans section with ADR-0031 clarifications
     status: pending
@@ -100,6 +100,6 @@ No new ADR number—amend ADR-0031. ADR-0033 (historical ADR immutability) stays
 - [x] `amend-adr-0031` — Amend ADR-0031 Decision/Consequences for SSOT, commit plan diffs, body Todos (workspace only) (completed)
 - [x] `agents-plan-rules` — Update AGENTS.md §6—edit existing workspace plan only; sync frontmatter + body Todos (completed)
 - [x] `cloud-skill-template` — Update plan-mode-for-cloud SKILL—resume same file; require body ## Todos; commit iterations (completed)
-- [ ] `workflow-iteration` — Update docs/archipielago/workflow.md Planning/Iteration—commit plan updates; body Todos (pending)
+- [x] `workflow-iteration` — Update docs/archipielago/workflow.md Planning/Iteration—commit plan updates; body Todos (completed)
 - [ ] `architecture-agent-plans` — Align docs/architecture.md Agent plans section with ADR-0031 clarifications (pending)
 - [ ] `delete-plan-before-merge` — Delete this plan file in a later commit before merge (ADR-0031 / plan-files CI) (pending)
