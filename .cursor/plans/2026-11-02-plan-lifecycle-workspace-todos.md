@@ -19,7 +19,7 @@ todos:
     status: completed
   - id: architecture-agent-plans
     content: Align docs/architecture.md Agent plans section with ADR-0031 clarifications
-    status: pending
+    status: completed
   - id: delete-plan-before-merge
     content: Delete this plan file in a later commit before merge (ADR-0031 / plan-files CI)
     status: pending
@@ -101,5 +101,5 @@ No new ADR number—amend ADR-0031. ADR-0033 (historical ADR immutability) stays
 - [x] `agents-plan-rules` — Update AGENTS.md §6—edit existing workspace plan only; sync frontmatter + body Todos (completed)
 - [x] `cloud-skill-template` — Update plan-mode-for-cloud SKILL—resume same file; require body ## Todos; commit iterations (completed)
 - [x] `workflow-iteration` — Update docs/archipielago/workflow.md Planning/Iteration—commit plan updates; body Todos (completed)
-- [ ] `architecture-agent-plans` — Align docs/architecture.md Agent plans section with ADR-0031 clarifications (pending)
+- [x] `architecture-agent-plans` — Align docs/architecture.md Agent plans section with ADR-0031 clarifications (completed)
 - [ ] `delete-plan-before-merge` — Delete this plan file in a later commit before merge (ADR-0031 / plan-files CI) (pending)
