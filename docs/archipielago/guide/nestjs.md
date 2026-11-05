@@ -33,13 +33,34 @@ Related pages:
   Pass `getPageStylesheets(page)` so product sheet policy stays in the example
   (`examples/nestjs/src/web/page-stylesheets.ts`).
 - **`ArchipielagoViewService.render(page, props, { documentProps?, pageStylesheets? })`** —
-  returns the full document string. `documentProps` is forwarded to the host
-  entry. The Nest example puts the session CSRF token there; the package does
-  not interpret it ([ADR-0034](../../adr/0034-host-document-props.md)).
+  returns the full document string. See [Forwarding document props](#forwarding-document-props).
 - **`mountArchipielagoAssets(app)`** — static client root in production; Vite
   middleware in development.
 
 Nest types stay out of `@archipielago/core`, `react`, and `vite`.
+
+## Forwarding document props
+
+`documentProps` is the host bag for the document shell. The Nest adapter
+forwards the object to `entry-server` as the fourth `render` argument.
+`entry-server` passes it to `renderDocument`, which spreads it onto `Document`.
+The package does not read the keys
+([ADR-0034](../../adr/0034-host-document-props.md),
+[concepts](./concepts.md#document-props)).
+
+From a controller:
+
+```ts
+return this.webViewService.render('home', props, {
+  documentProps: { csrfToken: req.session?.csrfToken },
+});
+```
+
+`props` stays the page embed contract. Fields the shell needs, such as a CSRF
+meta tag, go in `documentProps`. In this repo, `entry-server` types that bag as
+`{ csrfToken?: string }` and the example `Document` renders
+`<meta name="csrf-token">`. The current-state map of those three files is
+[Document props in this example](../../../examples/nestjs/docs/architecture.md#document-props-in-this-example).
 
 ## Commands (from repo root)
 

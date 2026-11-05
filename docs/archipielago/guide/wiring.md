@@ -42,7 +42,9 @@ Related pages:
      entry; Vitest setup for unit tests)
 
 5. **SSR entry** — implement `ServerEntry`: page map + `Document` →
-   `renderDocument` from `@archipielago/react`.
+   `renderDocument` from `@archipielago/react`. Accept `documentProps` as the
+   fourth argument and pass that object through so the shell can read it
+   ([concepts](./concepts.md#document-props)).
 
 6. **Hydrate entry** — register islands + modules, then `hydrateIslands()`.
 
@@ -52,8 +54,10 @@ Related pages:
 8. **HTTP mount** — production: static `clientAssetsRoot()`; development:
    `createDevAssetPipeline()` middleware. Do this once at process boot.
 
-9. **Request path** — for each HTML route, build props and call the renderer
-   (`ServerEntry` directly or a host adapter). Return `text/html`.
+9. **Request path** — for each HTML route, build page props and call the
+   renderer (`ServerEntry` directly or a host adapter). When the shell needs
+   request data, pass it as `documentProps` on that same call. Return
+   `text/html`.
 
 10. **Lifecycle** — sync islands (`auto`) before build/test/start when using
     generated manifests.

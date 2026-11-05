@@ -136,7 +136,7 @@ Browser mutations use cookie sessions plus a CSRF token ([ADR-0006](../../../doc
 
 - **Session middleware** loads or creates a guest session from the HttpOnly `sid` cookie and attaches it to the request for HTML pages and `/api` (Vite/static asset paths are skipped).
 - **CsrfGuard** (global) requires header `X-CSRF-TOKEN` to match the session token on mutating `/api` methods (`POST` / `PATCH` / `DELETE` / `PUT`). Safe methods and non-API routes pass through.
-- SSR embeds `<meta name="csrf-token" content="…">` on HTML documents. `WebController` passes the session token as `documentProps`; the example `Document` renders the tag. Package render contracts do not name the token ([ADR-0034](../../../docs/adr/0034-host-document-props.md)). There is **no** JSON CSRF mint endpoint; e2e obtains the token by loading `/register` or `/login` (same as the browser).
+- SSR embeds `<meta name="csrf-token" content="…">` on HTML documents. The session token reaches that tag through [document props](#document-props-in-this-example). There is **no** JSON CSRF mint endpoint; e2e obtains the token by loading `/register` or `/login` (same as the browser).
 - Login regenerates the session id and attaches `userId` (see AuthModule). Session rows live in Postgres (`sessions`).
 
 ```mermaid
@@ -253,6 +253,20 @@ Product home (vision and milestones): [docs/archipielago/](../../../docs/archipi
 | `@archipielago/react` `hydrateIslands`             | Browser entry. Hydrates markers and nothing else.                      |
 
 SSR embed props live in `protocol/page-props/*-page.ssr-props.ts` (`*PageSsrProps`). The controller imports those types, not the component ([ADR-0029](../../../docs/adr/0029-archipielago-in-repo-isolation.md); SSR props quirk from ADR-0023).
+
+### Document props in this example
+
+Shell data for a request travels in the opaque `documentProps` bag ([ADR-0034](../../../docs/adr/0034-host-document-props.md), [guide](../../../docs/archipielago/guide/concepts.md#document-props)). Page embed props stay in `protocol/page-props/`. `@archipielago/nestjs` and `renderDocument` forward the bag and do not name its fields.
+
+This example passes the session CSRF token on `home`, `login`, and `register`:
+
+| Step          | File                                                 | What it does                                                                            |
+| ------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Build the bag | `src/web/web.controller.ts`                          | `render(page, props, { documentProps: { csrfToken: req.session?.csrfToken } })`         |
+| Forward it    | `src/web/ui/runtime/ssr/entry-server.tsx`            | Fourth argument is `documentProps?: { csrfToken?: string }`, passed to `renderDocument` |
+| Read it       | `src/web/ui/server-components/document/document.tsx` | When `csrfToken` is set, emits `<meta name="csrf-token" content="…">`                   |
+
+`ArchipielagoViewService` copies `options.documentProps` into `entry.render` as the fourth argument. Pass 2 of SSR spreads that object onto `Document` with the asset tags.
 
 `loadServerEntry` builds the module specifier from `ArchipielagoPaths` at runtime:
 
