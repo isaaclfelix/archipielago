@@ -47,7 +47,7 @@ describe('WebController', () => {
         renderedAt: expect.any(String),
         isAuthenticated: false,
       },
-      { csrfToken: 'csrf-home' },
+      { documentProps: { csrfToken: 'csrf-home' } },
     );
   });
 
@@ -66,7 +66,7 @@ describe('WebController', () => {
         renderedAt: expect.any(String),
         isAuthenticated: true,
       },
-      { csrfToken: 'csrf-home' },
+      { documentProps: { csrfToken: 'csrf-home' } },
     );
   });
 
@@ -86,7 +86,7 @@ describe('WebController', () => {
     expect(render).toHaveBeenCalledWith(
       'login',
       { isAuthenticated: false },
-      { csrfToken: 'csrf-login' },
+      { documentProps: { csrfToken: 'csrf-login' } },
     );
   });
 
@@ -125,7 +125,7 @@ describe('WebController', () => {
     expect(render).toHaveBeenCalledWith(
       'register',
       { isAuthenticated: false },
-      { csrfToken: 'csrf-register' },
+      { documentProps: { csrfToken: 'csrf-register' } },
     );
   });
 

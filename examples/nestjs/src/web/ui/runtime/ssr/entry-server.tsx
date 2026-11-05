@@ -29,21 +29,22 @@ const pages = {
  * @param {K} page - Key in the page map.
  * @param {SsrPagePropsMap[K]} props - SSR embed props for that page.
  * @param {(islandNames: string[]) => PageAssets | Promise<PageAssets>} createAssets - Builds tags and island CSS from used islands.
- * @param {string} [csrfToken] - Session CSRF token to embed in a meta tag.
+ * @param {{ csrfToken?: string }} [documentProps] - Session fields for the document shell.
  * @returns {Promise<RenderResult>} Full document HTML plus the asset bag used.
  */
 export async function render<K extends WebPageName>(
   page: K,
   props: SsrPagePropsMap[K],
   createAssets: (islandNames: string[]) => PageAssets | Promise<PageAssets>,
-  csrfToken?: string,
+  documentProps?: { csrfToken?: string },
 ): Promise<RenderResult> {
   const Page = pages[page] as (pageProps: SsrPagePropsMap[K]) => ReactElement;
 
+  // The token stays on the example Document. The engine only forwards the bag.
   return renderDocument({
     renderPage: () => <Page {...props} />,
     Document,
     createAssets,
-    csrfToken,
+    documentProps,
   });
 }
