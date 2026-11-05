@@ -29,8 +29,11 @@ Full HTML document (`html`) plus an `assets` bag. The Nest adapter returns
 
 ### `ServerEntry<TPages>`
 
-SSR entry contract: `render(page, props, createAssets, csrfToken?)`. `TPages`
-is a **host-owned** map of page name → props. Core never imports app page-prop
+SSR entry contract: `render(page, props, createAssets, documentProps?)`.
+`documentProps` is an opaque bag the host `Document` owns. Packages forward it
+and do not name product fields such as a CSRF token
+([ADR-0034](../../adr/0034-host-document-props.md)). `TPages` is a
+**host-owned** map of page name → props. Core never imports app page-prop
 modules.
 
 ### Islands table

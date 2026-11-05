@@ -19,6 +19,7 @@ Use **cookie sessions** plus a **CSRF token** (Laravel-style), not client JWTs f
 ## Consequences
 
 - Browser and e2e obtain CSRF the same way (load a page, read meta).
+- The example `Document` owns the meta tag. Package render contracts forward opaque `documentProps` and do not name the token ([ADR-0034](./0034-host-document-props.md)).
 - Network / ingress allowlisting so untrusted peers never reach `/api` is separate deferred work ([TD-023](../known-tech-debt.md)), not part of this ADR.
 - Non-browser or third-party API clients remain out of scope until a product need appears (then revisit auth).
 

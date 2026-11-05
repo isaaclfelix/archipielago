@@ -60,3 +60,4 @@ a section comes from a decision. Monorepo orientation stub:
 | ADR-0031 | Project plan files for agent planning                          | Accepted                       | [0031-project-plan-files.md](./0031-project-plan-files.md)                               |
 | ADR-0032 | Archipielago pnpm monorepo packages and NestJS example         | Accepted                       | [0032-archipielago-pnpm-monorepo.md](./0032-archipielago-pnpm-monorepo.md)               |
 | ADR-0033 | Historical ADR narrative immutability                          | Accepted                       | [0033-historical-adr-immutability.md](./0033-historical-adr-immutability.md)             |
+| ADR-0034 | Host document props on the SSR entry                           | Accepted                       | [0034-host-document-props.md](./0034-host-document-props.md)                             |

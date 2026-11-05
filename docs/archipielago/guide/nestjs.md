@@ -32,8 +32,10 @@ Related pages:
 - **`ArchipielagoModule.forRoot(options)`** — provides `ArchipielagoViewService`.
   Pass `getPageStylesheets(page)` so product sheet policy stays in the example
   (`examples/nestjs/src/web/page-stylesheets.ts`).
-- **`ArchipielagoViewService.render(page, props, { csrfToken?, pageStylesheets? })`** —
-  returns the full document string.
+- **`ArchipielagoViewService.render(page, props, { documentProps?, pageStylesheets? })`** —
+  returns the full document string. `documentProps` is forwarded to the host
+  entry. The Nest example puts the session CSRF token there; the package does
+  not interpret it ([ADR-0034](../../adr/0034-host-document-props.md)).
 - **`mountArchipielagoAssets(app)`** — static client root in production; Vite
   middleware in development.
 

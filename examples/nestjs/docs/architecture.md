@@ -136,7 +136,7 @@ Browser mutations use cookie sessions plus a CSRF token ([ADR-0006](../../../doc
 
 - **Session middleware** loads or creates a guest session from the HttpOnly `sid` cookie and attaches it to the request for HTML pages and `/api` (Vite/static asset paths are skipped).
 - **CsrfGuard** (global) requires header `X-CSRF-TOKEN` to match the session token on mutating `/api` methods (`POST` / `PATCH` / `DELETE` / `PUT`). Safe methods and non-API routes pass through.
-- SSR embeds `<meta name="csrf-token" content="…">` on HTML documents. There is **no** JSON CSRF mint endpoint; e2e obtains the token by loading `/register` or `/login` (same as the browser).
+- SSR embeds `<meta name="csrf-token" content="…">` on HTML documents. `WebController` passes the session token as `documentProps`; the example `Document` renders the tag. Package render contracts do not name the token ([ADR-0034](../../../docs/adr/0034-host-document-props.md)). There is **no** JSON CSRF mint endpoint; e2e obtains the token by loading `/register` or `/login` (same as the browser).
 - Login regenerates the session id and attaches `userId` (see AuthModule). Session rows live in Postgres (`sessions`).
 
 ```mermaid
@@ -272,8 +272,8 @@ sequenceDiagram
   participant V as ArchipielagoViewService
   participant E as entry-server
   participant B as Browser
-  W->>V: render("home", props)
-  V->>E: render(page, props, createAssets)
+  W->>V: render("home", props, documentProps)
+  V->>E: render(page, props, createAssets, documentProps)
   E->>E: pass 1, collect island names
   E->>V: createAssets(names)
   V-->>E: script and style URLs
@@ -287,7 +287,7 @@ sequenceDiagram
   end
 ```
 
-Pass 1 renders the page inside `IslandNamesContext`. Each `Island` adds its name to that set. Pass 2 renders `Document` around the same page. The context is null on pass 2, so the second render still emits the marker and the server HTML, and it does not change the asset list.
+Pass 1 renders the page inside `IslandNamesContext`. Each `Island` adds its name to that set. Pass 2 renders `Document` around the same page and spreads `documentProps` onto that shell ([ADR-0034](../../../docs/adr/0034-host-document-props.md)). The context is null on pass 2, so the second render still emits the marker and the server HTML, and it does not change the asset list.
 
 `createAssets([])` returns the shared stylesheet and no scripts. A page with no islands does not download the hydrate entry.
 
