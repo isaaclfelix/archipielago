@@ -113,7 +113,7 @@ Local Postgres for `pnpm start:dev` uses Docker Compose and **GNU Make** in the 
 | `make -C examples/nestjs db-seed`           | Optional demo user                |
 | `make -C examples/nestjs db-down`           | Stop Compose (keeps the volume)   |
 
-Set `DATABASE_URL` from [`examples/nestjs/.env.example`](./examples/nestjs/.env.example). Details: [docs/architecture.md](./docs/architecture.md).
+Set `DATABASE_URL` from [`examples/nestjs/.env.example`](./examples/nestjs/.env.example). Details: [examples/nestjs/docs/architecture.md](./examples/nestjs/docs/architecture.md#persistence).
 
 ## Testing, coverage, and CI
 

@@ -2,7 +2,11 @@
 
 This folder records **durable tradeoffs** we chose on purpose. It is the counterpart to [known tech debt](../known-tech-debt.md): ADRs are accepted decisions; tech debt is deferred work.
 
-Current wiring and behavior live in [architecture.md](../architecture.md). That doc stays a **current-state map** and links here with `See ADR-NNNN` where a section comes from a decision.
+Nest-example current wiring and behavior live in
+[examples/nestjs/docs/architecture.md](../../examples/nestjs/docs/architecture.md).
+That doc stays a **current-state map** and links here with `See ADR-NNNN` where
+a section comes from a decision. Monorepo orientation stub:
+[architecture.md](../architecture.md).
 
 ## Policy
 

@@ -12,13 +12,15 @@ This is **not** on the package-consumer spine. Integrate via
 (concepts → install → Nest demo → Nest or DIY wiring → authoring). The
 scaffolder remains example-local for now ([TD-035](./known-tech-debt.md)).
 
-Delivery mechanics: [architecture.md](./architecture.md#styles). Why three
-lanes / forms sibling / island `<style>`: [ADR-0013](./adr/0013-css-three-lanes.md),
+Delivery mechanics:
+[examples/nestjs/docs/architecture.md](../examples/nestjs/docs/architecture.md#styles).
+Why three lanes / forms sibling / island `<style>`:
+[ADR-0013](./adr/0013-css-three-lanes.md),
 [ADR-0014](./adr/0014-forms-sibling-stylesheet.md),
 [ADR-0015](./adr/0015-island-css-sibling-style.md). Product Nest UI vs
 Archipielago engines: [ADR-0029](./adr/0029-archipielago-in-repo-isolation.md)
 (SSR props quirk still [ADR-0023](./adr/0023-web-host-ui-protocol.md)); tree in
-[architecture.md](./architecture.md).
+[examples/nestjs/docs/architecture.md](../examples/nestjs/docs/architecture.md).
 
 ## Where things live
 
@@ -142,7 +144,7 @@ Login/register use react-hook-form + Zod and `useApiMutation`:
 - Spread `apiRequestDefaults` and `...getCsrfTokenHeader()` into native `fetch` (helpers in `src/web/ui/api-fetch/`; hook in `src/web/ui/hooks/`).
 - Import shared schemas from `src/shared/schemas/` and API DTOs under `src/api/.../dto` rather than duplicating password/username rules.
 - Form-level API errors: plain colored text (`.form-api-error`), not Bootstrap alerts.
-- See [architecture.md — Frontend contract](./architecture.md#frontend-contract-islands--api) for status codes and redirects.
+- See [architecture.md — Frontend contract](../examples/nestjs/docs/architecture.md#frontend-contract-islands--api) for status codes and redirects.
 - **Tests:** co-locate a browser-mode `*.spec.ts` next to interactive islands (Vitest browser project). When the UI navigates or mutates, add or extend `*.browser-e2e-spec.ts`. See [testing-and-coverage.md](./testing-and-coverage.md) and [ADR-0021](./adr/0021-vitest-browser-ui-testing.md).
 - **Storybook workshop:** co-locate `*.stories.tsx` (scaffold emits a stub). Browse with `pnpm storybook` — visual/dev only, not a second test runner ([ADR-0026](./adr/0026-storybook-ui-workshop.md)). Skip stories for `Document` (nested `html`).
 

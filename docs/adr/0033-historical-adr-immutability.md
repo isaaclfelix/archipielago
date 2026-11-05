@@ -15,7 +15,7 @@ Living docs (architecture, product guides, READMEs) must track present-tense pro
 - Accepted ADR **bodies** (Context, Decision, Consequences narrative, Alternatives) are **historical records**. Do **not** mass-edit them for branding, tone, or present-tense product framing.
 - When a tradeoff changes: write a **new** ADR; set the old Status to `Superseded by ADR-…` (or “in part” / “amended by” as already practiced). Optionally add a short Status or Consequences pointer—**not** a rewrite of the old Context/Decision story.
 - Allowed on an Accepted ADR without a full supersede: factual errata (broken links, paths that never matched the decision), Status line updates, and thin “see ADR-NNNN” cross-links.
-- Living docs (`architecture.md`, `docs/archipielago/**`, READMEs, how-tos) **do** get present-tense updates; that is where current framing lives.
+- Living docs (`examples/nestjs/docs/architecture.md`, `docs/archipielago/**`, READMEs, how-tos) **do** get present-tense updates; that is where current framing lives.
 
 ## Consequences
 

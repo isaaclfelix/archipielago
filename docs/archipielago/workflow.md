@@ -65,6 +65,17 @@ We currently develop in **Cursor**. Because Cursor builds on VS Code, much of th
 
 That is not a hard imposition. Contributors who prefer open-source models, self-hosted AI, or other editors are welcome to use them and to propose work that improves support for additional IDEs and AI-assisted environments—judged by the same objective standards as any other contribution.
 
+## Agent plans
+
+Any context that plans for a pull request puts the file in `.cursor/plans/`
+([ADR-0031](../adr/0031-project-plan-files.md)). The desktop IDE and the CLI
+use Plan mode, then **Save to workspace**. A Cloud Agent or cursor.com/agents
+uses
+[plan-mode-for-cloud](../../.agents/skills/plan-mode-for-cloud/SKILL.md), which
+does not run in the IDE. The file is committed on the branch and deleted in a
+later commit before merge, so the pull request commits still show it and the
+tip of `main` does not. The `plan-files` CI job fails while a file remains.
+
 ## Related
 
 - Operating principles: [mission.md](./mission.md)
@@ -72,3 +83,5 @@ That is not a hard imposition. Contributors who prefer open-source models, self-
 - Phased plan: [roadmap.md](./roadmap.md)
 - ADR policy: [docs/adr/README.md](../adr/README.md)
 - Tech debt policy: [docs/known-tech-debt.md](../known-tech-debt.md)
+- Nest example current-state: [examples/nestjs/docs/architecture.md](../../examples/nestjs/docs/architecture.md)
+- Monorepo architecture stub: [docs/architecture.md](../architecture.md)

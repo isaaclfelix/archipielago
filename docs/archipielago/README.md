@@ -27,4 +27,4 @@ Read **concepts → install → nestjs** (see Nest working), then either stay on
 
 Dogfood / Nest-example **website** UI cookbook (maintainer workflow; optional if you copy this example’s UI style—not required on the consumer spine): [how-to-web-ui.md](../how-to-web-ui.md).
 
-Layout: `@archipielago/{core,react,vite,nestjs}` in `packages/*`; Nest host in `examples/nestjs` ([ADR-0032](../adr/0032-archipielago-pnpm-monorepo.md)). Current-state map: [architecture.md](../architecture.md). Durable decisions: [docs/adr/](../adr/README.md).
+Layout: `@archipielago/{core,react,vite,nestjs}` in `packages/*`; Nest host in `examples/nestjs` ([ADR-0032](../adr/0032-archipielago-pnpm-monorepo.md)). Nest example current-state: [examples/nestjs/docs/architecture.md](../../examples/nestjs/docs/architecture.md). Monorepo orientation stub: [architecture.md](../architecture.md). Durable decisions: [docs/adr/](../adr/README.md).

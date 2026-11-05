@@ -2,7 +2,7 @@
 
 First runnable NestJS **host example** for Archipielago. It consumes `@archipielago/{core,react,vite,nestjs}`, serves a JSON API under `/api`, and React SSR + islands at the root.
 
-Shared workspace prereqs, `pnpm install`, and contributor checks: [root README](../../README.md). Product guide: [docs/archipielago/guide/](../../docs/archipielago/guide/README.md). Nest demonstration / recipe: [guide/nestjs.md](../../docs/archipielago/guide/nestjs.md). Dogfood website UI cookbook (maintainer workflow; optional if you copy this style): [how-to-web-ui.md](../../docs/how-to-web-ui.md).
+Shared workspace prereqs, `pnpm install`, and contributor checks: [root README](../../README.md). Product guide: [docs/archipielago/guide/](../../docs/archipielago/guide/README.md). Nest demonstration / recipe: [guide/nestjs.md](../../docs/archipielago/guide/nestjs.md). Example current-state: [docs/architecture.md](./docs/architecture.md). Dogfood website UI cookbook (maintainer workflow; optional if you copy this style): [how-to-web-ui.md](../../docs/how-to-web-ui.md).
 
 Root `pnpm start`, `test`, `storybook`, and similar scripts currently filter into this package ([TD-034](../../docs/known-tech-debt.md)).
 
@@ -27,7 +27,7 @@ make -C examples/nestjs db-migrate-deploy
 make -C examples/nestjs db-seed
 ```
 
-Other Make targets: `db-down`, `db-logs`, `db-migrate` (dev), `db-reset`, `db-studio`. Persistence: [architecture.md](../../docs/architecture.md#persistence), [ADR-0005](../../docs/adr/0005-persistence-postgres-prisma.md).
+Other Make targets: `db-down`, `db-logs`, `db-migrate` (dev), `db-reset`, `db-studio`. Persistence: [architecture.md § Persistence](./docs/architecture.md#persistence), [ADR-0005](../../docs/adr/0005-persistence-postgres-prisma.md).
 
 E2E does **not** use Compose. `pnpm test:e2e` (from the repo root) starts Postgres with Testcontainers (Docker required).
 
