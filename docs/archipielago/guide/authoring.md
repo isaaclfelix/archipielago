@@ -23,21 +23,49 @@ from the SSR side already.
 ## Islands (required shape)
 
 Islands are a **hard contract** with registration, hydrate loaders, and optional
-CSS sibling tags. Follow this shape:
+CSS sibling tags. Every host uses the same filesystem shape under its configured
+islands root (default `ui/islands/`):
 
-- Folder under the host’s configured islands root, typically
-  `ui/islands/<name>/`, with a default-export implementation (and optional
-  colocated `*.module.scss`).
-- Registration via the host’s island manifest / `registerIslands` (auto sync or
-  manual ownership). [Learn why](../../adr/0028-island-filesystem-manifest.md)
-  · [See more](../../adr/0030-archipielago-host-config.md).
-- JSON-serializable props on the `<Island>` marker; hydrate loads JS for named
+```text
+ui/islands/
+  login-form/
+    login-form.tsx              # required: default export; file name === folder name
+  mobile-navigation/
+    mobile-navigation.tsx       # required: default export; file name === folder name
+    mobile-navigation.module.scss   # optional: island-owned CSS module
+```
+
+Rules that follow from that layout:
+
+- One folder per island; the implementation file must be
+  `<name>/<name>.tsx` with a **default export**. Hydrate discovers modules via a
+  glob of that pattern (stories/specs are not island entry files).
+- Register the island name in the host’s island manifest /
+  `registerIslands` (auto sync or manual ownership).
+  [Learn why](../../adr/0028-island-filesystem-manifest.md) ·
+  [See more](../../adr/0030-archipielago-host-config.md).
+- Props on the marker must be JSON-serializable; hydrate loads JS for named
   islands only.
-- When an island has CSS module styles, the runtime **always** inlines them as
-  sibling `<style data-css-island>` tags at SSR (hydrate still loads JS only).
+- If `<name>.module.scss` is present, the runtime **always** inlines that CSS
+  as a sibling `<style data-css-island="{name}">` at SSR (hydrate still loads
+  JS only).
 
-Render islands with `<Island name="…" component={…} props={…} />` from
-`@archipielago/react`.
+From a page or SSR child, render with `<Island>` from `@archipielago/react`:
+
+```tsx
+import { Island } from '@archipielago/react/runtime/island/island';
+import LoginForm from './islands/login-form/login-form';
+
+<Island
+  name="login-form"
+  component={LoginForm}
+  props={{ nextPath: '/users' }}
+/>;
+```
+
+The `name` must match the folder (and manifest) key. Hosts often add a thin
+`index.ts` barrel, tests, or stories beside these files; those extras are fine
+as long as the `<name>/<name>.tsx` (+ optional module) contract stays intact.
 
 ## SSR-only trees (host-owned)
 
