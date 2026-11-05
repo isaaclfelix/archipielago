@@ -32,8 +32,9 @@ export class WebController {
       isAuthenticated: Boolean(req.session?.userId),
     };
 
+    // The session token is document-shell data, not a home page prop.
     return this.webViewService.render('home', props, {
-      csrfToken: req.session?.csrfToken,
+      documentProps: { csrfToken: req.session?.csrfToken },
     });
   }
 
@@ -62,8 +63,9 @@ export class WebController {
       isAuthenticated: false,
     };
 
+    // The session token is document-shell data, not a login page prop.
     return this.webViewService.render('login', props, {
-      csrfToken: req.session?.csrfToken,
+      documentProps: { csrfToken: req.session?.csrfToken },
     });
   }
 
@@ -92,8 +94,9 @@ export class WebController {
       isAuthenticated: false,
     };
 
+    // The session token is document-shell data, not a register page prop.
     return this.webViewService.render('register', props, {
-      csrfToken: req.session?.csrfToken,
+      documentProps: { csrfToken: req.session?.csrfToken },
     });
   }
 }

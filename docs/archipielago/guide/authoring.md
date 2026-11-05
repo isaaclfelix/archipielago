@@ -96,3 +96,8 @@ SSR “page props” are a host→SSR **embed contract**, not React parent props
   under page UI modules. [Learn why](../../adr/0023-web-host-ui-protocol.md).
 
 Island props remain separate (component props + `data-props` marker).
+
+Shell fields (meta tags, request-scoped head data) travel as `documentProps`
+on the SSR entry. Add them on the host `Document`, then pass the object from
+the HTTP handler through `entry-server`.
+[Learn how](./concepts.md#document-props).

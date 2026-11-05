@@ -56,6 +56,10 @@ SSR embed props look like “the page’s props,” but they are a Nest→Vite *
 3. Nest must not import `ui/pages/*.tsx`, so contracts live in `protocol/page-props/` as `*-page.ssr-props.ts` / `*PageSsrProps`.
 4. Do not colocate them under `ui/pages/` (including future per-component folders).
 5. Island props are separate (component props + `data-props` marker).
+6. Document-shell fields travel as `documentProps`, not as `*PageSsrProps`. This
+   example passes `{ csrfToken }` that way. See
+   [Document props](./archipielago/guide/concepts.md#document-props) and
+   [Document props in this example](../examples/nestjs/docs/architecture.md#document-props-in-this-example).
 
 See [ADR-0023](./adr/0023-web-host-ui-protocol.md).
 

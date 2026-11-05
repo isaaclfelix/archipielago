@@ -27,21 +27,21 @@ export class ArchipielagoViewService {
    * stylesheet is always included (linked or inlined). The host may provide
    * page-specific stylesheet names through module options or per-call options.
    * Client scripts are included only when the page rendered at least one
-   * island. When `csrfToken` is provided it is embedded as a meta tag.
+   * island. `documentProps` is forwarded to the host entry unchanged.
    *
    * @template {PagePropsMap} TPages - Host-owned page props map.
    * @template {keyof TPages & string} K - Page key in the host map.
    * @param {K} page - Registered page name, not a component.
    * @param {TPages[K]} props - JSON-serializable SSR embed props.
-   * @param {{ csrfToken?: string; pageStylesheets?: readonly PageStylesheetName[] }} [options] -
-   * Optional request metadata and explicit stylesheet names.
+   * @param {{ documentProps?: object; pageStylesheets?: readonly PageStylesheetName[] }} [options] -
+   * Opaque host document props and explicit stylesheet names.
    * @returns {Promise<string>} HTML document including the doctype.
    */
   async render<TPages extends PagePropsMap, K extends keyof TPages & string>(
     page: K,
     props: TPages[K],
     options: {
-      csrfToken?: string;
+      documentProps?: object;
       pageStylesheets?: readonly PageStylesheetName[];
     } = {},
   ): Promise<string> {
@@ -71,7 +71,7 @@ export class ArchipielagoViewService {
               : undefined,
           pageStylesheets,
         }),
-      options.csrfToken,
+      options.documentProps,
     );
 
     // Nest returns the full document; assets stay available on RenderResult
