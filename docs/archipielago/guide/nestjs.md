@@ -1,12 +1,16 @@
 # NestJS example
 
-Demonstration and documented Nest host recipe after [install.md](./install.md).
-[examples/nestjs](../../../examples/nestjs) shows the concepts from
-[concepts.md](./concepts.md) connected end to end—and is also the host for the
-future dogfood website. This page maps those pieces onto Nest files; it does
-**not** redefine the primitives.
+Demonstration and documented Nest host recipe.
+[examples/nestjs](../../../examples/nestjs) shows the concepts connected end to
+end—and is also the host for the future dogfood website. This page maps those
+pieces onto Nest files; it does **not** redefine the primitives.
 
-Runbook (database, start, URLs): [examples/nestjs/README.md](../../../examples/nestjs/README.md).
+Related pages:
+
+- Before this: [install.md](./install.md)
+- Primitives: [concepts.md](./concepts.md)
+- Runbook (database, start, URLs):
+  [examples/nestjs/README.md](../../../examples/nestjs/README.md)
 
 | Wiring step                    | Nest example                                                                                    |
 | ------------------------------ | ----------------------------------------------------------------------------------------------- |

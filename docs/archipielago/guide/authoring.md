@@ -4,8 +4,14 @@ Post-connect **quick reference** for product UI once Archipielago is wired
 (Nest recipe or DIY). Use it when adding SSR-only pieces or islands: what the
 framework requires, what the host owns, and the CSS-only-island anti-pattern.
 
-Prereq: [nestjs.md](./nestjs.md) or [wiring.md](./wiring.md) done so pages
-render through the host.
+Related pages:
+
+- Prereq (pages already rendering): [nestjs.md](./nestjs.md) or
+  [wiring.md](./wiring.md)
+- Still integrating a non-Nest host? [wiring.md](./wiring.md)
+- Nest demonstration / recipe: [nestjs.md](./nestjs.md)
+- Nest-example / dogfood website UI conventions (including that site’s CSS
+  lanes): [how-to-web-ui.md](../../how-to-web-ui.md)
 
 ## Interactivity boundary
 
@@ -90,10 +96,3 @@ SSR “page props” are a host→SSR **embed contract**, not React parent props
   under page UI modules. [Learn why](../../adr/0023-web-host-ui-protocol.md).
 
 Island props remain separate (component props + `data-props` marker).
-
-## Next steps
-
-- Still integrating a non-Nest host? [wiring.md](./wiring.md).
-- Nest demonstration / recipe: [nestjs.md](./nestjs.md).
-- Nest-example / dogfood website UI conventions (including that site’s CSS
-  lanes): [how-to-web-ui.md](../../how-to-web-ui.md).

@@ -1,9 +1,14 @@
 # Concepts
 
-Host-agnostic mental model for Archipielago. Next: [install.md](./install.md),
-then see the concepts live in [nestjs.md](./nestjs.md). DIY hosts continue with
-[wiring.md](./wiring.md). After you are connected, keep
-[authoring.md](./authoring.md) as the product UI cheat sheet.
+Host-agnostic mental model for Archipielago—what the host owns vs what the
+packages own, and the primitives they share.
+
+Reading order from here:
+
+- Next: [install.md](./install.md)
+- Then see the concepts live: [nestjs.md](./nestjs.md)
+- Wiring a non-Nest host yourself: [wiring.md](./wiring.md)
+- After you are connected: [authoring.md](./authoring.md) (UI cheat sheet)
 
 ## Ownership split
 

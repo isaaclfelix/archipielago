@@ -3,9 +3,11 @@
 Ordered, **host-agnostic** steps to embed Archipielago in a host that is not
 (or not only) the Nest recipe. Replace “host” with your HTTP framework.
 
-Prefer seeing Nest first: [nestjs.md](./nestjs.md). Concepts:
-[concepts.md](./concepts.md). After HTML renders, continue with
-[authoring.md](./authoring.md).
+Related pages:
+
+- Prefer seeing Nest first: [nestjs.md](./nestjs.md)
+- Primitives: [concepts.md](./concepts.md)
+- After HTML renders: [authoring.md](./authoring.md)
 
 ## Host owns vs package owns
 

@@ -50,7 +50,9 @@ Until then, treat workspace packages as the source of truth. Package `exports`,
 `files`, and peers are already shaped so that cutover stays mechanical—do not
 reintroduce reverse imports from packages into `examples/*`.
 
-Next: see Nest connected in [nestjs.md](./nestjs.md) (and the
-[examples/nestjs runbook](../../../examples/nestjs/README.md)). If your host is
-not Nest, transfer the contract with [wiring.md](./wiring.md). Either path ends
-in [authoring.md](./authoring.md) for ongoing UI rules.
+Reading order from here:
+
+- See Nest connected: [nestjs.md](./nestjs.md) (runbook:
+  [examples/nestjs/README.md](../../../examples/nestjs/README.md))
+- Wiring a non-Nest host yourself: [wiring.md](./wiring.md)
+- After either path: [authoring.md](./authoring.md)
