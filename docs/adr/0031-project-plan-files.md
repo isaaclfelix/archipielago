@@ -18,6 +18,9 @@ plans to remain in the tree of `main` after release.
 
 ## Decision
 
+Clarified on 2026-11-04. Context and alternatives from 2026-10-31 stay as
+written. The bullets below are the current plan-lifecycle policy.
+
 - **Authoring stays on the tool that context already has.** In the desktop IDE
   and the CLI, use built-in Plan mode, then **Save to workspace** so the file
   is under `.cursor/plans/`. Do not run
@@ -25,11 +28,28 @@ plans to remain in the tree of `main` after release.
   there. On a Cloud Agent or at cursor.com/agents, that skill writes
   `.cursor/plans/<date>-<slug>.md` and waits for approval before product
   edits.
+- **One workspace file is the source of truth.** After **Save to workspace**
+  or the first cloud write, the canonical plan is
+  `.cursor/plans/YYYY-MM-DD-kebab-slug.md`. That file is the handoff across
+  devices and between the IDE and the web. Iterate by editing it. Do not
+  CreatePlan-hydrate a second copy for the same effort, including to regain
+  Plan UI.
 - **The gitops lifecycle is the same in every context.** Commit the plan on
-  the working branch so the pull request commits show it. Delete it in a
-  later commit before merge. Do not drop or rewrite the commit that added the
-  file, and do not gitignore `.cursor/plans/`. A pull request that never had a
-  plan does not need one.
+  the working branch so the pull request commits show it. Plan revisions are
+  normal git changes: commit them, and push them to the open pull request,
+  while the file exists. Delete it in a later commit before merge. Do not
+  drop or rewrite the commit that added the file, and do not gitignore
+  `.cursor/plans/`. A pull request that never had a plan does not need one.
+- **Workspace plans carry a body checklist.** A trailing `## Todos` mirrors
+  the YAML `todos` (same ids, order, and status: `pending`, `in_progress`,
+  `completed`, or `cancelled`). Agents update both. Markdown preview plus
+  that checklist is enough to resume a paused effort. CreatePlan-only files
+  under `~/.cursor/plans` before **Save to workspace** do not need the body
+  checklist; the Plan UI already shows those todos.
+- **Day-to-day enforcement** is [AGENTS.md](../../AGENTS.md) §6 and
+  [plan-mode-for-cloud](../../.agents/skills/plan-mode-for-cloud/SKILL.md).
+  Repo-wide wording also lives in
+  [workflow.md](../archipielago/workflow.md#agent-plans).
 - **CI rejects a tip that still has a plan.** The `plan-files` job runs
   `scripts/check-no-plan-files.sh` on the merge commit. It fails while any
   file remains under `.cursor/plans/`. The PR template spotcheck has a
@@ -42,6 +62,10 @@ plans to remain in the tree of `main` after release.
 - Pull request review can open the plan from the branch commits after the
   delete commit removes it from the tip. `plan-files` stays red until that
   delete is in the tree that would merge.
+- Reviewers and a returning session can resume from the workspace file in
+  Markdown preview. A second CreatePlan file is not required for that.
+- Mid-plan commits keep progress on the pull request when a session stops
+  before the delete.
 - A missed delete fails CI instead of landing quietly on `main`. GitHub
   hides the merge button only after an admin requires the `plan-files`
   check.
