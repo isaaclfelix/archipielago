@@ -19,6 +19,27 @@ vi.mock('@archipielago/vite/page-loader.js', async () => {
   };
 });
 
+/**
+ * Reads a string marker from opaque document props.
+ *
+ * The view service must forward the bag without interpreting it. This test
+ * uses `marker` so the assertion does not depend on a product field name.
+ *
+ * @param {object} [documentProps] - Bag passed as the fourth render argument.
+ * @returns {string} The marker string, or an empty string when it is absent.
+ */
+function documentMarker(documentProps?: object): string {
+  if (
+    documentProps !== undefined &&
+    'marker' in documentProps &&
+    typeof documentProps.marker === 'string'
+  ) {
+    return documentProps.marker;
+  }
+
+  return '';
+}
+
 describe('ArchipielagoViewService', () => {
   afterEach(() => {
     setViteDevServer(undefined);
@@ -31,15 +52,16 @@ describe('ArchipielagoViewService', () => {
       page,
       props,
       createAssets,
-      csrfToken,
+      documentProps,
     ) => {
       const assets = await createAssets(['mobile-navigation']);
+      const marker = documentMarker(documentProps);
       return {
         html: [
           '<!DOCTYPE html>',
           `page=${page}`,
           `at=${String((props as { renderedAt: string }).renderedAt)}`,
-          `csrf=${csrfToken ?? ''}`,
+          `marker=${marker}`,
           assets.tags.stylesheets.join(','),
           assets.tags.scripts.join(','),
         ].join('|'),
@@ -56,7 +78,7 @@ describe('ArchipielagoViewService', () => {
         renderedAt: '2026-10-22T12:00:00.000Z',
         isAuthenticated: false,
       },
-      { csrfToken: 'csrf-token' },
+      { documentProps: { marker: 'host' } },
     );
 
     expect(loadServerEntry).toHaveBeenCalledWith({
@@ -66,7 +88,7 @@ describe('ArchipielagoViewService', () => {
     expect(html).toContain('<!DOCTYPE html>');
     expect(html).toContain('page=home');
     expect(html).toContain('at=2026-10-22T12:00:00.000Z');
-    expect(html).toContain('csrf=csrf-token');
+    expect(html).toContain('marker=host');
     expect(html).toContain('/src/web/ui/styles/shell.scss');
     expect(html).toContain('/src/web/ui/styles/forms.scss');
     expect(html).toContain('/src/web/ui/runtime/island/hydrate-entry.tsx');
