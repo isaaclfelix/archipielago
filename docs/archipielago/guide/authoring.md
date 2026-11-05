@@ -23,8 +23,11 @@ from the SSR side already.
 ## Islands (required shape)
 
 Islands are a **hard contract** with registration, hydrate loaders, and optional
-CSS sibling tags. Every host uses the same filesystem shape under its configured
-islands root (default `ui/islands/`):
+CSS sibling tags. The relative layout is always
+`ui/islands/<name>/<name>.tsx`—not a knob on `archipielago.config.ts` (that
+file only chooses auto vs manual manifest registration today). Hosts may mount
+product UI under a packaging prefix (for example `src/web/…`) via path defaults
+or `setArchipielagoPaths`; the `ui/islands/…` segment itself stays fixed.
 
 ```text
 ui/islands/
@@ -41,7 +44,7 @@ Rules that follow from that layout:
   `<name>/<name>.tsx` with a **default export**. Hydrate discovers modules via a
   glob of that pattern (stories/specs are not island entry files).
 - Register the island name in the host’s island manifest /
-  `registerIslands` (auto sync or manual ownership).
+  `registerIslands` (`auto` sync or `manual` ownership).
   [Learn why](../../adr/0028-island-filesystem-manifest.md) ·
   [See more](../../adr/0030-archipielago-host-config.md).
 - Props on the marker must be JSON-serializable; hydrate loads JS for named
