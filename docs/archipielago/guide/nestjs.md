@@ -51,8 +51,8 @@ stay at the monorepo root. [Learn why](../../adr/0032-archipielago-pnpm-monorepo
 
 ## Next steps
 
-- **Nest as your host** — keep [authoring.md](./authoring.md) for SSR vs island
-  and CSS lanes. Folder conventions and scaffold for this example’s UI style:
+- **Nest as your host** — keep [authoring.md](./authoring.md) for SSR vs island.
+  Folder conventions, CSS lanes, and scaffold for this example’s UI style:
   [how-to-web-ui.md](../../how-to-web-ui.md) (maintainer cookbook; use it if you
   follow our patterns).
 - **Another host** — transfer the same contract with [wiring.md](./wiring.md),

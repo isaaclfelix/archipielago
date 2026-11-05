@@ -63,4 +63,4 @@ framework types inside `core` / `react` / `vite`, and asset URLs work in both
 Vite middleware and production static modes.
 
 Smoke check: one SSR-only page and one island in the page map. Then keep
-[authoring.md](./authoring.md) for SSR vs island, props, and CSS lanes.
+[authoring.md](./authoring.md) for SSR vs island and props.

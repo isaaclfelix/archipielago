@@ -23,7 +23,7 @@ Read **concepts → install → nestjs** (see Nest working), then either stay on
 | [guide/install.md](./guide/install.md)     | Workspace install today; future `0.0.1` publish                       |
 | [guide/nestjs.md](./guide/nestjs.md)       | Demonstration + Nest host recipe in this repo                         |
 | [guide/wiring.md](./guide/wiring.md)       | DIY host-agnostic integration (when your host is not the Nest recipe) |
-| [guide/authoring.md](./guide/authoring.md) | Post-connect quick reference (islands vs SSR, props, CSS)             |
+| [guide/authoring.md](./guide/authoring.md) | Post-connect quick reference (islands vs SSR, props)                  |
 
 `examples/nestjs` is both the documented Nest recipe and the future dogfood website host.
 
