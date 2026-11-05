@@ -7,7 +7,7 @@ todos:
     status: completed
   - id: amend-adr-0031
     content: Amend ADR-0031 Decision/Consequences for SSOT, commit plan diffs, body Todos (workspace only)
-    status: pending
+    status: completed
   - id: agents-plan-rules
     content: Update AGENTS.md §6—edit existing workspace plan only; sync frontmatter + body Todos
     status: pending
@@ -97,7 +97,7 @@ No new ADR number—amend ADR-0031. ADR-0033 (historical ADR immutability) stays
 ## Todos
 
 - [x] `branch-plan` — Create docs/plan-lifecycle-workspace-todos branch; commit this plan under .cursor/plans/ (completed)
-- [ ] `amend-adr-0031` — Amend ADR-0031 Decision/Consequences for SSOT, commit plan diffs, body Todos (workspace only) (pending)
+- [x] `amend-adr-0031` — Amend ADR-0031 Decision/Consequences for SSOT, commit plan diffs, body Todos (workspace only) (completed)
 - [ ] `agents-plan-rules` — Update AGENTS.md §6—edit existing workspace plan only; sync frontmatter + body Todos (pending)
 - [ ] `cloud-skill-template` — Update plan-mode-for-cloud SKILL—resume same file; require body ## Todos; commit iterations (pending)
 - [ ] `workflow-iteration` — Update docs/archipielago/workflow.md Planning/Iteration—commit plan updates; body Todos (pending)
