@@ -45,7 +45,7 @@ Folder names do not create URL prefixes. `RouterModule` does ([ADR-0003](../../.
 
 ```text
 packages/
-  core/                   PageAssets, paths, config, island helpers
+  core/                   PageAssets, paths, config, shell CSS budget
   react/                  lazy island hydrate + props codec
   vite/                   page loader, asset delivery, pipeline, and Vite plugins
   nestjs/                 asset mount helper

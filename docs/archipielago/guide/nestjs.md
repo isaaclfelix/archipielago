@@ -28,12 +28,14 @@ Related pages:
 
 ## Adapter surface
 
-- **`mountArchipielagoAssets(app)`** — static client root in production; Vite
-  middleware in development.
-- HTML is Handlebars on the host, not an injectable renderer. See
-  [ADR-0035](../../adr/0035-handlebars-drih-islands.md).
+`@archipielago/nestjs` exposes **`mountArchipielagoAssets(app)`** only: static
+client root in production, Vite middleware in development. There is no Nest
+`@Module` or injectable renderer. HTML is Handlebars on the host
+([ADR-0035](../../adr/0035-handlebars-drih-islands.md),
+[ADR-0037](../../adr/0037-slim-post-drih-package-surfaces.md)).
 
-Nest types stay out of `@archipielago/core`, `react`, and `vite`.
+Nest types stay out of `@archipielago/core`, `react`, and `vite`. The mount
+helper takes a duck-typed Express-like host surface.
 
 ## CSRF and other template locals
 

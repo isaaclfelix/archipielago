@@ -1,6 +1,6 @@
 # ADR-0036: Drop the injected islands table
 
-- **Status:** Accepted
+- **Status:** Accepted (island path helpers dropped by [ADR-0037](./0037-slim-post-drih-package-surfaces.md))
 - **Date:** 2026-11-12
 - **Tags:** archipielago, islands, hydrate
 

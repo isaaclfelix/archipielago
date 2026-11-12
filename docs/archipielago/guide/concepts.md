@@ -15,10 +15,10 @@ Reading order from here:
 | Owner                                          | Owns                                                                                                                    | Does not own                             |
 | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
 | **Host app**                                   | HTTP framework, routing, auth, data, document templates, page-prop types, stylesheet opt-in maps, Vite app entry config | Core asset-tag assembly, hydrate runtime |
-| **`@archipielago/core`**                       | `PageAssets`, island path helpers, path/config shapes                                                                   | Nest/Express types, product page names   |
+| **`@archipielago/core`**                       | `PageAssets`, path roots, host config load/apply, shell CSS budget                                                      | Nest/Express types, product page names   |
 | **`@archipielago/react`**                      | Browser hydrate, props codec                                                                                            | Host HTTP, product globs, the document   |
 | **`@archipielago/vite`**                       | Dev asset pipeline, page loader, manifest → tags, Vite plugins (including island CSS sidecar)                           | Framework DI modules                     |
-| **Host adapter** (e.g. `@archipielago/nestjs`) | Thin bridge: mount helpers                                                                                              | Product HTML                             |
+| **Host adapter** (e.g. `@archipielago/nestjs`) | `mountArchipielagoAssets` (static client or Vite middleware)                                                            | Product HTML, Nest DI renderer           |
 
 The Nest example’s document is Handlebars. Islands are prebuilt HTML that the
 template includes. React hydrates only those wrappers

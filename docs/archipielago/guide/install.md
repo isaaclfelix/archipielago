@@ -27,7 +27,7 @@ for Vite.
 
 | Package                | When                                                       |
 | ---------------------- | ---------------------------------------------------------- |
-| `@archipielago/core`   | Always (contracts, islands, paths, config)                 |
+| `@archipielago/core`   | Always (contracts, paths, config, shell CSS budget)        |
 | `@archipielago/react`  | Always (lazy island hydrate)                               |
 | `@archipielago/vite`   | Always (dev/prod assets + plugins in the host Vite config) |
 | `@archipielago/nestjs` | NestJS hosts only                                          |

@@ -30,7 +30,7 @@ Archipielago engines: [ADR-0029](./adr/0029-archipielago-in-repo-isolation.md)
 | `examples/nestjs/src/web/`                     | Example-owned controller, module, page props, stylesheet policy, and product UI                  |
 | `packages/nestjs/src/`                         | Reusable Nest asset mount helper                                                                 |
 | `packages/vite/src/`                           | Asset host (`page-loader`, `asset-delivery`, `asset-pipeline`) and Vite build plugins            |
-| `packages/core/src/`                           | `PageAssets`, paths, island helpers                                                              |
+| `packages/core/src/`                           | `PageAssets`, paths, host config, shell CSS budget                                               |
 | `packages/react/src/runtime/`                  | Island hydrate + props codec                                                                     |
 | `examples/nestjs/src/web/protocol/page-props/` | `*-page.locals.ts` + `PageLocalsMap` / `WebViewLocals` (not next to views)                       |
 | `examples/nestjs/views/<name>.hbs`             | One Handlebars page body per route                                                               |

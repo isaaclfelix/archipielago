@@ -62,4 +62,5 @@ a section comes from a decision. Monorepo orientation stub:
 | ADR-0033 | Historical ADR narrative immutability                          | Accepted                       | [0033-historical-adr-immutability.md](./0033-historical-adr-immutability.md)             |
 | ADR-0034 | Host document props on the SSR entry                           | Accepted (amended by ADR-0035) | [0034-host-document-props.md](./0034-host-document-props.md)                             |
 | ADR-0035 | Handlebars document and prebuilt Drih islands                  | Accepted                       | [0035-handlebars-drih-islands.md](./0035-handlebars-drih-islands.md)                     |
-| ADR-0036 | Drop the injected islands table                                | Accepted                       | [0036-drop-injected-islands-table.md](./0036-drop-injected-islands-table.md)             |
+| ADR-0036 | Drop the injected islands table                                | Accepted (amended by ADR-0037) | [0036-drop-injected-islands-table.md](./0036-drop-injected-islands-table.md)             |
+| ADR-0037 | Slim post-Drih package surfaces                                | Accepted                       | [0037-slim-post-drih-package-surfaces.md](./0037-slim-post-drih-package-surfaces.md)     |
