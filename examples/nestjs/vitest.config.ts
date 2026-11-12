@@ -17,9 +17,7 @@ export default defineConfig({
         '../../packages/react/src/**/*.ts',
         '../../packages/vite/src/**/*.ts',
         '../../packages/nestjs/src/**/*.ts',
-        'src/web/ui/pages/**/*.tsx',
         'src/web/ui/islands/**/*.tsx',
-        'src/web/ui/server-components/**/*.tsx',
         'src/web/ui/shared-components/**/*.tsx',
         '../../packages/react/**/*.tsx',
       ],
@@ -39,21 +37,15 @@ export default defineConfig({
         // Storybook workshop files; not unit-tested runtime.
         'src/**/*.stories.ts',
         'src/**/*.stories.tsx',
-        // Runtime/document plumbing; covered indirectly by SSR and browser e2e.
-        'src/web/ui/server-components/document/document.tsx',
-        'src/web/ui/runtime/ssr/entry-server.tsx',
+        // Runtime plumbing; covered indirectly by HTTP and browser e2e.
+        'src/web/configure-web-views.ts',
         '**/packages/react/src/runtime/island/hydrate.tsx',
         'src/web/ui/runtime/island/hydrate-entry.tsx',
-        '**/packages/react/src/runtime/island/island.tsx',
-        // Two-pass runtime plumbing is covered through the example SSR entry.
-        '**/packages/react/src/runtime/ssr/render-document.tsx',
         'src/web/register-app-islands.ts',
         // One-line window.location.assign wrapper; exercised via browser e2e.
         'src/web/ui/api-fetch/assign-location.ts',
         // Type-only modules: V8 coverage remap cannot parse `import type` alone.
-        '**/packages/core/src/server-entry.ts',
         '**/packages/core/src/page-assets.ts',
-        '**/packages/core/src/render-result.ts',
         '**/packages/react/src/runtime/island/island-module.ts',
         'src/generated/**',
         '**/node_modules/**',

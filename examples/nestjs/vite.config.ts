@@ -14,19 +14,18 @@ import { writeIslandCssSidecar } from '@archipielago/vite/plugins/vite-write-isl
 const repoRoot = dirname(fileURLToPath(import.meta.url));
 
 /**
- * Client and server builds for the React page layer.
+ * Client build for the React island layer.
  *
  * `vite build` emits the browser hydrate entry and its lazy island chunks.
- * `vite build --ssr` emits the Node render bundle. `nest build` still owns
- * the API. Island chunks stay dynamic imports so a page does not download
- * components it did not render.
+ * `nest build` still owns the API. Handlebars owns the document. Island chunks
+ * stay dynamic imports so a page does not download components it did not include.
  *
  * CSS: Sass → PostCSS (media-query sort + doiuse warn) → Lightning CSS minify
  * at Baseline Widely Available. The shell sheet is its own client input.
  *
  * Path aliases (@ui / @protocol / @api) match tsconfig.web.json.
  */
-export default defineConfig(({ isSsrBuild }) => ({
+export default defineConfig({
   plugins: [
     hydratePlugin(),
     dehydratePlugin(),
@@ -35,11 +34,10 @@ export default defineConfig(({ isSsrBuild }) => ({
       outDir: 'views/components/dehydrated-css',
     }),
     react(),
-    // Dev: island CSS stays on SSR sibling <style>; do not also inject head tags.
+    // Dev: island CSS stays on the Drih sibling <style>; do not also inject head tags.
     suppressIslandCssClientInject(),
-    ...(isSsrBuild
-      ? []
-      : [shellCssBudgetPlugin(), stripIslandCssFromModulePreload()]),
+    shellCssBudgetPlugin(),
+    stripIslandCssFromModulePreload(),
   ],
   resolve: {
     // One React copy when @drih packages are linked from the sibling checkout.
@@ -60,28 +58,17 @@ export default defineConfig(({ isSsrBuild }) => ({
     // Lean modern evergreen targets; older browsers are TD-013 / TD-015.
     target: 'baseline-widely-available',
     cssMinify: 'lightningcss',
-    ...(isSsrBuild
-      ? {
-          outDir: 'dist/web-server',
-          emptyOutDir: false,
-          ssr: true,
-          rollupOptions: {
-            input: 'src/web/ui/runtime/ssr/entry-server.tsx',
-          },
-        }
-      : {
-          outDir: 'dist/client',
-          emptyOutDir: false,
-          manifest: true,
-          rollupOptions: {
-            input: {
-              hydrate: 'src/web/ui/runtime/island/hydrate-entry.tsx',
-              shell: 'src/web/ui/styles/shell.scss',
-              // Opt-in sibling; only pages that declare it get a head link.
-              forms: 'src/web/ui/styles/forms.scss',
-            },
-          },
-        }),
+    outDir: 'dist/client',
+    emptyOutDir: false,
+    manifest: true,
+    rollupOptions: {
+      input: {
+        hydrate: 'src/web/ui/runtime/island/hydrate-entry.tsx',
+        shell: 'src/web/ui/styles/shell.scss',
+        // Opt-in sibling; only pages that declare it get a head link.
+        forms: 'src/web/ui/styles/forms.scss',
+      },
+    },
   },
   css: {
     postcss: {
@@ -97,4 +84,4 @@ export default defineConfig(({ isSsrBuild }) => ({
       ],
     },
   },
-}));
+});

@@ -25,12 +25,6 @@ export interface ArchipielagoPaths {
   hydrateEntrySource: string;
   /** Vite-dev URL for the hydrate entry. */
   hydrateEntryDev: string;
-  /** Vite `ssrLoadModule` URL for the app SSR entry. */
-  entryServerDev: string;
-  /** Repo-relative SSR entry source (Vitest / tooling). */
-  entryServerSourceRel: string;
-  /** Repo-relative production SSR bundle. */
-  entryServerProdRel: string;
   /** Repo-relative Vite client output directory. */
   clientOutDirRel: string;
   /** Repo-relative Vite client manifest. */
@@ -49,9 +43,6 @@ export const defaultArchipielagoPaths: ArchipielagoPaths = {
   shellStylesheetDev: '/src/web/ui/styles/shell.scss',
   hydrateEntrySource: 'src/web/ui/runtime/island/hydrate-entry.tsx',
   hydrateEntryDev: '/src/web/ui/runtime/island/hydrate-entry.tsx',
-  entryServerDev: '/src/web/ui/runtime/ssr/entry-server.tsx',
-  entryServerSourceRel: 'src/web/ui/runtime/ssr/entry-server.tsx',
-  entryServerProdRel: 'dist/web-server/entry-server.js',
   clientOutDirRel: 'dist/client',
   clientManifestRel: 'dist/client/.vite/manifest.json',
   islandsGeneratedRel: 'src/web/protocol/islands.generated.ts',

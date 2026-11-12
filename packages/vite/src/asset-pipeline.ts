@@ -10,7 +10,7 @@ import { setViteDevServer } from './page-loader.js';
  * not call `app.use` or import Nest/Express types.
  */
 export interface DevAssetPipeline {
-  /** Middleware-mode Vite server (also registered for SSR/`transformRequest`). */
+  /** Middleware-mode Vite server (also registered so asset helpers see development). */
   vite: ViteDevServer;
   /** Connect-style middleware from Vite (`vite.middlewares`). */
   middlewares: ViteDevServer['middlewares'];
@@ -19,10 +19,10 @@ export interface DevAssetPipeline {
 }
 
 /**
- * Creates the Vite middleware-mode asset pipeline for development SSR.
+ * Creates the Vite middleware-mode asset pipeline for development.
  *
- * Registers the server via {@link setViteDevServer} so page loaders and island
- * CSS transforms share one process-global handle (Phase 1 tradeoff).
+ * Registers the server via {@link setViteDevServer} so asset helpers can tell
+ * development from production (Phase 1 tradeoff).
  *
  * Discovers `vite.config.ts` from `process.cwd()` (no explicit `configFile`).
  * Nest sample scripts keep cwd at `examples/nestjs`; a second host must start

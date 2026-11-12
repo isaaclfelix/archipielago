@@ -1,11 +1,5 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import {
-  isIslandName,
-  islandCssModuleUrl,
-  islandManifestSourceKey,
-  type IslandName,
-} from '@archipielago/core/islands.js';
 import { getArchipielagoPaths } from '@archipielago/core/paths.js';
 import type { PageAssets } from '@archipielago/core/page-assets.js';
 import { shellCssBudgetBytes } from '@archipielago/core/shell-css-budget.js';
@@ -72,84 +66,6 @@ export function shellStyleTags(
 }
 
 /**
- * Loads island CSS text from production manifest `css` arrays.
- *
- * @param {ClientManifest} manifest - Vite client manifest.
- * @param {readonly string[]} islandNames - Islands rendered on the page.
- * @returns {Partial<Record<IslandName, string>>} CSS keyed by island name.
- */
-export function islandCssFromManifest(
-  manifest: ClientManifest,
-  islandNames: readonly string[],
-): Partial<Record<IslandName, string>> {
-  const out: Partial<Record<IslandName, string>> = {};
-
-  for (const rawName of islandNames) {
-    if (!isIslandName(rawName)) {
-      continue;
-    }
-
-    const chunk = manifest[islandManifestSourceKey(rawName)];
-    const files = chunk?.css ?? [];
-
-    if (files.length === 0) {
-      continue;
-    }
-
-    // Join every CSS asset listed for the island entry (usually one module).
-    out[rawName] = files
-      .map((file) => readFileSync(join(clientOutDir(), file), 'utf8'))
-      .join('\n');
-  }
-
-  return out;
-}
-
-/**
- * Enough of Vite to transform a module stylesheet URL in development.
- */
-export interface IslandCssTransformer {
-  transformRequest(
-    url: string,
-  ): Promise<{ code: string; map?: unknown } | null | undefined>;
-}
-
-/**
- * Loads island CSS in development via Vite transform of each module path.
- *
- * @param {readonly string[]} islandNames - Islands on the page.
- * @param {IslandCssTransformer} vite - Middleware-mode Vite server.
- * @returns {Promise<Partial<Record<IslandName, string>>>} Transformed CSS text.
- */
-export async function islandCssFromVite(
-  islandNames: readonly string[],
-  vite: IslandCssTransformer,
-): Promise<Partial<Record<IslandName, string>>> {
-  const out: Partial<Record<IslandName, string>> = {};
-
-  for (const rawName of islandNames) {
-    if (!isIslandName(rawName)) {
-      continue;
-    }
-
-    const moduleUrl = islandCssModuleUrl(rawName);
-
-    if (!moduleUrl) {
-      continue;
-    }
-
-    const result = await vite.transformRequest(moduleUrl);
-
-    if (result?.code) {
-      // Vite may wrap CSS modules as JS; strip to CSS when needed.
-      out[rawName] = extractCssFromViteModule(result.code);
-    }
-  }
-
-  return out;
-}
-
-/**
  * Pulls CSS text out of a Vite transform result.
  *
  * Plain CSS transforms return CSS. CSS-module transforms may return a JS
@@ -204,26 +120,25 @@ function withPageStylesheets(
 }
 
 /**
- * Builds tags and island CSS for one page render.
+ * Builds document tags for one page render.
  *
  * Development keeps the shell as a `<link>` for HMR. Production may inline
  * the shell when under the raw-byte budget. Opt-in page siblings (e.g. forms)
- * are always head `<link>`s when the page declares them. Island CSS is always
- * resolved for SSR sibling `<style>` tags in both environments.
+ * are always head `<link>`s when the page declares them. Island CSS is not
+ * in this bag — the host includes sidecar files through the template helper.
  *
- * @param {readonly string[]} islandNames - Islands collected on the first SSR pass.
- * @param {{ development: boolean; manifest?: ClientManifest; vite?: IslandCssTransformer; pageStylesheets?: readonly PageStylesheetName[] }} source - Asset source.
- * @returns {Promise<PageAssets>} Document tags and island CSS map.
+ * @param {readonly string[]} islandNames - Islands included on this request.
+ * @param {{ development: boolean; manifest?: ClientManifest; pageStylesheets?: readonly PageStylesheetName[] }} source - Asset source.
+ * @returns {PageAssets} Document tags. Scripts are empty when no islands ran.
  */
-export async function createPageAssets(
+export function createPageAssets(
   islandNames: readonly string[],
   source: {
     development: boolean;
     manifest?: ClientManifest;
-    vite?: IslandCssTransformer;
     pageStylesheets?: readonly PageStylesheetName[];
   },
-): Promise<PageAssets> {
+): PageAssets {
   const pageStylesheets = source.pageStylesheets ?? [];
 
   if (source.development) {
@@ -231,15 +146,11 @@ export async function createPageAssets(
       islandNames.length === 0
         ? developmentShellOnlyAssetTags()
         : developmentAssetTags();
-    const tags = withPageStylesheets(base, pageStylesheets, {
-      development: true,
-    });
-
-    const islandCss = source.vite
-      ? await islandCssFromVite(islandNames, source.vite)
-      : {};
-
-    return { tags, islandCss };
+    return {
+      tags: withPageStylesheets(base, pageStylesheets, {
+        development: true,
+      }),
+    };
   }
 
   if (!source.manifest) {
@@ -248,7 +159,6 @@ export async function createPageAssets(
 
   const cssText = loadShellCssText(source.manifest);
   const shell = shellStyleTags(source.manifest, cssText, shellCssBudgetBytes());
-  const islandCss = islandCssFromManifest(source.manifest, islandNames);
   const pageLinks = {
     development: false as const,
     manifest: source.manifest,
@@ -265,7 +175,6 @@ export async function createPageAssets(
         pageStylesheets,
         pageLinks,
       ),
-      islandCss,
     };
   }
 
@@ -285,6 +194,5 @@ export async function createPageAssets(
       pageStylesheets,
       pageLinks,
     ),
-    islandCss,
   };
 }

@@ -1,17 +1,9 @@
-import {
-  getIslands,
-  isIslandName,
-  type IslandName,
-} from '@archipielago/core/islands';
-import {
-  assertIslandLoadersComplete,
-  buildIslandLoaders,
-} from './island-loaders';
+import { type IslandName } from '@archipielago/core/islands';
+import { buildIslandLoaders } from './island-loaders';
 import type { IslandModule } from './island-module';
 
-export type { IslandModule };
-export type { IslandName };
-export { isIslandName };
+export { isIslandName } from '@archipielago/core/islands';
+export type { IslandModule, IslandName };
 
 /**
  * Vite glob map injected by the host (lazy island TSX modules).
@@ -51,14 +43,13 @@ export function resetIslandModules(): void {
 }
 
 /**
- * Returns lazy island loaders keyed by injected registration names.
+ * Returns lazy island loaders keyed by conventional glob names.
  *
- * Builds once after {@link registerIslands} / app bootstrap and
- * {@link setIslandModules}. Safe to call from hydrate after the app hydrate
- * entry has registered the manifest and modules.
+ * Builds once after {@link setIslandModules}. The DOM is the allowlist at
+ * hydrate time; this map only answers "which chunk loads this name".
  *
  * @returns {Partial<Record<IslandName, () => Promise<IslandModule>>>} Loaders.
- * @throws {Error} When islands or modules have not been registered yet.
+ * @throws {Error} When modules have not been registered yet.
  */
 export function getIslandLoaders(): Partial<
   Record<IslandName, () => Promise<IslandModule>>
@@ -73,17 +64,7 @@ export function getIslandLoaders(): Partial<
     );
   }
 
-  const islands = getIslands();
-  const names = Object.keys(islands);
-
-  if (names.length === 0) {
-    throw new Error(
-      'Island loaders require registerIslands() (app bootstrap / hydrate entry) before use',
-    );
-  }
-
-  const loaders = buildIslandLoaders(islandModules, isIslandName);
-  assertIslandLoadersComplete(names, loaders);
+  const loaders = buildIslandLoaders(islandModules, () => true);
   islandLoadersCache = loaders;
   return loaders;
 }

@@ -1,10 +1,8 @@
 /**
- * Scaffolds an SSR page stub or interactive island under `src/web/`.
+ * Scaffolds a Handlebars page stub or interactive island.
  *
  * Shared by humans (`pnpm scaffold:web-ui`) and the `create-web-ui` agent skill.
  * Prefer this script over hand-wiring so island folders stay conventional.
- * With `islands.registration=auto`, island mode runs sync; with `manual`, it
- * warns that authors must add a manifest entry (no sync).
  *
  * Usage:
  *   pnpm scaffold:web-ui --name my-widget --mode island --with-styles
@@ -17,13 +15,7 @@ import { dirname, join, resolve } from 'node:path';
 import { createInterface } from 'node:readline/promises';
 import { fileURLToPath } from 'node:url';
 import { stdin as input, stdout as output } from 'node:process';
-import {
-  getIslandsRegistration,
-  loadAndApplyArchipielagoConfig,
-  manualIslandManifestWarning,
-} from '@archipielago/core/config.js';
-import { getArchipielagoPaths } from '@archipielago/core/paths.js';
-import { syncIslandManifest } from './sync-island-manifest.js';
+import { loadAndApplyArchipielagoConfig } from '@archipielago/core/config.js';
 
 /** CLI / interactive answers before validation. */
 export interface ScaffoldAnswers {
@@ -38,9 +30,7 @@ export interface ScaffoldPlan {
   mode: 'page' | 'island';
   withStyles: boolean;
   pascalName: string;
-  pageComponentPath: string;
-  pageIndexPath: string;
-  pageStoriesPath: string;
+  pageViewPath: string;
   pagePropsPath: string;
   islandComponentPath: string;
   islandIndexPath: string;
@@ -108,9 +98,7 @@ export function resolveScaffoldPlan(answers: ScaffoldAnswers): ScaffoldPlan {
     mode: answers.mode,
     withStyles,
     pascalName,
-    pageComponentPath: `src/web/ui/pages/${pageFolder}/${pageFolder}.tsx`,
-    pageIndexPath: `src/web/ui/pages/${pageFolder}/index.ts`,
-    pageStoriesPath: `src/web/ui/pages/${pageFolder}/${pageFolder}.stories.tsx`,
+    pageViewPath: `views/${name}.hbs`,
     pagePropsPath: `src/web/protocol/page-props/${pageFolder}.ssr-props.ts`,
     islandComponentPath: `src/web/ui/islands/${name}/${name}.tsx`,
     islandIndexPath: `src/web/ui/islands/${name}/index.ts`,
@@ -170,18 +158,16 @@ export function parseScaffoldArgs(
  * Builds page stub source (shell classes only; no CSS module).
  *
  * @param {ScaffoldPlan} plan - Validated plan.
- * @returns {{ props: string; component: string }} File contents.
+ * @returns {{ props: string; view: string }} File contents.
  */
-function pageSources(plan: ScaffoldPlan): { props: string; component: string } {
+function pageSources(plan: ScaffoldPlan): { props: string; view: string } {
   const propsName = `${plan.pascalName}PageSsrProps`;
-  const componentName = `${plan.pascalName}Page`;
 
   const props = `/**
- * SSR embed props for the ${plan.name} page component (\`ui/pages/${plan.name}-page/\`).
+ * View locals for the ${plan.name} page (\`views/${plan.name}.hbs\`).
  *
- * Built by Nest (\`WebController\`), passed through \`ArchipielagoViewService.render\`,
- * consumed by the Vite SSR page. JSON-serializable only. Not colocated with
- * the page on purpose — see ADR-0023 / how-to-web-ui (SSR page props quirk).
+ * Built by Nest (\`WebController\`) and passed to Handlebars. JSON-serializable
+ * only. Not colocated with the view on purpose — see ADR-0023 / how-to-web-ui.
  */
 export interface ${propsName} {
   /** Replace with real request-derived fields. */
@@ -189,60 +175,12 @@ export interface ${propsName} {
 }
 `;
 
-  const component = `import type { ReactElement } from 'react';
-import type { ${propsName} } from '@protocol/page-props/${plan.name}-page.ssr-props';
-
-/**
- * Renders the ${plan.name} page body.
- *
- * Server-only: this component is not part of the client bundle.
- * Style with shell classes from \`ui/styles/shell.scss\` only — do not import a CSS module.
- *
- * Wire into \`protocol/page-props/page-props.ts\` (\`SsrPagePropsMap\`),
- * \`ui/runtime/ssr/entry-server.tsx\`, and a \`WebController\` method next
- * (controller imports this SSR props type only — never the page \`.tsx\`).
- *
- * @param {${propsName}} props - SSR embed props from the controller.
- * @returns {ReactElement} The page body, without the document shell.
- */
-export function ${componentName}({ title }: ${propsName}): ReactElement {
-  return (
-    <main className="container py-4">
-      <h1>{title}</h1>
-      {/* Shell classes only — see docs/how-to-web-ui.md */}
-    </main>
-  );
-}
+  const view = `<div class="container py-4">
+  <h1>{{title}}</h1>
+</div>
 `;
 
-  return { props, component };
-}
-
-/**
- * Builds a minimal CSF3 Storybook stub for a scaffolded page.
- *
- * @param {ScaffoldPlan} plan - Validated plan.
- * @returns {string} Story file contents.
- */
-function pageStoriesSource(plan: ScaffoldPlan): string {
-  const componentName = `${plan.pascalName}Page`;
-  return `import type { Meta, StoryObj } from '@storybook/react-vite';
-import { ${componentName} } from './${plan.name}-page';
-
-const meta = {
-  title: 'Pages/${componentName}',
-  component: ${componentName},
-  args: {
-    title: '${plan.pascalName}',
-  },
-} satisfies Meta<typeof ${componentName}>;
-
-export default meta;
-
-type Story = StoryObj<typeof meta>;
-
-export const Default: Story = {};
-`;
+  return { props, view };
 }
 
 /**
@@ -285,14 +223,16 @@ function islandSources(plan: ScaffoldPlan): {
     ? ` className={styles.root}`
     : ' className="btn btn-primary"';
 
-  const component = `import { useState, type ReactElement } from 'react';
+  const component = `'use client';
+
+import { useState, type ReactElement } from 'react';
 ${importStyles}
 /**
  * Interactive ${plan.name} island.
  *
  * Default export required for hydrate. Props must be JSON-serializable.
- * Scaffold runs \`pnpm islands:sync\` so the host catalog picks this folder up.
- * Render with \`<Island name="${plan.name}" component={${plan.pascalName}} props={…} />\`.
+ * Include with \`{{{hydrate "${plan.name}"}}}\` from a Handlebars view, then
+ * run \`pnpm dehydrate\` so the HTML sidecar exists.
  *
  * @param {{ label?: string }} props - Optional label from the server.
  * @returns {ReactElement} Interactive island markup.
@@ -352,27 +292,21 @@ export async function applyScaffoldPlan(
   const notes: string[] = [];
 
   if (plan.mode === 'page') {
-    const { props, component } = pageSources(plan);
+    const { props, view } = pageSources(plan);
     const propsAbs = join(rootDir, plan.pagePropsPath);
-    const componentAbs = join(rootDir, plan.pageComponentPath);
-    const indexAbs = join(rootDir, plan.pageIndexPath);
-    const storiesAbs = join(rootDir, plan.pageStoriesPath);
+    const viewAbs = join(rootDir, plan.pageViewPath);
 
-    if (existsSync(propsAbs) || existsSync(componentAbs)) {
+    if (existsSync(propsAbs) || existsSync(viewAbs)) {
       throw new Error(
-        `Page files already exist for "${plan.name}" (protocol page-props or ui/pages)`,
+        `Page files already exist for "${plan.name}" (protocol page-props or views)`,
       );
     }
 
-    const pageIndex = `export { ${plan.pascalName}Page } from './${plan.name}-page';\n`;
-
     await mkdir(dirname(propsAbs), { recursive: true });
-    await mkdir(dirname(componentAbs), { recursive: true });
+    await mkdir(dirname(viewAbs), { recursive: true });
     await writeFile(propsAbs, props, 'utf8');
-    await writeFile(componentAbs, component, 'utf8');
-    await writeFile(indexAbs, pageIndex, 'utf8');
-    await writeFile(storiesAbs, pageStoriesSource(plan), 'utf8');
-    written.push(propsAbs, componentAbs, indexAbs, storiesAbs);
+    await writeFile(viewAbs, view, 'utf8');
+    written.push(propsAbs, viewAbs);
     return { written, notes };
   }
 
@@ -404,21 +338,9 @@ export async function applyScaffoldPlan(
     written.push(moduleAbs);
   }
 
-  const hasCssModule = plan.islandModulePath !== undefined;
-  if (getIslandsRegistration() === 'manual') {
-    // Host owns the manifest — do not call sync (would refuse / overwrite).
-    notes.push(
-      manualIslandManifestWarning(
-        plan.name,
-        hasCssModule,
-        getArchipielagoPaths().islandsGeneratedRel,
-      ),
-    );
-  } else {
-    // auto mode: regenerate the islands manifest from conventional folders.
-    const { path: islandsManifestPath } = await syncIslandManifest(rootDir);
-    written.push(islandsManifestPath);
-  }
+  notes.push(
+    `Include with {{{hydrate "${plan.name}"}}} in a Handlebars view, then run pnpm dehydrate.`,
+  );
 
   return { written, notes };
 }
@@ -434,8 +356,8 @@ function printHelp(): void {
   pnpm scaffold:web-ui   # interactive
 
 --with-styles is allowed only with --mode island (adds *.module.scss).
-Island mode runs islands:sync when archipielago.config registration is
-auto; otherwise it warns about adding a manual manifest entry.
+Island mode does not write a protocol manifest. Include the island from a
+Handlebars view and run pnpm dehydrate.
 See docs/how-to-web-ui.md for the decision tree.
 `);
 }
@@ -525,34 +447,16 @@ async function main(): Promise<void> {
     output.write(`
 Next steps:
   1. Add "${plan.name}" to SsrPagePropsMap in src/web/protocol/page-props/page-props.ts
-  2. Map the page in src/web/ui/runtime/ssr/entry-server.tsx
-  3. Add a WebController method that imports SSR props from protocol/page-props/ only
-     and calls webViewService.render('${plan.name}', props)
-  4. Style with shell classes only — see docs/how-to-web-ui.md (SSR page props quirk)
-  5. Browse the stub story with pnpm storybook (workshop, not QA)
-`);
-  } else if (getIslandsRegistration() === 'manual') {
-    output.write(`
-Next steps:
-  1. Add the manifest entry above (registration=manual; sync will not run).
-  2. Render on a page (leave the page folder via @ui aliases — ADR-0027):
-    import ${plan.pascalName} from '@ui/islands/${plan.name}';
-    import { Island } from '@archipielago/react/runtime/island/island';
-    <Island name="${plan.name}" component={${plan.pascalName}} props={{}} />
-
-  Hydrate loaders pick up the conventional folder via glob. Browse with pnpm storybook.
-  See docs/how-to-web-ui.md
+  2. Add a WebController method with @Render('${plan.name}') that returns
+     protocol page-props plus csrfToken and pageStylesheets
+  3. Style with shell classes only — see docs/how-to-web-ui.md
 `);
   } else {
     output.write(`
 Next steps:
-  Render on a page (leave the page folder via @ui aliases — ADR-0027):
-    import ${plan.pascalName} from '@ui/islands/${plan.name}';
-    import { Island } from '@archipielago/react/runtime/island/island';
-    <Island name="${plan.name}" component={${plan.pascalName}} props={{}} />
-
-  Scaffold ran islands:sync (${getArchipielagoPaths().islandsGeneratedRel}).
-  Hydrate loaders pick up the new folder via glob — no registry edit.
+  1. Include the island from a Handlebars view: {{{hydrate "${plan.name}"}}}
+  2. Run pnpm dehydrate so the HTML (and CSS sidecar, when present) exist
+  3. Hydrate loaders pick up the conventional folder via glob
   Browse with pnpm storybook. See docs/how-to-web-ui.md
 `);
   }

@@ -1,11 +1,9 @@
 /**
  * Island registration API for Archipielago engines.
  *
- * The product app owns island folders and the gitignored generated manifest
- * (`pnpm islands:sync`). The app **injects** that manifest via
- * {@link registerIslands} at bootstrap (and in the browser hydrate entry).
- * Nest HTTP code never reads the manifest — only these engines use it while
- * building the HTML document and hydrating markers.
+ * The product app owns island folders. Hydrate loaders come from a Vite glob;
+ * the DOM is the allowlist. {@link registerIslands} remains for hosts that
+ * still inject a generated `hasCssModule` table (`pnpm islands:sync`).
  */
 
 import { getArchipielagoPaths } from './paths.js';
@@ -83,7 +81,7 @@ export function islandCssModulePath(name: string): IslandCssModulePath {
 /**
  * Reports whether a marker name has a registered island.
  *
- * @param {string} name - Value of `data-island`.
+ * @param {string} name - Island folder / registry name.
  * @returns {boolean} True when the name is a key of the injected manifest.
  */
 export function isIslandName(name: string): name is IslandName {

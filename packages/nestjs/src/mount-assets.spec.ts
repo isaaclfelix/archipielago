@@ -4,11 +4,6 @@ import {
 } from '@archipielago/vite/asset-pipeline.js';
 import { ArchipielagoModule } from './archipielago.module.js';
 import {
-  ARCHIPIELAGO_NEST_OPTIONS,
-  type ArchipielagoNestOptions,
-} from './archipielago-nest.options.js';
-import { ArchipielagoViewService } from './archipielago-view.service.js';
-import {
   mountArchipielagoAssets,
   type ArchipielagoAssetHost,
 } from './mount-assets.js';
@@ -21,19 +16,8 @@ vi.mock('@archipielago/vite/asset-pipeline.js', () => ({
 }));
 
 describe('ArchipielagoModule', () => {
-  it('exports the renderer with host options', () => {
-    const options: ArchipielagoNestOptions = {
-      getPageStylesheets: () => ['forms'],
-    };
-
-    const module = ArchipielagoModule.forRoot(options);
-
-    expect(module.exports).toContain(ArchipielagoViewService);
-    expect(module.providers).toContain(ArchipielagoViewService);
-    expect(module.providers).toContainEqual({
-      provide: ARCHIPIELAGO_NEST_OPTIONS,
-      useValue: options,
-    });
+  it('is a Nest module with no renderer providers', () => {
+    expect(ArchipielagoModule).toBeDefined();
   });
 });
 

@@ -9,7 +9,6 @@ import { sharedVitestViteConfig } from './vitest.shared.js';
  */
 export const browserUnitSpecGlobs: string[] = [
   'src/web/ui/islands/**/*.spec.ts',
-  'src/web/ui/pages/**/*.spec.ts',
   'src/web/ui/hooks/**/*.spec.ts',
   'src/web/ui/api-fetch/csrf.spec.ts',
   '../../packages/react/src/runtime/island/hydrate.spec.ts',

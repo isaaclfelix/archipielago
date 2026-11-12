@@ -15,9 +15,7 @@ const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
  * the app Vite pipeline (sort + doiuse warn). Path aliases match ADR-0027.
  */
 const config: StorybookConfig = {
-  stories: [
-    '../src/web/ui/{pages,islands,server-components,shared-components}/**/*.stories.@(ts|tsx)',
-  ],
+  stories: ['../src/web/ui/{islands,shared-components}/**/*.stories.@(ts|tsx)'],
   framework: {
     name: '@storybook/react-vite',
     options: {},

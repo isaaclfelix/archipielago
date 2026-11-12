@@ -1,11 +1,12 @@
-import { Controller, Get, Header, Req, Res } from '@nestjs/common';
+import { Controller, Get, Req, Res, Render } from '@nestjs/common';
 import { ApiExcludeController } from '@nestjs/swagger';
-import { ArchipielagoViewService } from '@archipielago/nestjs/archipielago-view.service.js';
 import type { Request, Response } from 'express';
 import type { AppSession } from '../api/auth/session.js';
+import { pageStylesheetsByPage } from './page-stylesheets.js';
 import type { HomePageSsrProps } from './protocol/page-props/home-page.ssr-props.js';
 import type { LoginPageSsrProps } from './protocol/page-props/login-page.ssr-props.js';
 import type { RegisterPageSsrProps } from './protocol/page-props/register-page.ssr-props.js';
+import type { WebViewLocals } from './protocol/page-props/page-props.js';
 
 /** Express request after SessionMiddleware may have attached a session. */
 type RequestWithSession = Request & { session?: AppSession };
@@ -13,29 +14,28 @@ type RequestWithSession = Request & { session?: AppSession };
 @Controller()
 @ApiExcludeController()
 export class WebController {
-  constructor(private readonly webViewService: ArchipielagoViewService) {}
-
   /**
    * Renders the home page as HTML.
    *
-   * Passes a page name and SSR embed props so this file does not import React.
-   * The timestamp is generated here because it is request data, not view logic.
+   * Returns Handlebars locals. The layout prints chrome and asset tags; the
+   * view prints the timestamp. Controllers stay free of React.
    *
    * @param {RequestWithSession} req - Request with session from SessionMiddleware.
-   * @returns {Promise<string>} Full HTML document (HTTP 200, text/html).
+   * @returns {WebViewLocals<'home'>} Locals for `views/home.hbs`.
    */
   @Get()
-  @Header('Content-Type', 'text/html; charset=utf-8')
-  home(@Req() req: RequestWithSession): Promise<string> {
+  @Render('home')
+  home(@Req() req: RequestWithSession): WebViewLocals<'home'> {
     const props: HomePageSsrProps = {
       renderedAt: new Date().toISOString(),
       isAuthenticated: Boolean(req.session?.userId),
     };
 
-    // The session token is document-shell data, not a home page prop.
-    return this.webViewService.render('home', props, {
-      documentProps: { csrfToken: req.session?.csrfToken },
-    });
+    return {
+      ...props,
+      csrfToken: req.session?.csrfToken,
+      pageStylesheets: pageStylesheetsByPage.home,
+    };
   }
 
   /**
@@ -46,14 +46,14 @@ export class WebController {
    *
    * @param {RequestWithSession} req - Request with session from SessionMiddleware.
    * @param {Response} res - Response used for guest-only redirects.
-   * @returns {Promise<string | void>} Full HTML document, or void after redirect.
+   * @returns {WebViewLocals<'login'> | void} Locals for `views/login.hbs`, or void after redirect.
    */
   @Get('login')
-  @Header('Content-Type', 'text/html; charset=utf-8')
+  @Render('login')
   login(
     @Req() req: RequestWithSession,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<string> | void {
+  ): WebViewLocals<'login'> | void {
     if (req.session?.userId) {
       res.redirect('/');
       return;
@@ -63,10 +63,11 @@ export class WebController {
       isAuthenticated: false,
     };
 
-    // The session token is document-shell data, not a login page prop.
-    return this.webViewService.render('login', props, {
-      documentProps: { csrfToken: req.session?.csrfToken },
-    });
+    return {
+      ...props,
+      csrfToken: req.session?.csrfToken,
+      pageStylesheets: pageStylesheetsByPage.login,
+    };
   }
 
   /**
@@ -77,14 +78,14 @@ export class WebController {
    *
    * @param {RequestWithSession} req - Request with session from SessionMiddleware.
    * @param {Response} res - Response used for guest-only redirects.
-   * @returns {Promise<string | void>} Full HTML document, or void after redirect.
+   * @returns {WebViewLocals<'register'> | void} Locals for `views/register.hbs`, or void after redirect.
    */
   @Get('register')
-  @Header('Content-Type', 'text/html; charset=utf-8')
+  @Render('register')
   register(
     @Req() req: RequestWithSession,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<string> | void {
+  ): WebViewLocals<'register'> | void {
     if (req.session?.userId) {
       res.redirect('/');
       return;
@@ -94,9 +95,10 @@ export class WebController {
       isAuthenticated: false,
     };
 
-    // The session token is document-shell data, not a register page prop.
-    return this.webViewService.render('register', props, {
-      documentProps: { csrfToken: req.session?.csrfToken },
-    });
+    return {
+      ...props,
+      csrfToken: req.session?.csrfToken,
+      pageStylesheets: pageStylesheetsByPage.register,
+    };
   }
 }

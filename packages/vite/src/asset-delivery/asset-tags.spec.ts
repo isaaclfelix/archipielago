@@ -59,15 +59,14 @@ describe('asset tags', () => {
     setPageStylesheetRegistry({});
   });
 
-  it('uses shell-only development tags when the page has no islands', async () => {
-    await expect(createPageAssets([], { development: true })).resolves.toEqual({
+  it('uses shell-only development tags when the page has no islands', () => {
+    expect(createPageAssets([], { development: true })).toEqual({
       tags: developmentShellOnlyAssetTags(),
-      islandCss: {},
     });
   });
 
-  it('appends opt-in forms stylesheet links in development', async () => {
-    const assets = await createPageAssets([], {
+  it('appends opt-in forms stylesheet links in development', () => {
+    const assets = createPageAssets([], {
       development: true,
       pageStylesheets: ['forms'],
     });
@@ -78,12 +77,11 @@ describe('asset tags', () => {
     ]);
   });
 
-  it('points development pages at the vite source entry', async () => {
-    await expect(
+  it('points development pages at the vite source entry', () => {
+    expect(
       createPageAssets(['mobile-navigation'], { development: true }),
-    ).resolves.toEqual({
+    ).toEqual({
       tags: developmentAssetTags(),
-      islandCss: {},
     });
   });
 
@@ -114,7 +112,7 @@ describe('asset tags', () => {
     // Over budget so production keeps a <link> (fixture oversized CSS).
     writeFileSync(shellPath, 'x'.repeat(50 * 1024 + 1));
 
-    const { tags } = await createPageAssets(['mobile-navigation'], {
+    const { tags } = createPageAssets(['mobile-navigation'], {
       development: false,
       manifest,
     });
@@ -158,14 +156,14 @@ describe('asset tags', () => {
     );
   });
 
-  it('throws in production when the manifest is missing', async () => {
-    await expect(createPageAssets([], { development: false })).rejects.toThrow(
+  it('throws in production when the manifest is missing', () => {
+    expect(() => createPageAssets([], { development: false })).toThrow(
       'Production pages need the client manifest.',
     );
   });
 
-  it('throws when the manifest has no shell stylesheet', async () => {
-    await expect(
+  it('throws when the manifest has no shell stylesheet', () => {
+    expect(() =>
       createPageAssets([], {
         development: false,
         manifest: {
@@ -175,7 +173,7 @@ describe('asset tags', () => {
           },
         },
       }),
-    ).rejects.toThrow('Client manifest is missing the shell stylesheet.');
+    ).toThrow('Client manifest is missing the shell stylesheet.');
   });
 
   it('reads a manifest file from disk', () => {

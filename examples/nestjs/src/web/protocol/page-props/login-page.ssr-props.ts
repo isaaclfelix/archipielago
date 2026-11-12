@@ -1,9 +1,8 @@
 /**
- * SSR embed props for the login page component (`ui/pages/login-page/`).
+ * View locals for the login page (`views/login.hbs`).
  *
- * Built by Nest (`WebController`), passed through `ArchipielagoViewService.render`,
- * consumed by the Vite SSR page. JSON-serializable only. Not colocated with
- * the page on purpose — see ADR-0023 / how-to-web-ui (SSR page props quirk).
+ * Built by Nest (`WebController`) and passed to Handlebars. JSON-serializable
+ * only. Not colocated with the view on purpose — see ADR-0023 / how-to-web-ui.
  *
  * Guest-only: the controller redirects authenticated sessions to `/` before
  * render.
