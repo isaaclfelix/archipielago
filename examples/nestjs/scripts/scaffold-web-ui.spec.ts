@@ -146,7 +146,6 @@ describe('applyScaffoldPlan', () => {
       join(root, plan.islandComponentPath),
       'utf8',
     );
-    expect(component).toContain("'use client'");
     expect(component).toContain('import styles from');
     const index = await readFile(join(root, plan.islandIndexPath), 'utf8');
     expect(index).toContain("export { default } from './toggle'");

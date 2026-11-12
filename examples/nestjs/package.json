@@ -54,7 +54,6 @@
   },
   "devDependencies": {
     "@drih/dehydrate": "^1.0.5",
-    "@drih/hydrate": "^1.0.5",
     "@nestjs/cli": "^12.0.0",
     "@nestjs/mau": "^0.2.6",
     "@nestjs/schematics": "^12.0.0",

@@ -14,7 +14,7 @@ Related pages:
 
 | Wiring step      | Nest example                                                                                   |
 | ---------------- | ---------------------------------------------------------------------------------------------- |
-| Packages         | `@archipielago/{core,react,vite,nestjs}` plus `hbs` and `@drih/{dehydrate,hydrate,handlebars}` |
+| Packages         | `@archipielago/{core,react,vite,nestjs}` plus `hbs`, `@drih/dehydrate`, and `@drih/handlebars` |
 | Product UI       | `examples/nestjs/src/web/ui/islands/**`                                                        |
 | Page views       | `examples/nestjs/views/**`                                                                     |
 | View locals      | `examples/nestjs/src/web/protocol/page-props/**`                                               |
@@ -22,7 +22,7 @@ Related pages:
 | Page stylesheets | `examples/nestjs/src/web/page-stylesheets.ts` (called from `configureWebViews`)                |
 | Island glob      | `examples/nestjs/src/web/ui/runtime/island/island-modules.ts` (hydrate entry + Vitest setup)   |
 | Hydrate entry    | `examples/nestjs/src/web/ui/runtime/island/hydrate-entry.tsx`                                  |
-| Vite             | `examples/nestjs/vite.config.ts` + Archipielago and Drih plugins                               |
+| Vite             | `examples/nestjs/vite.config.ts` + Archipielago plugins and `dehydratePlugin()`                |
 | Mount assets     | `mountArchipielagoAssets(app)` in `examples/nestjs/src/main.ts`                                |
 | Routes → HTML    | `WebController` `@Render` + Handlebars locals                                                  |
 

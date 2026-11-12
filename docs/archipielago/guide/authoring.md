@@ -46,16 +46,15 @@ Rules that follow from that layout:
 
 - One folder per island; the implementation file must be
   `<name>/<name>.tsx` with a **default export**. Hydrate discovers modules via a
-  glob of that pattern (stories/specs are not island entry files).
-- Mark the component `'use client'`. Include it from a template with
-  `{{{hydrate "name"}}}` (and optional hash args). Then run `pnpm dehydrate`
-  so the gitignored HTML sidecar exists.
+  glob of that pattern (stories/specs are not island entry files). Do not mark
+  the file `'use client'` ([ADR-0038](../../adr/0038-drop-drih-hydrate-from-nest-host.md)).
+- Include it from a template with `{{{hydrate "name"}}}` (and optional hash
+  args). Then run `pnpm dehydrate` so the gitignored HTML sidecar exists.
 - Props on the wrapper must be JSON-serializable; hydrate loads JS for named
   wrappers only. Unknown names are skipped.
-- If `<name>.module.scss` is present, the host sidecar plugin writes compiled
-  CSS and the hydrate helper prints a sibling
-  `<style data-css-island="{name}">` on first include (hydrate still loads
-  JS only).
+- If `<name>.module.scss` is present, the sidecar plugin writes compiled CSS.
+  Pass `islandCssReader` to the hydrate helper so the first include prints a
+  sibling `<style data-css-island="{name}">` (hydrate still loads JS only).
 
 From a Handlebars view or partial:
 

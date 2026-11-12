@@ -1,5 +1,3 @@
-'use client';
-
 import { useState, type AnimationEvent, type ReactElement } from 'react';
 import LogoutButton from '@ui/islands/logout-button';
 import styles from './mobile-navigation.module.scss';

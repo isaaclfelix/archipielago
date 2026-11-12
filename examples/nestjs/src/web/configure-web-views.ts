@@ -1,4 +1,3 @@
-import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { drihHandlebarsLocals, registerHydrateHelper } from '@drih/handlebars';
@@ -6,37 +5,12 @@ import type { AssetTags } from '@archipielago/core/page-assets.js';
 import { loadClientManifest } from '@archipielago/vite/asset-delivery/asset-tags.js';
 import { createPageAssets } from '@archipielago/vite/asset-delivery/page-assets.js';
 import type { PageStylesheetName } from '@archipielago/vite/asset-delivery/page-stylesheets.js';
+import { islandCssReader } from '@archipielago/vite/asset-delivery/read-island-css.js';
 import { getViteDevServer } from '@archipielago/vite/page-loader.js';
 import hbs from 'hbs';
 import { registerAppPageStylesheets } from './page-stylesheets.js';
 
 const viewsDir = (): string => join(process.cwd(), 'views');
-
-/**
- * Reads compiled island CSS from the host sidecar folder.
- *
- * Drih does not compile SCSS. The Vite sidecar plugin writes `<name>.css`
- * next to the dehydrated HTML. A missing file means the island has no module
- * sheet, so the helper prints the wrapper without a style sibling.
- *
- * @param {string} name - Island folder name (`login-form`, `mobile-navigation`).
- * @returns {string | undefined} CSS text, or undefined when the sidecar is absent.
- */
-export function readIslandCss(name: string): string | undefined {
-  const filePath = join(
-    viewsDir(),
-    'components',
-    'dehydrated-css',
-    `${name}.css`,
-  );
-
-  if (!existsSync(filePath)) {
-    return undefined;
-  }
-
-  const css = readFileSync(filePath, 'utf8');
-  return css === '' ? undefined : css;
-}
 
 /**
  * Escapes a value for a double-quoted HTML attribute.
@@ -156,7 +130,7 @@ export async function configureWebViews(
   registerHydrateHelper(hbs, {
     dehydratedComponentsDir: join(root, 'components', 'dehydrated'),
     dehydratedComponentFileExtension: '.html',
-    readStyles: readIslandCss,
+    readStyles: islandCssReader(join(root, 'components', 'dehydrated-css')),
   });
 
   hbs.registerHelper(

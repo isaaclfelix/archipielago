@@ -34,9 +34,11 @@ for Vite.
 
 Peers (install in the host): `react`, `react-dom`, and for Nest:
 `@nestjs/common`, `@nestjs/core`. Vite is a peer of `@archipielago/vite`.
-The Nest example also depends on `hbs` and `@drih/{dehydrate,hydrate,handlebars}`
-at `^1.0.5` from the private GitLab npm registry (project `.npmrc` maps `@drih`;
-the token lives in the user `~/.npmrc`, not in git).
+The Nest example also depends on `hbs`, `@drih/dehydrate`, and
+`@drih/handlebars` at `^1.0.5` from the private GitLab npm registry (project
+`.npmrc` maps `@drih`; the token lives in the user `~/.npmrc`, not in git).
+Hydration is `@archipielago/react`, not `@drih/hydrate`
+([ADR-0038](../../adr/0038-drop-drih-hydrate-from-nest-host.md)).
 
 ## Future public install (`0.0.1`)
 
