@@ -1,6 +1,5 @@
-import { type IslandName } from '@archipielago/core/islands';
 import { buildIslandLoaders } from './island-loaders';
-import type { IslandModule } from './island-module';
+import type { IslandModule, IslandName } from './island-module';
 
 export type { IslandModule, IslandName };
 

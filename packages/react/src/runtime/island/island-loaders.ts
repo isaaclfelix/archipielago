@@ -1,6 +1,5 @@
-import type { IslandName } from '@archipielago/core/islands';
 import { islandNameFromGlobKey } from './island-glob-key';
-import type { IslandModule } from './island-module';
+import type { IslandModule, IslandName } from './island-module';
 
 /**
  * Builds lazy island loaders from a Vite glob map.

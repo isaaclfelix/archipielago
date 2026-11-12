@@ -10,7 +10,7 @@
  */
 
 /**
- * Relative and Vite-dev roots the host, assets, and island helpers share.
+ * Relative and Vite-dev roots the host and asset helpers share.
  */
 export interface ArchipielagoPaths {
   /** Repo-relative product islands directory. */
