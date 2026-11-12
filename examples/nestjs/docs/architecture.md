@@ -270,9 +270,11 @@ sequenceDiagram
   participant L as layout
   participant B as Browser
   W->>V: @Render locals
-  V->>V: hydrate helper records drihSeen
+  V->>V: hydrate helper records view islands
   V->>L: body HTML
-  L->>L: createPageAssets from drihSeen
+  L->>L: assetHead shell and page sheets
+  L->>L: header hydrate records layout islands
+  L->>L: assetScripts from drihSeen
   L-->>W: full document
   W-->>B: text/html
   opt page included an island
@@ -282,7 +284,7 @@ sequenceDiagram
   end
 ```
 
-`createPageAssets([])` returns the shared stylesheet and no hydrate script. A page with no islands does not download the hydrate entry.
+`createPageAssets([])` returns the shared stylesheet and no hydrate script. `{{{assetHead}}}` always uses that bag. `{{{assetScripts}}}` reads `drihSeen` after the layout header, so home navigation islands still load the hydrate entry. A page with no islands at all does not download it.
 
 ### Islands
 

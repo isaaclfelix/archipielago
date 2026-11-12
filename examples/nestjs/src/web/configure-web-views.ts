@@ -88,41 +88,46 @@ export function renderAssetScripts(tags: AssetTags): string {
 }
 
 /**
- * Resolves page asset tags once per Handlebars render.
+ * Reads island names recorded by `{{{hydrate}}}` on this render.
  *
- * The view runs before the layout, so `drihSeen` already lists included
- * islands when the layout helpers run. Caching on the root avoids computing
- * the bag twice for `assetHead` and `assetScripts`.
+ * Express `hbs` renders the view, then the layout. Home islands live in the
+ * layout header, which runs *after* `{{{assetHead}}}` in `<head>`. Scripts
+ * must be computed from `drihSeen` at `{{{assetScripts}}}`, not cached from
+ * the head helper.
  *
  * @param {Record<string, unknown>} root - Handlebars render root (res.locals).
+ * @returns {string[]} Island folder names included on this request.
+ */
+function islandNamesFrom(root: Record<string, unknown>): string[] {
+  const seen = root.drihSeen;
+  return seen instanceof Set ? [...seen].map(String) : [];
+}
+
+/**
+ * Builds the asset bag for this render.
+ *
+ * Head styles do not depend on islands (island CSS is a sibling `<style>`
+ * from the hydrate helper). Pass `islandNames` only when emitting scripts.
+ *
+ * @param {Record<string, unknown>} root - Handlebars render root (res.locals).
+ * @param {readonly string[]} islandNames - Islands included so far.
  * @returns {AssetTags} Stylesheet, inline style, and script URLs.
  */
-function pageAssetTags(root: Record<string, unknown>): AssetTags {
-  const cached = root._pageAssets;
-  if (
-    cached !== undefined &&
-    typeof cached === 'object' &&
-    cached !== null &&
-    'stylesheets' in cached
-  ) {
-    return cached as AssetTags;
-  }
-
-  const seen = root.drihSeen;
-  const islandNames = seen instanceof Set ? [...seen].map(String) : [];
+function pageAssetTags(
+  root: Record<string, unknown>,
+  islandNames: readonly string[],
+): AssetTags {
   const pageStylesheets = Array.isArray(root.pageStylesheets)
     ? (root.pageStylesheets as PageStylesheetName[])
     : [];
   const development =
     getViteDevServer() !== undefined || process.env.VITEST === 'true';
 
-  const tags = createPageAssets(islandNames, {
+  return createPageAssets(islandNames, {
     development,
     manifest: development ? undefined : loadClientManifest(),
     pageStylesheets,
   }).tags;
-  root._pageAssets = tags;
-  return tags;
 }
 
 /**
@@ -158,7 +163,7 @@ export async function configureWebViews(
     'assetHead',
     function assetHead(this: Record<string, unknown>): unknown {
       return new hbs.handlebars.SafeString(
-        renderAssetHead(pageAssetTags(this)),
+        renderAssetHead(pageAssetTags(this, [])),
       );
     },
   );
@@ -166,7 +171,7 @@ export async function configureWebViews(
     'assetScripts',
     function assetScripts(this: Record<string, unknown>): unknown {
       return new hbs.handlebars.SafeString(
-        renderAssetScripts(pageAssetTags(this)),
+        renderAssetScripts(pageAssetTags(this, islandNamesFrom(this))),
       );
     },
   );
