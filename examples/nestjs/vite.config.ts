@@ -71,6 +71,11 @@ export default defineConfig({
     },
   },
   css: {
+    preprocessorOptions: {
+      scss: {
+        quietDeps: true,
+      },
+    },
     postcss: {
       plugins: [
         sortMediaQueries({ sort: 'mobile-first' }),
