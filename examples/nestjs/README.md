@@ -1,6 +1,6 @@
 # NestJS host example
 
-First runnable NestJS **host example** for Archipielago. It consumes `@archipielago/{core,react,vite,nestjs}`, serves a JSON API under `/api`, and React SSR + islands at the root.
+First runnable NestJS **host example** for Archipielago. It consumes `@archipielago/{core,react,vite,nestjs}`, serves a JSON API under `/api`, and Handlebars pages with Drih islands at the root.
 
 Shared workspace prereqs, `pnpm install`, and contributor checks: [root README](../../README.md). Product guide: [docs/archipielago/guide/](../../docs/archipielago/guide/README.md). Nest demonstration / recipe: [guide/nestjs.md](../../docs/archipielago/guide/nestjs.md). Example current-state: [docs/architecture.md](./docs/architecture.md). Dogfood website UI cookbook (maintainer workflow; optional if you copy this style): [how-to-web-ui.md](../../docs/how-to-web-ui.md).
 

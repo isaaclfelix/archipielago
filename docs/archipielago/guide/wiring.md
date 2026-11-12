@@ -14,59 +14,57 @@ Related pages:
 | Step                                       | Host                             | Package                                            |
 | ------------------------------------------ | -------------------------------- | -------------------------------------------------- |
 | Paths / `archipielago.config.ts`           | Yes                              | `core` reads applied config / path getters         |
-| Island manifest + `registerIslands`        | Yes                              | `core` stores table                                |
 | `setIslandModules(import.meta.glob)`       | Yes (Vite file under product UI) | `react` builds loaders                             |
 | Page stylesheet registry + per-page opt-in | Yes                              | `vite` emits `<link>`s                             |
-| `entry-server` + `Document` + page map     | Yes                              | `react` `renderDocument`                           |
+| Document templates + island includes       | Yes                              | Drih writes HTML; host helper prints the shell     |
 | Vite config plugins / inputs               | Yes (app Vite config)            | `vite` plugins                                     |
 | Mount middleware / static                  | Yes (call helper or DIY)         | `vite` pipeline; Nest adapter ships a mount helper |
-| HTTP route → props → HTML                  | Yes                              | Adapter `render` (optional)                        |
+| HTTP route → locals → HTML                 | Yes                              | Host view engine                                   |
 
 ## Steps
 
-1. **Depend** on `core`, `react`, `vite` (+ host adapter if one exists).
+1. **Depend** on `core`, `react`, `vite` (+ host adapter if one exists),
+   plus Drih dehydrate/hydrate packages the host template engine needs.
    [install.md](./install.md).
 
 2. **Layout product UI** with conventional islands:
    `ui/islands/<name>/<name>.tsx` (+ optional `<name>.module.scss`).
-   Keep page props and the islands manifest under a host-owned protocol folder.
+   Keep page props under a host-owned protocol folder. Keep the document in
+   the host’s templates.
 
 3. **Config** — optional `archipielago.config.ts` with
    `islands.registration: 'auto' | 'manual'`. Path overrides via
    `setArchipielagoPaths` when cwd defaults are wrong.
 
 4. **Bootstrap registration**
-   - `registerIslands(manifest)`
    - `setPageStylesheetRegistry({ ... })` when using sibling sheets
    - Import the Vite file that calls `setIslandModules(...)` (browser hydrate
      entry; Vitest setup for unit tests)
 
-5. **SSR entry** — implement `ServerEntry`: page map + `Document` →
-   `renderDocument` from `@archipielago/react`. Accept `documentProps` as the
-   fourth argument and pass that object through so the shell can read it
-   ([concepts](./concepts.md#document-props)).
+5. **Document** — host templates own chrome, CSRF meta, and asset tags.
+   Include islands with the Drih helper for that engine (`{{{hydrate "name"}}}`
+   in Handlebars). Pass request fields as template locals, not as a package
+   `documentProps` bag ([concepts](./concepts.md#template-locals-vs-island-props)).
 
-6. **Hydrate entry** — register islands + modules, then `hydrateIslands()`.
+6. **Hydrate entry** — set the island glob, then `hydrateIslands()`.
 
-7. **Vite** — client inputs (hydrate, shell CSS, opt-in sheets), SSR input
-   (entry-server), Archipielago Vite plugins, aliases for product zones.
+7. **Vite** — client inputs (hydrate, shell CSS, opt-in sheets), Archipielago
+   and Drih Vite plugins, aliases for product zones. There is no SSR bundle.
 
 8. **HTTP mount** — production: static `clientAssetsRoot()`; development:
    `createDevAssetPipeline()` middleware. Do this once at process boot.
 
-9. **Request path** — for each HTML route, build page props and call the
-   renderer (`ServerEntry` directly or a host adapter). When the shell needs
-   request data, pass it as `documentProps` on that same call. Return
-   `text/html`.
+9. **Request path** — for each HTML route, build view locals and `@Render`
+   (or the host equivalent). Return `text/html`.
 
-10. **Lifecycle** — sync islands (`auto`) before build/test/start when using
-    generated manifests.
+10. **Lifecycle** — run `drih-dehydrate` before start, e2e, and build so
+    gitignored island HTML and CSS sidecars exist.
 
 ## Done when
 
-Same product pages and islands can render through the host without host
-framework types inside `core` / `react` / `vite`, and asset URLs work in both
-Vite middleware and production static modes.
+The same product islands can render through the host without host framework
+types inside `core` / `react` / `vite`, and asset URLs work in both Vite
+middleware and production static modes.
 
-Smoke check: one SSR-only page and one island in the page map. Then keep
-[authoring.md](./authoring.md) for SSR vs island and props.
+Smoke check: one template-only page and one island include. Then keep
+[authoring.md](./authoring.md) for page vs island and props.

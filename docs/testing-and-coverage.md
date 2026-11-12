@@ -18,12 +18,12 @@ HTML report after `pnpm test:cov`: open `examples/nestjs/coverage/index.html` (d
 
 ## Layers
 
-| Layer             | Config                                                                                            | Owns                                                          |
-| ----------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| Unit (Node)       | [`examples/nestjs/vitest.config.ts`](../examples/nestjs/vitest.config.ts) project `node`          | Nest/API + `@archipielago/*` package `.ts`                    |
-| UI unit (browser) | [`examples/nestjs/vitest.config.browser.ts`](../examples/nestjs/vitest.config.browser.ts)         | Island/page UI states in Chromium (Playwright provider) + RTL |
-| HTTP e2e          | [`examples/nestjs/vitest.config.e2e-http.ts`](../examples/nestjs/vitest.config.e2e-http.ts)       | API contracts, SSR HTML smoke strings                         |
-| Browser e2e       | [`examples/nestjs/vitest.config.browser-e2e.ts`](../examples/nestjs/vitest.config.browser-e2e.ts) | Auth UI journeys against listening Nest + Vite middleware     |
+| Layer             | Config                                                                                            | Owns                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| Unit (Node)       | [`examples/nestjs/vitest.config.ts`](../examples/nestjs/vitest.config.ts) project `node`          | Nest/API + `@archipielago/*` package `.ts`                |
+| UI unit (browser) | [`examples/nestjs/vitest.config.browser.ts`](../examples/nestjs/vitest.config.browser.ts)         | Island UI states in Chromium (Playwright provider) + RTL  |
+| HTTP e2e          | [`examples/nestjs/vitest.config.e2e-http.ts`](../examples/nestjs/vitest.config.e2e-http.ts)       | API contracts, Handlebars HTML smoke strings              |
+| Browser e2e       | [`examples/nestjs/vitest.config.browser-e2e.ts`](../examples/nestjs/vitest.config.browser-e2e.ts) | Auth UI journeys against listening Nest + Vite middleware |
 
 **In-repo vs out-of-repo:** this app owns the four layers above for every shipped path. Separate QA-org tooling (Cucumber repos, visual release matrices, cross-system sign-off) is optional later — [TD-026](./known-tech-debt.md), not a hole in current coverage. See [ADR-0021](./adr/0021-vitest-browser-ui-testing.md).
 
@@ -32,8 +32,8 @@ There is **no dedicated integration Vitest project yet**. Unit specs must not qu
 ## Coverage policy
 
 - **Unit coverage only** (Node + browser UI unit projects). Thresholds via [`examples/nestjs/vitest.config.ts`](../examples/nestjs/vitest.config.ts).
-- **Included:** example `src/**/*.ts`, product React under `src/web/ui/{pages,islands,server-components,shared-components}/**/*.tsx`, and `@archipielago/{core,react,vite,nestjs}` sources.
-- **Excluded:** `main.ts`, Nest process wiring (`logger.middleware`, OpenAPI setup), Vite build plugins, type-only modules, `**/*.module.ts`, specs, generated Prisma client, low-signal SSR/document/hydrate plumbing, `node_modules`, `dist`.
+- **Included:** example `src/**/*.ts`, product React under `src/web/ui/{islands,shared-components}/**/*.tsx`, and `@archipielago/{core,react,vite,nestjs}` sources.
+- **Excluded:** `main.ts`, Nest process wiring (`logger.middleware`, OpenAPI setup), Vite build plugins, type-only modules, `**/*.module.ts`, specs, generated Prisma client, low-signal hydrate plumbing, `node_modules`, `dist`.
 - **E2E is a behavioral gate**, not part of the coverage percentage. Do not merge unit+e2e coverage reports for this project.
 - **Thresholds** are floors locked under the measured monorepo baseline after the Nest example move (statements/functions/lines **98%**, branches **95%**). Raise them when coverage improves; do not lower them to land a PR without team agreement.
 - When you change **controllers or HTTP contracts**, update or add `*.e2e-spec.ts` in the same PR.

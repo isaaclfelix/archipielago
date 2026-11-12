@@ -12,73 +12,70 @@ Related pages:
 - Runbook (database, start, URLs):
   [examples/nestjs/README.md](../../../examples/nestjs/README.md)
 
-| Wiring step                    | Nest example                                                                                    |
-| ------------------------------ | ----------------------------------------------------------------------------------------------- |
-| Packages                       | `@archipielago/{core,react,vite,nestjs}` in `examples/nestjs/package.json`                      |
-| Product UI                     | `examples/nestjs/src/web/ui/**`                                                                 |
-| Page props / manifest          | `examples/nestjs/src/web/protocol/**`                                                           |
-| Config                         | `examples/nestjs/archipielago.config.ts` (`islands.registration: 'auto'`)                       |
-| Register islands + stylesheets | `examples/nestjs/src/web/register-app-islands.ts` (called from `main.ts`)                       |
-| Island glob                    | `examples/nestjs/src/web/ui/runtime/island/island-modules.ts` (hydrate entry + Vitest setup)    |
-| SSR entry                      | `examples/nestjs/src/web/ui/runtime/ssr/entry-server.tsx`                                       |
-| Hydrate entry                  | `examples/nestjs/src/web/ui/runtime/island/hydrate-entry.tsx`                                   |
-| Vite                           | `examples/nestjs/vite.config.ts` + Archipielago plugins                                         |
-| Mount assets                   | `mountArchipielagoAssets(app)` in `examples/nestjs/src/main.ts`                                 |
-| Module / renderer              | `ArchipielagoModule.forRoot({ getPageStylesheets })` in `examples/nestjs/src/web/web.module.ts` |
-| Routes → HTML                  | `WebController` → `ArchipielagoViewService.render`                                              |
+| Wiring step      | Nest example                                                                                   |
+| ---------------- | ---------------------------------------------------------------------------------------------- |
+| Packages         | `@archipielago/{core,react,vite,nestjs}` plus `hbs` and `@drih/{dehydrate,hydrate,handlebars}` |
+| Product UI       | `examples/nestjs/src/web/ui/islands/**`                                                        |
+| Page views       | `examples/nestjs/views/**`                                                                     |
+| View locals      | `examples/nestjs/src/web/protocol/page-props/**`                                               |
+| Config           | `examples/nestjs/archipielago.config.ts`                                                       |
+| Page stylesheets | `examples/nestjs/src/web/page-stylesheets.ts` (called from `configureWebViews`)                |
+| Island glob      | `examples/nestjs/src/web/ui/runtime/island/island-modules.ts` (hydrate entry + Vitest setup)   |
+| Hydrate entry    | `examples/nestjs/src/web/ui/runtime/island/hydrate-entry.tsx`                                  |
+| Vite             | `examples/nestjs/vite.config.ts` + Archipielago and Drih plugins                               |
+| Mount assets     | `mountArchipielagoAssets(app)` in `examples/nestjs/src/main.ts`                                |
+| Routes → HTML    | `WebController` `@Render` + Handlebars locals                                                  |
 
 ## Adapter surface
 
-- **`ArchipielagoModule.forRoot(options)`** — provides `ArchipielagoViewService`.
-  Pass `getPageStylesheets(page)` so product sheet policy stays in the example
-  (`examples/nestjs/src/web/page-stylesheets.ts`).
-- **`ArchipielagoViewService.render(page, props, { documentProps?, pageStylesheets? })`** —
-  returns the full document string. See [Forwarding document props](#forwarding-document-props).
 - **`mountArchipielagoAssets(app)`** — static client root in production; Vite
   middleware in development.
+- HTML is Handlebars on the host, not an injectable renderer. See
+  [ADR-0035](../../adr/0035-handlebars-drih-islands.md).
 
 Nest types stay out of `@archipielago/core`, `react`, and `vite`.
 
-## Forwarding document props
+## CSRF and other template locals
 
-`documentProps` is the host bag for the document shell. The Nest adapter
-forwards the object to `entry-server` as the fourth `render` argument.
-`entry-server` passes it to `renderDocument`, which spreads it onto `Document`.
-The package does not read the keys
-([ADR-0034](../../adr/0034-host-document-props.md),
-[concepts](./concepts.md#document-props)).
+`csrfToken` is a field on `WebViewLocals`. The layout prints
+`<meta name="csrf-token">` when it is set. Packages do not name that field
+([ADR-0035](../../adr/0035-handlebars-drih-islands.md)).
 
 From a controller:
 
 ```ts
-return this.webViewService.render('home', props, {
-  documentProps: { csrfToken: req.session?.csrfToken },
-});
+@Get()
+@Render('home')
+home(@Req() req: RequestWithSession): WebViewLocals<'home'> {
+  return {
+    renderedAt: new Date().toISOString(),
+    isAuthenticated: Boolean(req.session?.userId),
+    csrfToken: req.session?.csrfToken,
+    pageStylesheets: pageStylesheetsByPage.home,
+  };
+}
 ```
 
-`props` stays the page embed contract. Fields the shell needs, such as a CSRF
-meta tag, go in `documentProps`. In this repo, `entry-server` types that bag as
-`{ csrfToken?: string }` and the example `Document` renders
-`<meta name="csrf-token">`. The current-state map of those three files is
-[Document props in this example](../../../examples/nestjs/docs/architecture.md#document-props-in-this-example).
+The current-state map is
+[examples/nestjs/docs/architecture.md](../../../examples/nestjs/docs/architecture.md#csrf-and-other-template-locals).
 
 ## Commands (from repo root)
 
-| Task         | Command             |
-| ------------ | ------------------- |
-| Dev server   | `pnpm start:dev`    |
-| Build        | `pnpm build`        |
-| Unit tests   | `pnpm test`         |
-| E2E          | `pnpm test:e2e`     |
-| Islands sync | `pnpm islands:sync` |
-| Storybook    | `pnpm storybook`    |
+| Task       | Command                                                |
+| ---------- | ------------------------------------------------------ |
+| Dev server | `pnpm start:dev`                                       |
+| Build      | `pnpm build`                                           |
+| Unit tests | `pnpm test`                                            |
+| E2E        | `pnpm test:e2e`                                        |
+| Dehydrate  | `pnpm --filter @archipielago/example-nestjs dehydrate` |
+| Storybook  | `pnpm storybook`                                       |
 
 Root scripts filter into `@archipielago/example-nestjs`. Shared lint/format/CI
 stay at the monorepo root. [Learn why](../../adr/0032-archipielago-pnpm-monorepo.md).
 
 ## Next steps
 
-- **Nest as your host** — keep [authoring.md](./authoring.md) for SSR vs island.
+- **Nest as your host** — keep [authoring.md](./authoring.md) for page vs island.
   Folder conventions, CSS lanes, and scaffold for this example’s UI style:
   [how-to-web-ui.md](../../how-to-web-ui.md) (maintainer cookbook; use it if you
   follow our patterns).

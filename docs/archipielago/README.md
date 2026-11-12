@@ -1,6 +1,6 @@
 # Archipielago
 
-**Archipielago** is an embeddable islands rendering layer for backend apps that already own routing, auth, and data. It server-renders React pages, hydrates only interactive islands, and plugs into the host through thin adapters.
+**Archipielago** is an embeddable islands rendering layer for backend apps that already own routing, auth, and data. The host owns the HTML document; React hydrates only interactive islands. Thin adapters plug the asset pipeline into the host.
 
 This repository is the **Archipielago monorepo**: framework packages under `packages/*`, runnable host examples (NestJS under `examples/nestjs`), shared tooling, and eventually the public site—which dogfoods Archipielago itself. **Documentation’s home and source of truth remain in this repo** (see [mission.md](./mission.md)).
 
@@ -21,7 +21,7 @@ Read **concepts → install → nestjs** (see Nest working), then either stay on
 | [guide/install.md](./guide/install.md)     | Workspace install today; future `0.0.1` publish                       |
 | [guide/nestjs.md](./guide/nestjs.md)       | Demonstration + Nest host recipe in this repo                         |
 | [guide/wiring.md](./guide/wiring.md)       | DIY host-agnostic integration (when your host is not the Nest recipe) |
-| [guide/authoring.md](./guide/authoring.md) | Post-connect quick reference (islands vs SSR, props)                  |
+| [guide/authoring.md](./guide/authoring.md) | Post-connect quick reference (islands vs pages, props)                |
 
 `examples/nestjs` is both the documented Nest recipe and the future dogfood website host.
 

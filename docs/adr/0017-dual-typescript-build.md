@@ -1,6 +1,6 @@
 # ADR-0017: Dual TypeScript and build ownership (Nest vs Vite)
 
-- **Status:** Accepted
+- **Status:** Accepted (SSR bundle dropped by [ADR-0035](./0035-handlebars-drih-islands.md))
 - **Date:** 2026-10-28
 
 ## Context
