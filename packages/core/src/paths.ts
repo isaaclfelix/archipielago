@@ -29,8 +29,6 @@ export interface ArchipielagoPaths {
   clientOutDirRel: string;
   /** Repo-relative Vite client manifest. */
   clientManifestRel: string;
-  /** Repo-relative generated islands map. */
-  islandsGeneratedRel: string;
 }
 
 /**
@@ -45,7 +43,6 @@ export const defaultArchipielagoPaths: ArchipielagoPaths = {
   hydrateEntryDev: '/src/web/ui/runtime/island/hydrate-entry.tsx',
   clientOutDirRel: 'dist/client',
   clientManifestRel: 'dist/client/.vite/manifest.json',
-  islandsGeneratedRel: 'src/web/protocol/islands.generated.ts',
 };
 
 let archipielagoPaths: ArchipielagoPaths = { ...defaultArchipielagoPaths };

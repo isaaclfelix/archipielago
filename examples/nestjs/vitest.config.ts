@@ -41,7 +41,6 @@ export default defineConfig({
         'src/web/configure-web-views.ts',
         '**/packages/react/src/runtime/island/hydrate.tsx',
         'src/web/ui/runtime/island/hydrate-entry.tsx',
-        'src/web/register-app-islands.ts',
         // One-line window.location.assign wrapper; exercised via browser e2e.
         'src/web/ui/api-fetch/assign-location.ts',
         // Type-only modules: V8 coverage remap cannot parse `import type` alone.

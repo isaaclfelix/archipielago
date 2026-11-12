@@ -2,7 +2,6 @@ import { type IslandName } from '@archipielago/core/islands';
 import { buildIslandLoaders } from './island-loaders';
 import type { IslandModule } from './island-module';
 
-export { isIslandName } from '@archipielago/core/islands';
 export type { IslandModule, IslandName };
 
 /**
@@ -64,7 +63,7 @@ export function getIslandLoaders(): Partial<
     );
   }
 
-  const loaders = buildIslandLoaders(islandModules, () => true);
+  const loaders = buildIslandLoaders(islandModules);
   islandLoadersCache = loaders;
   return loaders;
 }

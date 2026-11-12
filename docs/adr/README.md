@@ -54,11 +54,12 @@ a section comes from a decision. Monorepo orientation stub:
 | ADR-0025 | Per-component folders with thin barrels                        | Accepted                       | [0025-per-component-folders.md](./0025-per-component-folders.md)                         |
 | ADR-0026 | Storybook as a local UI workshop                               | Accepted                       | [0026-storybook-ui-workshop.md](./0026-storybook-ui-workshop.md)                         |
 | ADR-0027 | UI zone path aliases (`@ui` / `@protocol` / `@api`)            | Accepted                       | [0027-ui-path-aliases.md](./0027-ui-path-aliases.md)                                     |
-| ADR-0028 | Island filesystem manifest and glob loaders                    | Accepted                       | [0028-island-filesystem-manifest.md](./0028-island-filesystem-manifest.md)               |
+| ADR-0028 | Island filesystem manifest and glob loaders                    | Accepted (amended by ADR-0036) | [0028-island-filesystem-manifest.md](./0028-island-filesystem-manifest.md)               |
 | ADR-0029 | In-repo Archipielago isolation (folder boundary, no packages)  | Superseded in part by ADR-0032 | [0029-archipielago-in-repo-isolation.md](./0029-archipielago-in-repo-isolation.md)       |
-| ADR-0030 | Archipielago host config and islands registration mode         | Accepted                       | [0030-archipielago-host-config.md](./0030-archipielago-host-config.md)                   |
+| ADR-0030 | Archipielago host config and islands registration mode         | Accepted (amended by ADR-0036) | [0030-archipielago-host-config.md](./0030-archipielago-host-config.md)                   |
 | ADR-0031 | Project plan files for agent planning                          | Accepted                       | [0031-project-plan-files.md](./0031-project-plan-files.md)                               |
 | ADR-0032 | Archipielago pnpm monorepo packages and NestJS example         | Accepted                       | [0032-archipielago-pnpm-monorepo.md](./0032-archipielago-pnpm-monorepo.md)               |
 | ADR-0033 | Historical ADR narrative immutability                          | Accepted                       | [0033-historical-adr-immutability.md](./0033-historical-adr-immutability.md)             |
 | ADR-0034 | Host document props on the SSR entry                           | Accepted (amended by ADR-0035) | [0034-host-document-props.md](./0034-host-document-props.md)                             |
 | ADR-0035 | Handlebars document and prebuilt Drih islands                  | Accepted                       | [0035-handlebars-drih-islands.md](./0035-handlebars-drih-islands.md)                     |
+| ADR-0036 | Drop the injected islands table                                | Accepted                       | [0036-drop-injected-islands-table.md](./0036-drop-injected-islands-table.md)             |

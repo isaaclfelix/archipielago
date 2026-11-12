@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "dehydrate": "drih-dehydrate",
-    "islands:sync": "tsx scripts/sync-island-manifest.ts",
     "prebuild": "pnpm run dehydrate",
     "pretest:e2e": "pnpm run dehydrate",
     "prestart": "pnpm run dehydrate",

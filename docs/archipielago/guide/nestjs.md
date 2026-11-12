@@ -18,7 +18,7 @@ Related pages:
 | Product UI       | `examples/nestjs/src/web/ui/islands/**`                                                        |
 | Page views       | `examples/nestjs/views/**`                                                                     |
 | View locals      | `examples/nestjs/src/web/protocol/page-props/**`                                               |
-| Config           | `examples/nestjs/archipielago.config.ts`                                                       |
+| Paths            | Nest-example defaults in `ArchipielagoPaths`; override with `setArchipielagoPaths`             |
 | Page stylesheets | `examples/nestjs/src/web/page-stylesheets.ts` (called from `configureWebViews`)                |
 | Island glob      | `examples/nestjs/src/web/ui/runtime/island/island-modules.ts` (hydrate entry + Vitest setup)   |
 | Hydrate entry    | `examples/nestjs/src/web/ui/runtime/island/hydrate-entry.tsx`                                  |

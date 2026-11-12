@@ -13,7 +13,7 @@ Related pages:
 
 | Step                                       | Host                             | Package                                            |
 | ------------------------------------------ | -------------------------------- | -------------------------------------------------- |
-| Paths / `archipielago.config.ts`           | Yes                              | `core` reads applied config / path getters         |
+| Paths / `setArchipielagoPaths`             | Yes                              | `core` path getters                                |
 | `setIslandModules(import.meta.glob)`       | Yes (Vite file under product UI) | `react` builds loaders                             |
 | Page stylesheet registry + per-page opt-in | Yes                              | `vite` emits `<link>`s                             |
 | Document templates + island includes       | Yes                              | Drih writes HTML; host helper prints the shell     |
@@ -32,9 +32,10 @@ Related pages:
    Keep page props under a host-owned protocol folder. Keep the document in
    the host’s templates.
 
-3. **Config** — optional `archipielago.config.ts` with
-   `islands.registration: 'auto' | 'manual'`. Path overrides via
-   `setArchipielagoPaths` when cwd defaults are wrong.
+3. **Paths** — call `setArchipielagoPaths` when cwd defaults are wrong.
+   Optional `archipielago.config.ts` has no islands-registration keys
+   ([ADR-0036](../../adr/0036-drop-injected-islands-table.md)); path keys
+   wait for Phase 3.
 
 4. **Bootstrap registration**
    - `setPageStylesheetRegistry({ ... })` when using sibling sheets

@@ -39,7 +39,7 @@ export interface ScaffoldPlan {
   cssModulePath: string | undefined;
 }
 
-/** Files written plus author-facing notes (e.g. manual manifest entry). */
+/** Files written plus author-facing notes. */
 export interface ScaffoldResult {
   written: string[];
   notes: string[];
@@ -274,11 +274,10 @@ export default function ${plan.pascalName}({
 }
 
 /**
- * Writes scaffold files under `rootDir`; syncs or warns per registration mode.
+ * Writes scaffold files under `rootDir`.
  *
- * Callers that care about host config should run
- * {@link loadAndApplyArchipielagoConfig} first (CLI does). Tests may set mode
- * via `applyArchipielagoUserConfig` instead.
+ * Callers that care about host path defaults should run
+ * {@link loadAndApplyArchipielagoConfig} first (CLI does).
  *
  * @param {string} rootDir - Repository root.
  * @param {ScaffoldPlan} plan - Validated plan.

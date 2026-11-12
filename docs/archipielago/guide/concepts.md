@@ -15,7 +15,7 @@ Reading order from here:
 | Owner                                          | Owns                                                                                                                    | Does not own                             |
 | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
 | **Host app**                                   | HTTP framework, routing, auth, data, document templates, page-prop types, stylesheet opt-in maps, Vite app entry config | Core asset-tag assembly, hydrate runtime |
-| **`@archipielago/core`**                       | `PageAssets`, island table helpers, path/config shapes                                                                  | Nest/Express types, product page names   |
+| **`@archipielago/core`**                       | `PageAssets`, island path helpers, path/config shapes                                                                   | Nest/Express types, product page names   |
 | **`@archipielago/react`**                      | Browser hydrate, props codec                                                                                            | Host HTTP, product globs, the document   |
 | **`@archipielago/vite`**                       | Dev asset pipeline, page loader, manifest → tags, Vite plugins (including island CSS sidecar)                           | Framework DI modules                     |
 | **Host adapter** (e.g. `@archipielago/nestjs`) | Thin bridge: mount helpers                                                                                              | Product HTML                             |
@@ -32,12 +32,6 @@ Stylesheets, optional inlined shell CSS, and module scripts for one HTML
 response. The host prints `tags` in the document. Island CSS is **not** in this
 bag: the host prints `<style data-css-island>` from a prebuilt sidecar when it
 includes a dehydrated island.
-
-### Islands table
-
-`registerIslands(manifest)` remains for hosts that still inject a generated
-`hasCssModule` table. The Nest example does **not** inject that table at
-bootstrap. Hydrate treats the DOM as the allowlist.
 
 ### Island module glob
 

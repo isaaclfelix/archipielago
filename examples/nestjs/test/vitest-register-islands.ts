@@ -6,13 +6,13 @@
  * leak into later Nest product specs in the same worker.
  */
 import { beforeEach } from 'vitest';
-import { registerAppIslands } from '../src/web/register-app-islands.js';
+import { registerAppPageStylesheets } from '../src/web/page-stylesheets.js';
 import { registerAppIslandModules } from '../src/web/ui/runtime/island/island-modules.js';
 
-registerAppIslands();
+registerAppPageStylesheets();
 registerAppIslandModules();
 
 beforeEach(() => {
-  registerAppIslands();
+  registerAppPageStylesheets();
   registerAppIslandModules();
 });
