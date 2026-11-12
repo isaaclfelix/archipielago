@@ -251,7 +251,7 @@ Product home (vision and milestones): [docs/archipielago/](../../../docs/archipi
 | Page view `views/*.hbs`                   | Page body. May include islands.                                                |
 | `@archipielago/react` `hydrateIslands`    | Browser entry. Hydrates Drih wrappers and nothing else.                        |
 
-View locals live in `protocol/page-props/*-page.ssr-props.ts` (`*PageSsrProps`) plus `csrfToken` and `pageStylesheets` on `WebViewLocals`. The controller imports those types, not React ([ADR-0029](../../../docs/adr/0029-archipielago-in-repo-isolation.md); [ADR-0035](../../../docs/adr/0035-handlebars-drih-islands.md)).
+View locals live in `protocol/page-props/*-page.locals.ts` (`*PageLocals`) plus `csrfToken` and `pageStylesheets` on `WebViewLocals`. The controller imports those types, not React ([ADR-0029](../../../docs/adr/0029-archipielago-in-repo-isolation.md); [ADR-0035](../../../docs/adr/0035-handlebars-drih-islands.md)).
 
 ### CSRF and other template locals
 

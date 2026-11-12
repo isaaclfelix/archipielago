@@ -76,7 +76,7 @@ Nest example). Chrome that is not interactive is a partial.
 How you deliver non-island CSS (document shell, page-level sheets, etc.) is also
 host policy—not an Archipielago authoring requirement.
 
-## Page embed props stay outside templates
+## View locals stay outside templates
 
 View locals are a host→template **embed contract**, not React parent props:
 

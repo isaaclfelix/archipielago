@@ -62,7 +62,7 @@ export function kebabToPascal(kebab: string): string {
 /**
  * Validates answers and returns paths relative to the repo root.
  *
- * Rejects `--mode page --with-styles` (SSR-only must use the shell, not a module).
+ * Rejects `--mode page --with-styles` (static pages must use the shell, not a module).
  * Rejects non-kebab names.
  *
  * @param {ScaffoldAnswers} answers - Raw CLI or prompt answers.
@@ -85,7 +85,7 @@ export function resolveScaffoldPlan(answers: ScaffoldAnswers): ScaffoldPlan {
 
   if (answers.mode === 'page' && answers.withStyles) {
     throw new Error(
-      'Cannot use --with-styles with --mode page. SSR-only UI uses shell classes only (see docs/how-to-web-ui.md).',
+      'Cannot use --with-styles with --mode page. Static pages use shell classes only (see docs/how-to-web-ui.md).',
     );
   }
 
@@ -99,7 +99,7 @@ export function resolveScaffoldPlan(answers: ScaffoldAnswers): ScaffoldPlan {
     withStyles,
     pascalName,
     pageViewPath: `views/${name}.hbs`,
-    pagePropsPath: `src/web/protocol/page-props/${pageFolder}.ssr-props.ts`,
+    pagePropsPath: `src/web/protocol/page-props/${pageFolder}.locals.ts`,
     islandComponentPath: `src/web/ui/islands/${name}/${name}.tsx`,
     islandIndexPath: `src/web/ui/islands/${name}/index.ts`,
     islandStoriesPath: `src/web/ui/islands/${name}/${name}.stories.tsx`,
@@ -161,7 +161,7 @@ export function parseScaffoldArgs(
  * @returns {{ props: string; view: string }} File contents.
  */
 function pageSources(plan: ScaffoldPlan): { props: string; view: string } {
-  const propsName = `${plan.pascalName}PageSsrProps`;
+  const propsName = `${plan.pascalName}PageLocals`;
 
   const props = `/**
  * View locals for the ${plan.name} page (\`views/${plan.name}.hbs\`).
@@ -446,9 +446,9 @@ async function main(): Promise<void> {
   if (plan.mode === 'page') {
     output.write(`
 Next steps:
-  1. Add "${plan.name}" to SsrPagePropsMap in src/web/protocol/page-props/page-props.ts
+  1. Add "${plan.name}" to PageLocalsMap in src/web/protocol/page-props/page-props.ts
   2. Add a WebController method with @Render('${plan.name}') that returns
-     protocol page-props plus csrfToken and pageStylesheets
+     WebViewLocals (page locals plus csrfToken and pageStylesheets)
   3. Style with shell classes only — see docs/how-to-web-ui.md
 `);
   } else {

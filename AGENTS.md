@@ -110,7 +110,7 @@ When adding or changing browser-facing pages under `examples/nestjs/`:
 - Prefer `pnpm scaffold:web-ui` or the `create-web-ui` agent skill over hand-wiring views, locals, and hydrate includes. Layout: Nest thin `web.*` + `@archipielago/nestjs`, Vite `ui/`, Handlebars `views/`, wire `protocol/` ([ADR-0023](docs/adr/0023-web-host-ui-protocol.md), [ADR-0032](docs/adr/0032-archipielago-pnpm-monorepo.md), [ADR-0035](docs/adr/0035-handlebars-drih-islands.md)).
 - Product UI uses **one folder per component** with a kebab implementation file and thin `index.ts` re-export ([ADR-0025](docs/adr/0025-per-component-folders.md)); no fat barrels or component-as-only-`index.tsx`. Hydrate loaders glob the concrete `.tsx` path.
 - Colocate `*.stories.tsx` for the Storybook workshop (`pnpm storybook`); Vitest remains QA ([ADR-0026](docs/adr/0026-storybook-ui-workshop.md)). Do not treat Storybook as Chromatic/visual-regression unless a later decision says so.
-- Page view locals go under `examples/nestjs/src/web/protocol/page-props/*-page.ssr-props.ts` (`*PageSsrProps`) — never beside `views/` (see how-to view locals quirk).
+- Page view locals go under `examples/nestjs/src/web/protocol/page-props/*-page.locals.ts` (`*PageLocals`) — never beside `views/` (see how-to view locals quirk).
 - Shell CSS lives in `examples/nestjs/src/web/ui/styles/shell.scss`; island styles use colocated `*.module.scss` and are inlined as sibling `<style>` tags from the dehydrate sidecar — do not invent a parallel delivery path.
 - Icons: handpick Bootstrap Icons SVGs into `examples/nestjs/src/web/ui/shared-components/icon/` and render `<Icon name="…" />` from islands — do not ship the icon webfont or paste one-off SVGs (see [docs/how-to-web-ui.md](docs/how-to-web-ui.md#icons)).
 

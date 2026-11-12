@@ -3,9 +3,9 @@ import { ApiExcludeController } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
 import type { AppSession } from '../api/auth/session.js';
 import { pageStylesheetsByPage } from './page-stylesheets.js';
-import type { HomePageSsrProps } from './protocol/page-props/home-page.ssr-props.js';
-import type { LoginPageSsrProps } from './protocol/page-props/login-page.ssr-props.js';
-import type { RegisterPageSsrProps } from './protocol/page-props/register-page.ssr-props.js';
+import type { HomePageLocals } from './protocol/page-props/home-page.locals.js';
+import type { LoginPageLocals } from './protocol/page-props/login-page.locals.js';
+import type { RegisterPageLocals } from './protocol/page-props/register-page.locals.js';
 import type { WebViewLocals } from './protocol/page-props/page-props.js';
 
 /** Express request after SessionMiddleware may have attached a session. */
@@ -26,13 +26,13 @@ export class WebController {
   @Get()
   @Render('home')
   home(@Req() req: RequestWithSession): WebViewLocals<'home'> {
-    const props: HomePageSsrProps = {
+    const locals: HomePageLocals = {
       renderedAt: new Date().toISOString(),
       isAuthenticated: Boolean(req.session?.userId),
     };
 
     return {
-      ...props,
+      ...locals,
       csrfToken: req.session?.csrfToken,
       pageStylesheets: pageStylesheetsByPage.home,
     };
@@ -59,12 +59,12 @@ export class WebController {
       return;
     }
 
-    const props: LoginPageSsrProps = {
+    const locals: LoginPageLocals = {
       isAuthenticated: false,
     };
 
     return {
-      ...props,
+      ...locals,
       csrfToken: req.session?.csrfToken,
       pageStylesheets: pageStylesheetsByPage.login,
     };
@@ -91,12 +91,12 @@ export class WebController {
       return;
     }
 
-    const props: RegisterPageSsrProps = {
+    const locals: RegisterPageLocals = {
       isAuthenticated: false,
     };
 
     return {
-      ...props,
+      ...locals,
       csrfToken: req.session?.csrfToken,
       pageStylesheets: pageStylesheetsByPage.register,
     };

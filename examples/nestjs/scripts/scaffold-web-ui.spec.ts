@@ -85,7 +85,7 @@ describe('resolveScaffoldPlan', () => {
     });
     expect(plan.pageViewPath).toBe('views/about.hbs');
     expect(plan.pagePropsPath).toBe(
-      'src/web/protocol/page-props/about-page.ssr-props.ts',
+      'src/web/protocol/page-props/about-page.locals.ts',
     );
   });
 });
@@ -125,7 +125,7 @@ describe('applyScaffoldPlan', () => {
     const { written } = await applyScaffoldPlan(root, plan);
     expect(written).toHaveLength(2);
     const props = await readFile(join(root, plan.pagePropsPath), 'utf8');
-    expect(props).toContain('AboutPageSsrProps');
+    expect(props).toContain('AboutPageLocals');
     const view = await readFile(join(root, plan.pageViewPath), 'utf8');
     expect(view).toContain('{{title}}');
   });

@@ -32,7 +32,7 @@ Archipielago engines: [ADR-0029](./adr/0029-archipielago-in-repo-isolation.md)
 | `packages/vite/src/`                           | Asset host (`page-loader`, `asset-delivery`, `asset-pipeline`) and Vite build plugins            |
 | `packages/core/src/`                           | `PageAssets`, paths, island helpers                                                              |
 | `packages/react/src/runtime/`                  | Island hydrate + props codec                                                                     |
-| `examples/nestjs/src/web/protocol/page-props/` | `*-page.ssr-props.ts` + `SsrPagePropsMap` / `WebViewLocals` (not next to views)                  |
+| `examples/nestjs/src/web/protocol/page-props/` | `*-page.locals.ts` + `PageLocalsMap` / `WebViewLocals` (not next to views)                       |
 | `examples/nestjs/views/<name>.hbs`             | One Handlebars page body per route                                                               |
 | `examples/nestjs/views/layouts/app.hbs`        | Document shell, CSRF meta, asset helpers                                                         |
 | `examples/nestjs/views/partials/`              | Server chrome (header, footer, navigation)                                                       |
@@ -56,7 +56,7 @@ View locals look like “the page’s props,” but they are a Nest→Handlebars
 
 1. Nest builds them; the view engine consumes them (not a React parent).
 2. JSON-serializable plain data only.
-3. Nest must not import island `.tsx`, so contracts live in `protocol/page-props/` as `*-page.ssr-props.ts` / `*PageSsrProps`.
+3. Nest must not import island `.tsx`, so contracts live in `protocol/page-props/` as `*-page.locals.ts` / `*PageLocals`.
 4. Do not colocate them under `views/`.
 5. Island props are separate (component props + `data-component-props` wrapper).
 6. Shell fields such as `csrfToken` sit on `WebViewLocals` next to page fields.
@@ -100,13 +100,13 @@ flowchart TD
 
 Pages are the Nest ↔ view boundary. Nest builds view locals by page name and must **not** import island `.tsx` ([ADR-0017](./adr/0017-dual-typescript-build.md), [ADR-0023](./adr/0023-web-host-ui-protocol.md)).
 
-1. Add `src/web/protocol/page-props/<name>-page.ssr-props.ts` with a JSON-serializable `*PageSsrProps` interface. Keep it plain `.ts` — no React imports.
+1. Add `src/web/protocol/page-props/<name>-page.locals.ts` with a JSON-serializable `*PageLocals` interface. Keep it plain `.ts` — no React imports.
 2. Add `views/<name>.hbs`. Shell classes only (no CSS module).
-3. Register the page in `src/web/protocol/page-props/page-props.ts`: add the type to `SsrPagePropsMap` (that also defines `WebPageName`).
+3. Register the page in `src/web/protocol/page-props/page-props.ts`: add the type to `PageLocalsMap` (that also defines `WebPageName`).
 4. Add a `WebController` method that builds `WebViewLocals` (typed from `protocol/page-props/` only) and uses `@Render('<name>')`. Do **not** import island `.tsx` from Nest.
 5. If the page needs forms (or another opt-in sibling), list the sheet id under that page in `pageStylesheetsByPage`.
 
-Scaffold: `pnpm scaffold:web-ui --name about --mode page` (writes protocol locals + `views/about.hbs`; you still wire `SsrPagePropsMap` and the controller). Agents: use `.agents/skills/create-web-ui/SKILL.md`.
+Scaffold: `pnpm scaffold:web-ui --name about --mode page` (writes protocol locals + `views/about.hbs`; you still wire `PageLocalsMap` and the controller). Agents: use `.agents/skills/create-web-ui/SKILL.md`.
 
 ## Steps: opt-in page sibling stylesheet
 
