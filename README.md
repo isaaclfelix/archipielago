@@ -75,12 +75,13 @@ pnpm test:cov
 
 Local-only helpers, not separate CI jobs:
 
-| Command             | What it does                          |
-| ------------------- | ------------------------------------- |
-| `pnpm format`       | Write Prettier formatting.            |
-| `pnpm format:check` | Fail if Prettier would change a file. |
-| `pnpm test:watch`   | Re-run unit tests on change.          |
-| `pnpm test:debug`   | Unit tests with the Node inspector.   |
+| Command             | What it does                           |
+| ------------------- | -------------------------------------- |
+| `pnpm format`       | Write Prettier formatting.             |
+| `pnpm format:check` | Fail if Prettier would change a file.  |
+| `pnpm dehydrate`    | Prebuild island HTML and CSS sidecars. |
+| `pnpm test:watch`   | Re-run unit tests on change.           |
+| `pnpm test:debug`   | Unit tests with the Node inspector.    |
 
 ## Documentation
 

@@ -61,14 +61,14 @@ The current-state map is
 
 ## Commands (from repo root)
 
-| Task       | Command                                                |
-| ---------- | ------------------------------------------------------ |
-| Dev server | `pnpm start:dev`                                       |
-| Build      | `pnpm build`                                           |
-| Unit tests | `pnpm test`                                            |
-| E2E        | `pnpm test:e2e`                                        |
-| Dehydrate  | `pnpm --filter @archipielago/example-nestjs dehydrate` |
-| Storybook  | `pnpm storybook`                                       |
+| Task       | Command          |
+| ---------- | ---------------- |
+| Dev server | `pnpm start:dev` |
+| Build      | `pnpm build`     |
+| Unit tests | `pnpm test`      |
+| E2E        | `pnpm test:e2e`  |
+| Dehydrate  | `pnpm dehydrate` |
+| Storybook  | `pnpm storybook` |
 
 Root scripts filter into `@archipielago/example-nestjs`. Shared lint/format/CI
 stay at the monorepo root. [Learn why](../../adr/0032-archipielago-pnpm-monorepo.md).
