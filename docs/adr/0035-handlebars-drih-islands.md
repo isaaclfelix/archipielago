@@ -1,6 +1,6 @@
 # ADR-0035: Handlebars document and prebuilt Drih islands
 
-- **Status:** Accepted
+- **Status:** Accepted (amended by [ADR-0038](./0038-drop-drih-hydrate-from-nest-host.md))
 - **Date:** 2026-11-12
 - **Tags:** archipielago, nest, drih, handlebars
 

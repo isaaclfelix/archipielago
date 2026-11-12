@@ -24,7 +24,9 @@ Related pages:
 ## Steps
 
 1. **Depend** on `core`, `react`, `vite` (+ host adapter if one exists),
-   plus Drih dehydrate/hydrate packages the host template engine needs.
+   plus `@drih/dehydrate` and the Drih template package the host engine needs
+   (`@drih/handlebars` for Handlebars). Hydration is `hydrateIslands`, not
+   `@drih/hydrate` ([ADR-0038](../../adr/0038-drop-drih-hydrate-from-nest-host.md)).
    [install.md](./install.md).
 
 2. **Layout product UI** with conventional islands:

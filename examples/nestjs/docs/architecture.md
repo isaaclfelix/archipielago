@@ -288,7 +288,7 @@ sequenceDiagram
 
 ### Islands
 
-An island is a client component with its own React root. The template includes it with `{{{hydrate "name"}}}`. See [ADR-0012](../../../docs/adr/0012-island-boundaries.md) and [ADR-0035](../../../docs/adr/0035-handlebars-drih-islands.md).
+An island is `<name>/<name>.tsx` with its own React root. The folder selects it; the file does not use `'use client'`. The template includes it with `{{{hydrate "name"}}}`. See [ADR-0012](../../../docs/adr/0012-island-boundaries.md), [ADR-0035](../../../docs/adr/0035-handlebars-drih-islands.md), and [ADR-0038](../../../docs/adr/0038-drop-drih-hydrate-from-nest-host.md).
 
 The wrapper is:
 
@@ -335,7 +335,7 @@ CSS ships in **three lanes**:
 
 **Forms sibling:** [`examples/nestjs/src/web/ui/styles/forms.scss`](../src/web/ui/styles/forms.scss) (Vite input `forms`). Pages list `'forms'` in the example-owned [`pageStylesheetsByPage`](../src/web/page-stylesheets.ts), which the controller puts on view locals. Selective Bootstrap partials: `forms/labels`, `forms/form-control`, `forms/form-text`, `forms/validation`. Measured size ~11 KiB raw / ~2 KiB gzip. Revisit triggers: [TD-021](../../../docs/known-tech-debt.md).
 
-**Island CSS:** Import `*.module.scss` beside the component; use `styles/_tokens.scss` for Sass API only. Do not re-import shell or Bootstrap CSS-emitting partials ([TD-016](../../../docs/known-tech-debt.md)). An `@archipielago/vite` sidecar plugin writes compiled CSS into gitignored `views/components/dehydrated-css/<name>.css`. The Handlebars hydrate helper prints a sibling `<style data-css-island="{name}">` on first include. Hydrate loads JS only (mapDeps CSS filtered in prod; `updateStyle` rewritten in dev).
+**Island CSS:** Import `*.module.scss` beside the component; use `styles/_tokens.scss` for Sass API only. Do not re-import shell or Bootstrap CSS-emitting partials ([TD-016](../../../docs/known-tech-debt.md)). An `@archipielago/vite` sidecar plugin writes compiled CSS into gitignored `views/components/dehydrated-css/<name>.css`. `islandCssReader` supplies that file to the Handlebars hydrate helper, which prints a sibling `<style data-css-island="{name}">` on first include. Hydrate loads JS only (mapDeps CSS filtered in prod; `updateStyle` rewritten in dev).
 
 ```html
 <style data-css-island="mobile-navigation">

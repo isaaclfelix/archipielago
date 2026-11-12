@@ -1,6 +1,5 @@
 import react from '@vitejs/plugin-react';
 import { dehydratePlugin } from '@drih/dehydrate/plugin';
-import { hydratePlugin } from '@drih/hydrate/plugin';
 import doiuse from 'doiuse';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -27,7 +26,6 @@ const repoRoot = dirname(fileURLToPath(import.meta.url));
  */
 export default defineConfig({
   plugins: [
-    hydratePlugin(),
     dehydratePlugin(),
     writeIslandCssSidecar({
       islandsDir: 'src/web/ui/islands',

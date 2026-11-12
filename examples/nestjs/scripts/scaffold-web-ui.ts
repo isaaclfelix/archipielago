@@ -223,9 +223,7 @@ function islandSources(plan: ScaffoldPlan): {
     ? ` className={styles.root}`
     : ' className="btn btn-primary"';
 
-  const component = `'use client';
-
-import { useState, type ReactElement } from 'react';
+  const component = `import { useState, type ReactElement } from 'react';
 ${importStyles}
 /**
  * Interactive ${plan.name} island.

@@ -4,7 +4,8 @@
  * Defaults encode the Nest sample layout under `examples/nestjs` (`src/web/…`
  * relative to that package cwd). That prefix is host packaging, not an
  * Archipielago island convention — conventions start at
- * `ui/islands/<name>/<name>.tsx` ([ADR-0025], [ADR-0028]). Non-Nest hosts must
+ * `ui/islands/<name>/<name>.tsx` ([ADR-0025], [ADR-0028]). Those folders are
+ * not path keys ([ADR-0038]). Non-Nest hosts must
  * call {@link setArchipielagoPaths} at bootstrap; host-facing path keys on
  * `archipielago.config.ts` stay deferred until Phase 3 ([ADR-0030]).
  */
@@ -13,10 +14,6 @@
  * Relative and Vite-dev roots the host and asset helpers share.
  */
 export interface ArchipielagoPaths {
-  /** Repo-relative product islands directory. */
-  islandsDirRel: string;
-  /** Absolute-from-root Vite URL prefix for island modules. */
-  islandsDirDevPrefix: string;
   /** Manifest / Vite input for the shell stylesheet. */
   shellStylesheetSource: string;
   /** Vite-dev URL for the shell stylesheet. */
@@ -35,8 +32,6 @@ export interface ArchipielagoPaths {
  * Defaults for this repository's Nest sample layout.
  */
 export const defaultArchipielagoPaths: ArchipielagoPaths = {
-  islandsDirRel: 'src/web/ui/islands',
-  islandsDirDevPrefix: '/src/web/ui/islands',
   shellStylesheetSource: 'src/web/ui/styles/shell.scss',
   shellStylesheetDev: '/src/web/ui/styles/shell.scss',
   hydrateEntrySource: 'src/web/ui/runtime/island/hydrate-entry.tsx',

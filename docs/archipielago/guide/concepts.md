@@ -17,7 +17,7 @@ Reading order from here:
 | **Host app**                                   | HTTP framework, routing, auth, data, document templates, page-prop types, stylesheet opt-in maps, Vite app entry config | Core asset-tag assembly, hydrate runtime |
 | **`@archipielago/core`**                       | `PageAssets`, path roots, host config load/apply, shell CSS budget                                                      | Nest/Express types, product page names   |
 | **`@archipielago/react`**                      | Browser hydrate, props codec                                                                                            | Host HTTP, product globs, the document   |
-| **`@archipielago/vite`**                       | Dev asset pipeline, page loader, manifest → tags, Vite plugins (including island CSS sidecar)                           | Framework DI modules                     |
+| **`@archipielago/vite`**                       | Dev asset pipeline, page loader, manifest → tags, Vite plugins, island CSS sidecar and `islandCssReader`                | Framework DI modules                     |
 | **Host adapter** (e.g. `@archipielago/nestjs`) | `mountArchipielagoAssets` (static client or Vite middleware)                                                            | Product HTML, Nest DI renderer           |
 
 The Nest example’s document is Handlebars. Islands are prebuilt HTML that the
@@ -41,8 +41,10 @@ map. Unknown `data-component-name` values are skipped.
 
 ### Path roots (`ArchipielagoPaths`)
 
-Where islands, hydrate entry, client out, and shell CSS live. Defaults match a
-conventional `src/web/…` host layout when the process cwd is the host package.
+Where the hydrate entry, client output, and shell CSS live. Island folders are
+the host Vite config and the product glob, not path keys
+([ADR-0038](../../adr/0038-drop-drih-hydrate-from-nest-host.md)). Defaults match
+a conventional `src/web/…` host layout when the process cwd is the host package.
 Override with `setArchipielagoPaths` when needed.
 
 ### Asset pipeline
@@ -78,10 +80,11 @@ flowchart LR
   reactPkg["@archipielago/react"]
   vitePkg["@archipielago/vite"]
   corePkg["@archipielago/core"]
+  hydrateEntry[Hydrate entry]
   hostHttp --> templates
   templates --> vitePkg
   vitePkg --> corePkg
-  reactPkg --> corePkg
+  hydrateEntry --> reactPkg
 ```
 
 1. Bootstrap: register page stylesheets; mount assets; dehydrate islands

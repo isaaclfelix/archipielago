@@ -117,11 +117,11 @@ Scaffold: `pnpm scaffold:web-ui --name about --mode page` (writes protocol local
 
 ## Steps: interactive island
 
-1. Folder under `src/web/ui/islands/<name>/` with `'use client'` `<name>.tsx` (default export), thin `index.ts`, JSON-serializable props.
+1. Folder under `src/web/ui/islands/<name>/` with `<name>.tsx` (default export), thin `index.ts`, JSON-serializable props. The folder names the island; do not add `'use client'` ([ADR-0038](./adr/0038-drop-drih-hydrate-from-nest-host.md)).
 2. Optional: colocated `<name>.module.scss` (import tokens via `@ui/styles/tokens`) — never re-import the shell sheet or Bootstrap CSS-emitting partials (including forms/validation).
 3. Include from a Handlebars view or partial: `{{{hydrate "name"}}}`. Hydrate loaders discover conventional folders via glob — no registry map edit. The DOM is the allowlist ([ADR-0028](./adr/0028-island-filesystem-manifest.md), [ADR-0035](./adr/0035-handlebars-drih-islands.md), [ADR-0036](./adr/0036-drop-injected-islands-table.md)).
 4. Run `pnpm dehydrate` (also a `prestart*` / `prebuild` / `pretest:e2e` hook) so gitignored HTML and CSS sidecars exist. Missing HTML prints an empty include.
-5. Hydrate still loads **JS only** for that island; CSS was already inlined as a sibling `<style data-css-island>`.
+5. Hydrate still loads **JS only** for that island. `islandCssReader` supplies the sidecar so the helper can inline a sibling `<style data-css-island>`.
 
 Scaffold: `pnpm scaffold:web-ui --name my-widget --mode island --with-styles` (or omit `--with-styles`). Agents: use `.agents/skills/create-web-ui/SKILL.md`.
 
