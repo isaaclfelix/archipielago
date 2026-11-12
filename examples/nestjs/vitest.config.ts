@@ -33,6 +33,7 @@ export default defineConfig({
         '**/packages/vite/src/plugins/vite-shell-css-budget.ts',
         '**/packages/vite/src/plugins/vite-strip-island-css-preload.ts',
         '**/packages/vite/src/plugins/vite-suppress-island-css-inject.ts',
+        '**/packages/vite/src/plugins/vite-write-island-css-sidecar.ts',
         'src/**/*.module.ts',
         'src/**/*.spec.ts',
         // Storybook workshop files; not unit-tested runtime.

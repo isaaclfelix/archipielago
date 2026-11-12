@@ -1,4 +1,6 @@
 import react from '@vitejs/plugin-react';
+import { dehydratePlugin } from '@drih/dehydrate/plugin';
+import { hydratePlugin } from '@drih/hydrate/plugin';
 import doiuse from 'doiuse';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -7,6 +9,7 @@ import { defineConfig } from 'vite';
 import { shellCssBudgetPlugin } from '@archipielago/vite/plugins/vite-shell-css-budget.js';
 import { stripIslandCssFromModulePreload } from '@archipielago/vite/plugins/vite-strip-island-css-preload.js';
 import { suppressIslandCssClientInject } from '@archipielago/vite/plugins/vite-suppress-island-css-inject.js';
+import { writeIslandCssSidecar } from '@archipielago/vite/plugins/vite-write-island-css-sidecar.js';
 
 const repoRoot = dirname(fileURLToPath(import.meta.url));
 
@@ -25,6 +28,12 @@ const repoRoot = dirname(fileURLToPath(import.meta.url));
  */
 export default defineConfig(({ isSsrBuild }) => ({
   plugins: [
+    hydratePlugin(),
+    dehydratePlugin(),
+    writeIslandCssSidecar({
+      islandsDir: 'src/web/ui/islands',
+      outDir: 'views/components/dehydrated-css',
+    }),
     react(),
     // Dev: island CSS stays on SSR sibling <style>; do not also inject head tags.
     suppressIslandCssClientInject(),
@@ -33,11 +42,18 @@ export default defineConfig(({ isSsrBuild }) => ({
       : [shellCssBudgetPlugin(), stripIslandCssFromModulePreload()]),
   ],
   resolve: {
+    // One React copy when @drih packages are linked from the sibling checkout.
+    dedupe: ['react', 'react-dom'],
     // Prefer explicit aliases; tsconfigPaths alone may miss tsconfig.web.json.
     alias: {
       '@ui': resolve(repoRoot, 'src/web/ui'),
       '@protocol': resolve(repoRoot, 'src/web/protocol'),
       '@api': resolve(repoRoot, 'src/api'),
+    },
+  },
+  server: {
+    fs: {
+      allow: [repoRoot, resolve(repoRoot, '../../../drih')],
     },
   },
   build: {
