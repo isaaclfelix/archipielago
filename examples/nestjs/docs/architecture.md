@@ -72,6 +72,8 @@ the example, `tsconfig.build.json` excludes `src/web/ui/**`, while
 Vite emits the browser hydrate bundle that actually runs. See
 [ADR-0017](../../../docs/adr/0017-dual-typescript-build.md) and
 [ADR-0032](../../../docs/adr/0032-archipielago-pnpm-monorepo.md).
+`src/web/ui` is Vite-owned, not Nest emit; leaving it under `src/` next to the
+Nest HTML host is [TD-040](../../../docs/known-tech-debt.md).
 
 **Import specifiers:** Nest-emitted graphs (`examples/nestjs/src/api/`, Nest web root, `web/protocol`) and Node packages (`packages/core`, `packages/vite`, `packages/nestjs`) use **`.js`** emit names under `"type": "module"` + `nodenext`. Vite-owned `examples/nestjs/src/web/ui/**` and `packages/react/**` use **extensionless** relatives (`bundler` resolution). Consumers import engines through real `@archipielago/core`, `@archipielago/react`, `@archipielago/vite`, and `@archipielago/nestjs` package exports; product aliases remain `@ui` / `@protocol` / `@api` ([ADR-0027](../../../docs/adr/0027-ui-path-aliases.md)). See [ADR-0024](../../../docs/adr/0024-dual-import-resolution.md). Product UI components use **one folder per component** with a thin `index.ts` barrel; island hydrate loaders import the concrete implementation file ([ADR-0025](../../../docs/adr/0025-per-component-folders.md)). Colocated Storybook stories (`pnpm storybook`) are a local workshop, not QA ([ADR-0026](../../../docs/adr/0026-storybook-ui-workshop.md)).
 
