@@ -1,6 +1,6 @@
 # ADR-0028: Island filesystem manifest and glob loaders
 
-- **Status:** Accepted (path/gitignore/tooling amended by [ADR-0030](./0030-archipielago-host-config.md))
+- **Status:** Accepted (path/gitignore/tooling amended by [ADR-0030](./0030-archipielago-host-config.md); injected table dropped by [ADR-0036](./0036-drop-injected-islands-table.md))
 - **Date:** 2026-10-29
 - **Tags:** web, islands, vite, protocol
 

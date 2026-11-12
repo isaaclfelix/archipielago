@@ -1,6 +1,6 @@
 # ADR-0023: Nest host, embedded Vite UI, and typed protocol
 
-- **Status:** Superseded by [ADR-0029](./0029-archipielago-in-repo-isolation.md) for live folder layout (engine roots). SSR page-props quirk and Nest-thin `web.*` surface remain in force as described below and restated in ADR-0029.
+- **Status:** Superseded by [ADR-0029](./0029-archipielago-in-repo-isolation.md) for live folder layout (engine roots). Nest-thin `web.*` surface remains. Live page contracts are `*-page.locals.ts` / `*PageLocals` / `PageLocalsMap` ([ADR-0035](./0035-handlebars-drih-islands.md)); the `*-page.ssr-props.ts` names below are historical.
 - **Date:** 2026-10-29
 
 ## Context

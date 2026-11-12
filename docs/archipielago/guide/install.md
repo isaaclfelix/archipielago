@@ -27,13 +27,16 @@ for Vite.
 
 | Package                | When                                                       |
 | ---------------------- | ---------------------------------------------------------- |
-| `@archipielago/core`   | Always (contracts, islands, paths, config)                 |
-| `@archipielago/react`  | Always (SSR + hydrate runtime)                             |
+| `@archipielago/core`   | Always (contracts, paths, config, shell CSS budget)        |
+| `@archipielago/react`  | Always (lazy island hydrate)                               |
 | `@archipielago/vite`   | Always (dev/prod assets + plugins in the host Vite config) |
 | `@archipielago/nestjs` | NestJS hosts only                                          |
 
 Peers (install in the host): `react`, `react-dom`, and for Nest:
 `@nestjs/common`, `@nestjs/core`. Vite is a peer of `@archipielago/vite`.
+The Nest example also depends on `hbs` and `@drih/{dehydrate,hydrate,handlebars}`
+at `^1.0.5` from the private GitLab npm registry (project `.npmrc` maps `@drih`;
+the token lives in the user `~/.npmrc`, not in git).
 
 ## Future public install (`0.0.1`)
 

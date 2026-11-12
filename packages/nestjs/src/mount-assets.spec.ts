@@ -2,12 +2,6 @@ import {
   clientAssetsRoot,
   createDevAssetPipeline,
 } from '@archipielago/vite/asset-pipeline.js';
-import { ArchipielagoModule } from './archipielago.module.js';
-import {
-  ARCHIPIELAGO_NEST_OPTIONS,
-  type ArchipielagoNestOptions,
-} from './archipielago-nest.options.js';
-import { ArchipielagoViewService } from './archipielago-view.service.js';
 import {
   mountArchipielagoAssets,
   type ArchipielagoAssetHost,
@@ -19,23 +13,6 @@ vi.mock('@archipielago/vite/asset-pipeline.js', () => ({
     middlewares: 'vite-middleware',
   })),
 }));
-
-describe('ArchipielagoModule', () => {
-  it('exports the renderer with host options', () => {
-    const options: ArchipielagoNestOptions = {
-      getPageStylesheets: () => ['forms'],
-    };
-
-    const module = ArchipielagoModule.forRoot(options);
-
-    expect(module.exports).toContain(ArchipielagoViewService);
-    expect(module.providers).toContain(ArchipielagoViewService);
-    expect(module.providers).toContainEqual({
-      provide: ARCHIPIELAGO_NEST_OPTIONS,
-      useValue: options,
-    });
-  });
-});
 
 describe('mountArchipielagoAssets', () => {
   it('mounts the built client directory in production', async () => {

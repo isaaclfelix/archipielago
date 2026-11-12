@@ -1,6 +1,6 @@
 # ADR-0015: Island CSS as SSR sibling style tags
 
-- **Status:** Accepted
+- **Status:** Accepted (amended by [ADR-0035](./0035-handlebars-drih-islands.md))
 - **Date:** 2026-10-28
 
 ## Context

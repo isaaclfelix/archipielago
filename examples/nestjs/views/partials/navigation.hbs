@@ -1,0 +1,39 @@
+<nav>
+  <div class="container p-4">
+    <div class="navigation-row row">
+      <div class="navigation-logo col display-6">
+        <a href="/" class="navigation-logo-link">bed.dev</a>
+      </div>
+      <div class="navigation-separator col d-none d-md-flex"></div>
+      <div class="navigation-left col d-none d-md-flex">
+        <ul class="navigation-list list-unstyled d-flex mb-0">
+          <li>
+            <a href="/" class="navigation-link">Home</a>
+          </li>
+          <li>
+            <a href="/api/docs" class="navigation-link">Swagger Docs</a>
+          </li>
+        </ul>
+      </div>
+      <div class="navigation-right col d-flex">
+        <ul
+          class="navigation-list list-unstyled d-none d-md-flex mb-0 align-items-center"
+        >
+          {{#if isAuthenticated}}
+            <li>
+              {{{hydrate "logout-button"}}}
+            </li>
+          {{else}}
+            <li>
+              <a href="/login" class="navigation-link">Login</a>
+            </li>
+            <li>
+              <a href="/register" class="navigation-link">Register</a>
+            </li>
+          {{/if}}
+        </ul>
+        {{{hydrate "mobile-navigation" isAuthenticated=isAuthenticated}}}
+      </div>
+    </div>
+  </div>
+</nav>

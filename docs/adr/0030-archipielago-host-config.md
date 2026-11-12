@@ -1,6 +1,6 @@
 # ADR-0030: Archipielago host config and islands registration mode
 
-- **Status:** Accepted
+- **Status:** Accepted (islands registration mode dropped by [ADR-0036](./0036-drop-injected-islands-table.md))
 - **Date:** 2026-10-31
 - **Tags:** archipielago, islands, tooling
 

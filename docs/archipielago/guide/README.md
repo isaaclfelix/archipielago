@@ -11,7 +11,7 @@ then keep the authoring cheat sheet for ongoing UI:
 | 3     | [nestjs.md](./nestjs.md)       | **Demonstration + Nest host recipe**—how the concepts look when connected in this repo            |
 | 4a    | Stay on Nest                   | Nest adapter from [nestjs.md](./nestjs.md); then [authoring.md](./authoring.md)                   |
 | 4b    | Other host                     | [wiring.md](./wiring.md) (DIY transfer of the host contract); then [authoring.md](./authoring.md) |
-| 5     | [authoring.md](./authoring.md) | Post-connect quick reference (SSR vs islands, required island shape, props)                       |
+| 5     | [authoring.md](./authoring.md) | Post-connect quick reference (pages vs islands, required island shape, props)                     |
 
 `examples/nestjs` is both the documented Nest recipe and the future dogfood
 website host. Those roles share a tree; they do not share every doc lane.

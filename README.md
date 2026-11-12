@@ -1,6 +1,6 @@
 # Archipielago
 
-**Archipielago** is an embeddable islands rendering layer for backend apps that already own routing, auth, and data. It server-renders React pages, hydrates only interactive islands, and plugs into the host through thin adapters.
+**Archipielago** is an embeddable islands rendering layer for backend apps that already own routing, auth, and data. The host owns the HTML document; React hydrates only interactive islands. Thin adapters plug the asset pipeline into the host.
 
 This repository is the **Archipielago monorepo**: framework packages under `packages/*`, a NestJS host example under `examples/nestjs`, shared tooling, and in-repo docs as the source of truth ([ADR-0032](./docs/adr/0032-archipielago-pnpm-monorepo.md)). Root `pnpm` scripts filter into the Nest example today ([TD-034](./docs/known-tech-debt.md)).
 
@@ -39,6 +39,14 @@ node --version
 
 ## Setup
 
+`@drih/*` installs from the private GitLab project registry. The committed [`.npmrc`](./.npmrc) maps the scope and has no token. Put a GitLab personal access token with `read_api` (or a deploy token with `read_package_registry`) in your user `~/.npmrc`:
+
+```ini
+//gitlab.com/api/v4/projects/88728766/packages/npm/:_authToken=<token>
+```
+
+CI uses the `GITLAB_NPM_TOKEN` repository secret the same way.
+
 ```bash
 pnpm install
 ```
@@ -49,13 +57,13 @@ pnpm install
 
 Run these locally before opening a pull request. [CI](./.github/workflows/ci.yml) runs the same five commands, each in its own job, after `pnpm install --frozen-lockfile`. Warnings fail lint. Coverage fails under the thresholds in [docs/testing-and-coverage.md](./docs/testing-and-coverage.md).
 
-| CI job     | Local command   | What it does                                                                |
-| ---------- | --------------- | --------------------------------------------------------------------------- |
-| `lint`     | `pnpm lint`     | Oxlint, type-aware, on `packages/` and `examples/`. Warnings fail.          |
-| `build`    | `pnpm build`    | Package builds, then Nest compile / Vite client + SSR for the Nest example. |
-| `unit`     | `pnpm test`     | Unit tests (`*.spec.ts`) via `@archipielago/example-nestjs`.                |
-| `e2e`      | `pnpm test:e2e` | HTTP tests (`*.e2e-spec.ts`) against Nest + Testcontainers Postgres.        |
-| `coverage` | `pnpm test:cov` | The unit suite again, with coverage thresholds.                             |
+| CI job     | Local command   | What it does                                                                        |
+| ---------- | --------------- | ----------------------------------------------------------------------------------- |
+| `lint`     | `pnpm lint`     | Oxlint, type-aware, on `packages/` and `examples/`. Warnings fail.                  |
+| `build`    | `pnpm build`    | Package builds, then dehydrate, Nest compile, and Vite client for the Nest example. |
+| `unit`     | `pnpm test`     | Unit tests (`*.spec.ts`) via `@archipielago/example-nestjs`.                        |
+| `e2e`      | `pnpm test:e2e` | HTTP tests (`*.e2e-spec.ts`) against Nest + Testcontainers Postgres.                |
+| `coverage` | `pnpm test:cov` | The unit suite again, with coverage thresholds.                                     |
 
 ```bash
 pnpm lint
@@ -67,12 +75,13 @@ pnpm test:cov
 
 Local-only helpers, not separate CI jobs:
 
-| Command             | What it does                          |
-| ------------------- | ------------------------------------- |
-| `pnpm format`       | Write Prettier formatting.            |
-| `pnpm format:check` | Fail if Prettier would change a file. |
-| `pnpm test:watch`   | Re-run unit tests on change.          |
-| `pnpm test:debug`   | Unit tests with the Node inspector.   |
+| Command             | What it does                           |
+| ------------------- | -------------------------------------- |
+| `pnpm format`       | Write Prettier formatting.             |
+| `pnpm format:check` | Fail if Prettier would change a file.  |
+| `pnpm dehydrate`    | Prebuild island HTML and CSS sidecars. |
+| `pnpm test:watch`   | Re-run unit tests on change.           |
+| `pnpm test:debug`   | Unit tests with the Node inspector.    |
 
 ## Documentation
 

@@ -20,7 +20,7 @@ export interface ArchipielagoAssetHost {
  * Mounts production static assets or development Vite middleware.
  *
  * Call once during Nest bootstrap, after creating the app and before listen.
- * Vite registration remains shared with the renderer through the Vite package.
+ * Vite registration remains shared so asset helpers see development vs production.
  *
  * @param {ArchipielagoAssetHost} app - Nest Express application to configure.
  * @param {{ production?: boolean }} options - Optional explicit environment mode.

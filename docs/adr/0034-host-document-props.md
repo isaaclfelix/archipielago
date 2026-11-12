@@ -1,6 +1,6 @@
 # ADR-0034: Host document props on the SSR entry
 
-- **Status:** Accepted
+- **Status:** Accepted (amended by [ADR-0035](./0035-handlebars-drih-islands.md))
 - **Date:** 2026-11-04
 - **Tags:** archipielago, ssr, packages
 

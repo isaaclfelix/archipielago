@@ -1,11 +1,12 @@
 /**
- * Host-facing Archipielago configuration (islands registration mode).
+ * Host-facing Archipielago configuration.
  *
- * Tools load `archipielago.config.ts` from the repo root via
- * {@link loadAndApplyArchipielagoConfig}. Engines keep using
- * {@link getArchipielagoPaths} / injected islands; they do not branch on mode.
+ * Tools load `archipielago.config.ts` from the host package via
+ * {@link loadAndApplyArchipielagoConfig}. Engines use
+ * {@link getArchipielagoPaths}; they do not branch on a registration mode
+ * ([ADR-0036](../../../docs/adr/0036-drop-injected-islands-table.md)).
  *
- * Path roots stay Nest-sample defaults in {@link getArchipielagoPaths} until a
+ * Path roots stay Nest-example defaults in {@link getArchipielagoPaths} until a
  * second host needs overrides (Phase 3) — see ADR-0030.
  */
 
@@ -20,56 +21,22 @@ import {
 } from './paths.js';
 
 /**
- * How the host maintains the islands manifest that `registerIslands` injects.
- *
- * Engines always consume that injected manifest; they do not branch on mode.
- *
- * - `auto` — derive the manifest from conventional folders (`islands:sync` may
- *   write it; scaffold runs sync).
- * - `manual` — host owns the manifest; sync refuses to write; scaffold warns
- *   with the entry to add.
- *
- * Folder layout stays `ui/islands/<name>/<name>.tsx` either way ([ADR-0025]).
- */
-export type IslandsRegistration = 'auto' | 'manual';
-
-/**
  * Optional host config file shape (`archipielago.config.ts` default export).
  *
  * Path overrides are not part of this surface yet (deferred to Phase 3).
+ * Islands registration mode was removed ([ADR-0036]).
  */
-export interface ArchipielagoUserConfig {
-  islands?: {
-    /**
-     * How the host maintains the islands manifest. Defaults to `auto`.
-     */
-    registration?: IslandsRegistration;
-  };
-}
+export type ArchipielagoUserConfig = object;
 
 /**
  * Resolved runtime config after defaults + user file / test overrides.
  */
 export interface ArchipielagoResolvedConfig {
   paths: ArchipielagoPaths;
-  islandsRegistration: IslandsRegistration;
-}
-
-const defaultRegistration: IslandsRegistration = 'auto';
-
-let islandsRegistration: IslandsRegistration = defaultRegistration;
-
-/**
- * Returns the active islands registration mode.
- *
- * @returns {IslandsRegistration} `auto` (sync) or `manual` (host-owned manifest).
- */
-export function getIslandsRegistration(): IslandsRegistration {
-  return islandsRegistration;
 }
 
 /**
- * Returns paths plus registration mode for tools and diagnostics.
+ * Returns paths for tools and diagnostics.
  *
  * Paths always come from {@link getArchipielagoPaths} (sample defaults or
  * in-process test overrides via {@link setArchipielagoPaths}).
@@ -79,26 +46,22 @@ export function getIslandsRegistration(): IslandsRegistration {
 export function getArchipielagoConfig(): ArchipielagoResolvedConfig {
   return {
     paths: getArchipielagoPaths(),
-    islandsRegistration,
   };
 }
 
 /**
- * Restores path defaults and `auto` registration.
+ * Restores path defaults.
  *
  * @returns {void}
  */
 export function resetArchipielagoConfig(): void {
   setArchipielagoPaths(undefined);
-  islandsRegistration = defaultRegistration;
 }
 
 /**
- * Applies a user config object (registration mode only).
+ * Applies a user config object.
  *
- * Pass `undefined` to restore path defaults and `auto` registration.
- * Does not clear unspecified fields when a partial config is passed — call
- * {@link resetArchipielagoConfig} first when loading a fresh host file.
+ * Pass `undefined` to restore path defaults. Path keys are not applied yet.
  *
  * @param {ArchipielagoUserConfig | undefined} config - Host overrides, or clear.
  * @returns {void}
@@ -108,11 +71,6 @@ export function applyArchipielagoUserConfig(
 ): void {
   if (config === undefined) {
     resetArchipielagoConfig();
-    return;
-  }
-
-  if (config.islands?.registration !== undefined) {
-    islandsRegistration = config.islands.registration;
   }
 }
 
@@ -120,7 +78,7 @@ export function applyArchipielagoUserConfig(
  * Loads `archipielago.config.ts` from `rootDir` when present and applies it.
  *
  * Always resets to defaults first, then merges the file when it exists. Call
- * from sync/scaffold CLI before reading paths/mode.
+ * from CLI tools before reading paths.
  *
  * @param {string} rootDir - Repository root that may contain the config file.
  * @returns {Promise<ArchipielagoResolvedConfig>} Config after load/apply.
@@ -143,26 +101,6 @@ export async function loadAndApplyArchipielagoConfig(
 }
 
 /**
- * Builds the manual-mode scaffold warning for a new island entry.
- *
- * @param {string} name - Island folder / registry name.
- * @param {boolean} hasCssModule - Whether `<name>.module.scss` was written.
- * @param {string} manifestRel - Repo-relative islands manifest path from defaults.
- * @returns {string} Multi-line warning for authors.
- */
-export function manualIslandManifestWarning(
-  name: string,
-  hasCssModule: boolean,
-  manifestRel: string,
-): string {
-  return [
-    `islands.registration=manual: add this entry to ${manifestRel} (sync will not run):`,
-    ``,
-    `  '${name}': { hasCssModule: ${String(hasCssModule)} },`,
-  ].join('\n');
-}
-
-/**
  * Defaults used when no host config file is present.
  *
  * @returns {ArchipielagoResolvedConfig} Sample-aligned defaults.
@@ -170,6 +108,5 @@ export function manualIslandManifestWarning(
 export function defaultArchipielagoResolvedConfig(): ArchipielagoResolvedConfig {
   return {
     paths: { ...defaultArchipielagoPaths },
-    islandsRegistration: defaultRegistration,
   };
 }

@@ -102,24 +102,24 @@ Follow these conventions when adding or refactoring application code so reviews 
 - **Relative import extensions** follow the zone ([ADR-0024](docs/adr/0024-dual-import-resolution.md)): Nest-emitted code (`examples/nestjs/src/api/`, `examples/nestjs/src/web/protocol/`, Nest web root) and Node packages (`packages/core/`, `packages/vite/`, `packages/nestjs/`) keep **`.js`** emit specifiers; Vite `examples/nestjs/src/web/ui/**` and `packages/react/**` use **extensionless** relatives. Do not “normalize” product UI imports to Nest style or strip `.js` from Node graphs. Import engines via `@archipielago/{core,react,vite,nestjs}` package exports ([ADR-0032](docs/adr/0032-archipielago-pnpm-monorepo.md)).
 - **UI path aliases** ([ADR-0027](docs/adr/0027-ui-path-aliases.md)): from a product component folder, imports that leave that folder use `@ui/*`, `@protocol/*`, or `@api/*` (not `../` climbs). Prefer `@archipielago/*` **package** imports for engines. Same-folder stays `./`. Nest emit trees do not use UI aliases.
 
-## 8. Web UI (SSR pages and islands)
+## 8. Web UI (Handlebars pages and islands)
 
-When adding or changing browser-facing pages under `examples/nestjs/src/web/`:
+When adding or changing browser-facing pages under `examples/nestjs/`:
 
-- Follow [docs/how-to-web-ui.md](docs/how-to-web-ui.md) for the SSR vs island vs CSS-module decision tree and anti-patterns. Host-agnostic guide: [docs/archipielago/guide/](docs/archipielago/guide/README.md) (incl. [authoring.md](docs/archipielago/guide/authoring.md)).
-- Prefer `pnpm scaffold:web-ui` or the `create-web-ui` agent skill over hand-wiring registry, loaders, and entry-server maps. Layout: Nest thin `web.*` + `@archipielago/nestjs`, Vite `ui/`, wire `protocol/` ([ADR-0023](docs/adr/0023-web-host-ui-protocol.md), [ADR-0032](docs/adr/0032-archipielago-pnpm-monorepo.md)).
-- Product UI uses **one folder per component** with a kebab implementation file and thin `index.ts` re-export ([ADR-0025](docs/adr/0025-per-component-folders.md)); no fat barrels or component-as-only-`index.tsx`. Island registry imports the concrete `.tsx` path helpers share with the manifest key.
+- Follow [docs/how-to-web-ui.md](docs/how-to-web-ui.md) for the page vs island vs CSS-module decision tree and anti-patterns. Host-agnostic guide: [docs/archipielago/guide/](docs/archipielago/guide/README.md) (incl. [authoring.md](docs/archipielago/guide/authoring.md)).
+- Prefer `pnpm scaffold:web-ui` or the `create-web-ui` agent skill over hand-wiring views, locals, and hydrate includes. Layout: Nest thin `web.*` + `@archipielago/nestjs`, Vite `ui/`, Handlebars `views/`, wire `protocol/` ([ADR-0023](docs/adr/0023-web-host-ui-protocol.md), [ADR-0032](docs/adr/0032-archipielago-pnpm-monorepo.md), [ADR-0035](docs/adr/0035-handlebars-drih-islands.md)).
+- Product UI uses **one folder per component** with a kebab implementation file and thin `index.ts` re-export ([ADR-0025](docs/adr/0025-per-component-folders.md)); no fat barrels or component-as-only-`index.tsx`. Hydrate loaders glob the concrete `.tsx` path.
 - Colocate `*.stories.tsx` for the Storybook workshop (`pnpm storybook`); Vitest remains QA ([ADR-0026](docs/adr/0026-storybook-ui-workshop.md)). Do not treat Storybook as Chromatic/visual-regression unless a later decision says so.
-- Page SSR embed props go under `examples/nestjs/src/web/protocol/page-props/*-page.ssr-props.ts` (`*PageSsrProps`) — never beside `ui/pages/` (see how-to SSR page props quirk).
-- Shell CSS lives in `examples/nestjs/src/web/ui/styles/shell.scss`; island styles use colocated `*.module.scss` and are inlined as sibling `<style>` tags at SSR — do not invent a parallel delivery path.
-- Icons: handpick Bootstrap Icons SVGs into `examples/nestjs/src/web/ui/shared-components/icon/` and render `<Icon name="…" />` from server-components or islands — do not ship the icon webfont or paste one-off SVGs (see [docs/how-to-web-ui.md](docs/how-to-web-ui.md#icons)).
+- Page view locals go under `examples/nestjs/src/web/protocol/page-props/*-page.locals.ts` (`*PageLocals`) — never beside `views/` (see how-to view locals quirk).
+- Shell CSS lives in `examples/nestjs/src/web/ui/styles/shell.scss`; island styles use colocated `*.module.scss` and are inlined as sibling `<style>` tags from the dehydrate sidecar — do not invent a parallel delivery path.
+- Icons: handpick Bootstrap Icons SVGs into `examples/nestjs/src/web/ui/shared-components/icon/` and render `<Icon name="…" />` from islands — do not ship the icon webfont or paste one-off SVGs (see [docs/how-to-web-ui.md](docs/how-to-web-ui.md#icons)).
 
 ## 9. Unit tests stay unit tests
 
 Do **not** turn `*.spec.ts` (Node or browser UI unit projects) into integration or smoke tests.
 
 - **Unit:** exercise one unit with stubs/fakes at its boundaries. Prefer injected loaders, mocked peers, and small fixtures. Keep cases fast enough for the default Vitest timeout under parallel `pnpm test` / `pnpm test:cov`.
-- **Do not** boot the live product graph from unit specs (real `entry-server`, full home SSR, loading every island module via Vite glob) just to assert HTML strings or “it loads.” That belongs in HTTP/browser e2e today, or a future **integration** Vitest project once we add one ([TD-033](docs/known-tech-debt.md)).
+- **Do not** boot the live product graph from unit specs (full Handlebars document, loading every island module via Vite glob) just to assert HTML strings or “it loads.” That belongs in HTTP/browser e2e today, or a future **integration** Vitest project once we add one ([TD-033](docs/known-tech-debt.md)).
 - **E2E** (`*.e2e-spec.ts`, `*.browser-e2e-spec.ts`) owns Nest + DB / real browser journeys. Do not duplicate that smoke inside unit coverage to chase thresholds.
 - Known mixups and the audit backlog: [TD-033](docs/known-tech-debt.md). Layers overview: [docs/testing-and-coverage.md](docs/testing-and-coverage.md).
 

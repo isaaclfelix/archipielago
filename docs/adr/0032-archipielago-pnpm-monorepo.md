@@ -1,6 +1,6 @@
 # ADR-0032: Archipielago pnpm monorepo packages and NestJS example
 
-- **Status:** Accepted
+- **Status:** Accepted (Nest adapter is mount-only after [ADR-0037](./0037-slim-post-drih-package-surfaces.md))
 - **Date:** 2026-11-01
 - **Tags:** archipielago, monorepo, tooling
 

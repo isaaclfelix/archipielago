@@ -1,6 +1,7 @@
 import {
   isPageStylesheetName,
   pageStylesheetRegistration,
+  pageStylesheetRegistry,
   setPageStylesheetRegistry,
 } from './page-stylesheets.js';
 
@@ -31,5 +32,14 @@ describe('page stylesheets', () => {
     expect(() => pageStylesheetRegistration('missing')).toThrow(
       /Unknown page stylesheet "missing"/,
     );
+  });
+
+  it('returns the active registry snapshot', () => {
+    expect(pageStylesheetRegistry()).toEqual({
+      forms: {
+        source: 'src/web/ui/styles/forms.scss',
+        devUrl: '/src/web/ui/styles/forms.scss',
+      },
+    });
   });
 });

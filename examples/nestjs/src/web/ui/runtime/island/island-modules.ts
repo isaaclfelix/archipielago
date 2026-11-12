@@ -5,8 +5,8 @@ import type { IslandModule } from '@archipielago/react/runtime/island/island-mod
  * Vite glob of product island TSX under `web/ui/islands/` (lazy; never eager).
  *
  * Negative patterns drop Storybook and colocated specs. Loaders then keep only
- * `<name>/<name>.tsx` keys that appear in the injected islands manifest.
- * Must live in a Vite-owned product file so the relative glob resolves here.
+ * `<name>/<name>.tsx` keys. Must live in a Vite-owned product file so the
+ * relative glob resolves here.
  */
 const islandModules = import.meta.glob([
   '../../islands/*/*.tsx',

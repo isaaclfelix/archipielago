@@ -16,7 +16,7 @@ describe('AppController (e2e)', () => {
     expect(response.status).toBe(200);
     expect(response.headers['content-type']).toMatch(/text\/html/);
     expect(response.text).toContain('Rendered on the server at ');
-    expect(response.text).toContain('data-island="mobile-navigation"');
+    expect(response.text).toContain('data-component-name="mobile-navigation"');
     expect(response.text).toContain(
       '/src/web/ui/runtime/island/hydrate-entry.tsx',
     );

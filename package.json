@@ -23,10 +23,10 @@
     "test:cov": "pnpm --filter @archipielago/example-nestjs test:cov",
     "test:debug": "pnpm --filter @archipielago/example-nestjs test:debug",
     "test:e2e": "pnpm --filter @archipielago/example-nestjs test:e2e",
+    "dehydrate": "pnpm --filter @archipielago/example-nestjs dehydrate",
     "scaffold:web-ui": "pnpm --filter @archipielago/example-nestjs scaffold:web-ui",
     "storybook": "pnpm --filter @archipielago/example-nestjs storybook",
-    "build-storybook": "pnpm --filter @archipielago/example-nestjs build-storybook",
-    "islands:sync": "pnpm --filter @archipielago/example-nestjs islands:sync"
+    "build-storybook": "pnpm --filter @archipielago/example-nestjs build-storybook"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",

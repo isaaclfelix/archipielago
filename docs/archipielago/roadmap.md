@@ -66,7 +66,7 @@ Level the field on Archipielago’s axis. Checklist (targets, not commitments to
 
 **vs is-land**
 
-- [ ] Documented SSR + selective hydration story (not hydrate-only)
+- [ ] Documented host HTML + selective hydration story (not hydrate-only)
 - [ ] Documented asset / CSS pipeline for island documents
 - [ ] NestJS-first host adapter DX
 - [ ] At least one additional host adapter documented

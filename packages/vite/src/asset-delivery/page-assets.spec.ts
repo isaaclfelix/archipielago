@@ -1,12 +1,9 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import * as islandsProtocol from '@archipielago/core/islands.js';
 import type { ClientManifest } from './asset-tags.js';
 import {
   createPageAssets,
   extractCssFromViteModule,
-  islandCssFromManifest,
-  islandCssFromVite,
   loadShellCssText,
   shellStyleTags,
 } from './page-assets.js';
@@ -67,108 +64,11 @@ describe('loadShellCssText', () => {
   });
 });
 
-describe('islandCssFromManifest', () => {
-  it('reads css files listed on the island chunk', () => {
-    const dir = join(process.cwd(), 'dist/client/assets');
-    mkdirSync(dir, { recursive: true });
-    writeFileSync(join(dir, 'mobile-navigation-test.css'), '._c{opacity:1}');
-
-    const manifest: ClientManifest = {
-      'src/web/ui/islands/mobile-navigation/mobile-navigation.tsx': {
-        file: 'assets/mobile-navigation.js',
-        css: ['assets/mobile-navigation-test.css'],
-      },
-    };
-
-    expect(islandCssFromManifest(manifest, ['mobile-navigation'])).toEqual({
-      'mobile-navigation': '._c{opacity:1}',
-    });
-  });
-
-  it('skips unknown names and chunks without css', () => {
-    const manifest: ClientManifest = {
-      'src/web/ui/islands/mobile-navigation/mobile-navigation.tsx': {
-        file: 'assets/mobile-navigation.js',
-      },
-    };
-
-    expect(
-      islandCssFromManifest(manifest, ['nope', 'mobile-navigation']),
-    ).toEqual({});
-  });
-});
-
-describe('islandCssFromVite', () => {
-  it('transforms registered module URLs and skips others', async () => {
-    const vite = {
-      transformRequest: vi.fn(async (url: string) => {
-        if (url.includes('mobile-navigation')) {
-          return { code: 'const __vite__css = "._c{font-weight:700}";' };
-        }
-        return null;
-      }),
-    };
-
-    await expect(
-      islandCssFromVite(['nope', 'mobile-navigation'], vite),
-    ).resolves.toEqual({
-      'mobile-navigation': '._c{font-weight:700}',
-    });
-    expect(vite.transformRequest).toHaveBeenCalledWith(
-      '/src/web/ui/islands/mobile-navigation/mobile-navigation.module.scss',
-    );
-  });
-
-  it('omits islands when transform returns no code', async () => {
-    const vite = {
-      transformRequest: vi.fn(async () => null),
-    };
-
-    await expect(
-      islandCssFromVite(['mobile-navigation'], vite),
-    ).resolves.toEqual({});
-  });
-
-  it('skips islands that have hasCssModule false', async () => {
-    const spy = vi
-      .spyOn(islandsProtocol, 'islandCssModuleUrl')
-      .mockReturnValue(undefined);
-    const vite = { transformRequest: vi.fn() };
-
-    try {
-      await expect(
-        islandCssFromVite(['mobile-navigation'], vite),
-      ).resolves.toEqual({});
-      expect(vite.transformRequest).not.toHaveBeenCalled();
-    } finally {
-      spy.mockRestore();
-    }
-  });
-});
-
-describe('createPageAssets island CSS', () => {
-  it('loads island CSS through Vite in development', async () => {
-    const vite = {
-      transformRequest: vi.fn(async () => ({
-        code: 'const __vite__css = "._d{display:block}";',
-      })),
-    };
-
-    const assets = await createPageAssets(['mobile-navigation'], {
-      development: true,
-      vite,
-    });
-
-    expect(assets.islandCss).toEqual({
-      'mobile-navigation': '._d{display:block}',
-    });
-  });
-
-  it('inlines a small production shell and island CSS', async () => {
+describe('createPageAssets', () => {
+  it('inlines a small production shell and emits hydrate scripts for islands', () => {
     const dir = join(process.cwd(), 'dist/client/assets');
     mkdirSync(dir, { recursive: true });
     writeFileSync(join(dir, 'shell-small.css'), '.ok{}');
-    writeFileSync(join(dir, 'island-small.css'), '._i{}');
 
     const manifest: ClientManifest = {
       'src/web/ui/runtime/island/hydrate-entry.tsx': {
@@ -179,13 +79,9 @@ describe('createPageAssets island CSS', () => {
         file: 'assets/shell-small.css',
         isEntry: true,
       },
-      'src/web/ui/islands/mobile-navigation/mobile-navigation.tsx': {
-        file: 'assets/mobile-navigation.js',
-        css: ['assets/island-small.css'],
-      },
     };
 
-    const idle = await createPageAssets([], {
+    const idle = createPageAssets([], {
       development: false,
       manifest,
     });
@@ -193,16 +89,15 @@ describe('createPageAssets island CSS', () => {
     expect(idle.tags.stylesheets).toEqual([]);
     expect(idle.tags.scripts).toEqual([]);
 
-    const active = await createPageAssets(['mobile-navigation'], {
+    const active = createPageAssets(['mobile-navigation'], {
       development: false,
       manifest,
     });
     expect(active.tags.inlineStyles).toEqual([{ id: 'shell', css: '.ok{}' }]);
-    expect(active.islandCss).toEqual({ 'mobile-navigation': '._i{}' });
     expect(active.tags.scripts).toContain('/assets/hydrate.js');
   });
 
-  it('links the forms sibling when the page opts in', async () => {
+  it('links the forms sibling when the page opts in', () => {
     setPageStylesheetRegistry({
       forms: {
         source: 'src/web/ui/styles/forms.scss',
@@ -225,7 +120,7 @@ describe('createPageAssets island CSS', () => {
       },
     };
 
-    const assets = await createPageAssets([], {
+    const assets = createPageAssets([], {
       development: false,
       manifest,
       pageStylesheets: ['forms'],

@@ -28,7 +28,7 @@ a section comes from a decision. Monorepo orientation stub:
 | ID       | Title                                                          | Status                         | File                                                                                     |
 | -------- | -------------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------------------------------- |
 | ADR-0001 | One Nest process for API, SSR, and assets                      | Accepted                       | [0001-one-nest-process.md](./0001-one-nest-process.md)                                   |
-| ADR-0002 | Islands SSR UI (not SPA, Next, or full-page React)             | Accepted                       | [0002-islands-ssr-ui.md](./0002-islands-ssr-ui.md)                                       |
+| ADR-0002 | Islands SSR UI (not SPA, Next, or full-page React)             | Accepted (amended by ADR-0035) | [0002-islands-ssr-ui.md](./0002-islands-ssr-ui.md)                                       |
 | ADR-0003 | URL prefixes via RouterModule                                  | Accepted                       | [0003-router-module-prefixes.md](./0003-router-module-prefixes.md)                       |
 | ADR-0004 | Zod and StandardSchemaValidationPipe as HTTP contract          | Accepted                       | [0004-zod-standard-schema-http.md](./0004-zod-standard-schema-http.md)                   |
 | ADR-0005 | PostgreSQL, Prisma 7, and repository port                      | Accepted                       | [0005-persistence-postgres-prisma.md](./0005-persistence-postgres-prisma.md)             |
@@ -37,13 +37,13 @@ a section comes from a decision. Monorepo orientation stub:
 | ADR-0008 | Argon2id password hashing                                      | Accepted                       | [0008-argon2id-passwords.md](./0008-argon2id-passwords.md)                               |
 | ADR-0009 | Allowlisted user responses and DELETE 204                      | Accepted                       | [0009-allowlisted-responses-delete-204.md](./0009-allowlisted-responses-delete-204.md)   |
 | ADR-0010 | E2E database via Testcontainers                                | Accepted                       | [0010-e2e-testcontainers.md](./0010-e2e-testcontainers.md)                               |
-| ADR-0011 | Two-pass renderToString SSR                                    | Accepted                       | [0011-two-pass-render-to-string.md](./0011-two-pass-render-to-string.md)                 |
+| ADR-0011 | Two-pass renderToString SSR                                    | Superseded by ADR-0035         | [0011-two-pass-render-to-string.md](./0011-two-pass-render-to-string.md)                 |
 | ADR-0012 | Island boundaries (JSON props, lazy chunks, no shared context) | Accepted                       | [0012-island-boundaries.md](./0012-island-boundaries.md)                                 |
 | ADR-0013 | CSS in three lanes with handpicked Bootstrap                   | Accepted                       | [0013-css-three-lanes.md](./0013-css-three-lanes.md)                                     |
 | ADR-0014 | Forms as shared opt-in sibling stylesheet                      | Accepted                       | [0014-forms-sibling-stylesheet.md](./0014-forms-sibling-stylesheet.md)                   |
-| ADR-0015 | Island CSS as SSR sibling style tags                           | Accepted                       | [0015-island-css-sibling-style.md](./0015-island-css-sibling-style.md)                   |
+| ADR-0015 | Island CSS as SSR sibling style tags                           | Accepted (amended by ADR-0035) | [0015-island-css-sibling-style.md](./0015-island-css-sibling-style.md)                   |
 | ADR-0016 | Handpicked Bootstrap Icons SVGs                                | Accepted                       | [0016-handpicked-bootstrap-icons.md](./0016-handpicked-bootstrap-icons.md)               |
-| ADR-0017 | Dual TypeScript and build ownership (Nest vs Vite)             | Accepted                       | [0017-dual-typescript-build.md](./0017-dual-typescript-build.md)                         |
+| ADR-0017 | Dual TypeScript and build ownership (Nest vs Vite)             | Accepted (amended by ADR-0035) | [0017-dual-typescript-build.md](./0017-dual-typescript-build.md)                         |
 | ADR-0018 | Island product modules vs `island-runtime/`                    | Accepted                       | [0018-island-runtime-folder.md](./0018-island-runtime-folder.md)                         |
 | ADR-0019 | `src/web/` folder grouping after islands                       | Superseded by ADR-0020         | [0019-web-folder-grouping.md](./0019-web-folder-grouping.md)                             |
 | ADR-0020 | `src/web/runtime/` engines and styles shell                    | Accepted                       | [0020-web-runtime-folder.md](./0020-web-runtime-folder.md)                               |
@@ -54,10 +54,13 @@ a section comes from a decision. Monorepo orientation stub:
 | ADR-0025 | Per-component folders with thin barrels                        | Accepted                       | [0025-per-component-folders.md](./0025-per-component-folders.md)                         |
 | ADR-0026 | Storybook as a local UI workshop                               | Accepted                       | [0026-storybook-ui-workshop.md](./0026-storybook-ui-workshop.md)                         |
 | ADR-0027 | UI zone path aliases (`@ui` / `@protocol` / `@api`)            | Accepted                       | [0027-ui-path-aliases.md](./0027-ui-path-aliases.md)                                     |
-| ADR-0028 | Island filesystem manifest and glob loaders                    | Accepted                       | [0028-island-filesystem-manifest.md](./0028-island-filesystem-manifest.md)               |
+| ADR-0028 | Island filesystem manifest and glob loaders                    | Accepted (amended by ADR-0036) | [0028-island-filesystem-manifest.md](./0028-island-filesystem-manifest.md)               |
 | ADR-0029 | In-repo Archipielago isolation (folder boundary, no packages)  | Superseded in part by ADR-0032 | [0029-archipielago-in-repo-isolation.md](./0029-archipielago-in-repo-isolation.md)       |
-| ADR-0030 | Archipielago host config and islands registration mode         | Accepted                       | [0030-archipielago-host-config.md](./0030-archipielago-host-config.md)                   |
+| ADR-0030 | Archipielago host config and islands registration mode         | Accepted (amended by ADR-0036) | [0030-archipielago-host-config.md](./0030-archipielago-host-config.md)                   |
 | ADR-0031 | Project plan files for agent planning                          | Accepted                       | [0031-project-plan-files.md](./0031-project-plan-files.md)                               |
 | ADR-0032 | Archipielago pnpm monorepo packages and NestJS example         | Accepted                       | [0032-archipielago-pnpm-monorepo.md](./0032-archipielago-pnpm-monorepo.md)               |
 | ADR-0033 | Historical ADR narrative immutability                          | Accepted                       | [0033-historical-adr-immutability.md](./0033-historical-adr-immutability.md)             |
-| ADR-0034 | Host document props on the SSR entry                           | Accepted                       | [0034-host-document-props.md](./0034-host-document-props.md)                             |
+| ADR-0034 | Host document props on the SSR entry                           | Accepted (amended by ADR-0035) | [0034-host-document-props.md](./0034-host-document-props.md)                             |
+| ADR-0035 | Handlebars document and prebuilt Drih islands                  | Accepted                       | [0035-handlebars-drih-islands.md](./0035-handlebars-drih-islands.md)                     |
+| ADR-0036 | Drop the injected islands table                                | Accepted (amended by ADR-0037) | [0036-drop-injected-islands-table.md](./0036-drop-injected-islands-table.md)             |
+| ADR-0037 | Slim post-Drih package surfaces                                | Accepted                       | [0037-slim-post-drih-package-surfaces.md](./0037-slim-post-drih-package-surfaces.md)     |

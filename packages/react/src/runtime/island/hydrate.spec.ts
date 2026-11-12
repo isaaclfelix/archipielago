@@ -1,9 +1,7 @@
 import { act, createElement, useState, type ReactElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import userEvent from '@testing-library/user-event';
-import { registerIslands } from '@archipielago/core/islands';
 import { hydrateIslands } from './hydrate';
-import { Island } from './island';
 import {
   resetIslandLoadersCache,
   resetIslandModules,
@@ -32,8 +30,6 @@ function ToggleStub(): ReactElement {
 
 describe('hydrate islands', () => {
   beforeEach(() => {
-    // Register a fixture island; do not depend on the Nest example manifest.
-    registerIslands({ 'toggle-stub': { hasCssModule: false } });
     setIslandModules({
       '../../islands/toggle-stub/toggle-stub.tsx': async () => ({
         default: ToggleStub,
@@ -43,19 +39,13 @@ describe('hydrate islands', () => {
   });
 
   afterEach(() => {
-    registerIslands(undefined);
     resetIslandModules();
     document.body.innerHTML = '';
   });
 
   it('opens the stub drawer when the toggle is clicked', async () => {
-    document.body.innerHTML = renderToString(
-      createElement(Island, {
-        name: 'toggle-stub',
-        component: ToggleStub,
-        props: {},
-      }),
-    );
+    const inner = renderToString(createElement(ToggleStub));
+    document.body.innerHTML = `<div data-component-name="toggle-stub" data-component-props="{}">${inner}</div>`;
 
     await hydrateIslands(document);
 
@@ -70,12 +60,10 @@ describe('hydrate islands', () => {
     expect(button).toHaveAttribute('aria-expanded', 'true');
   });
 
-  it('throws when a marker names an unknown island', async () => {
+  it('skips a wrapper that names an unknown island', async () => {
     document.body.innerHTML =
-      '<div data-island="chart" data-props="%7B%7D"></div>';
+      '<div data-component-name="chart" data-component-props="{}"></div>';
 
-    await expect(hydrateIslands(document)).rejects.toThrow(
-      'Unknown island: chart',
-    );
+    await expect(hydrateIslands(document)).resolves.toBeUndefined();
   });
 });

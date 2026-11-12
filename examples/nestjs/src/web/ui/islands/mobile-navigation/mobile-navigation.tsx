@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, type AnimationEvent, type ReactElement } from 'react';
 import LogoutButton from '@ui/islands/logout-button';
 import styles from './mobile-navigation.module.scss';
@@ -6,10 +8,10 @@ import Icon from '@ui/shared-components/icon';
 /**
  * Interactive mobile-navigation island.
  *
- * Toggles a left offcanvas drawer and backdrop with CSS keyframe enter/exit
- * animations. Close uses a short-lived `closing` class so exit animations are
- * not applied on the initial closed mount. Auth chrome mirrors desktop nav
- * (Login/Register vs Logout) from the SSR `isAuthenticated` prop.
+ * The closed tree is only the menu button so dehydrated HTML can be reused
+ * for guest and authed sessions. The drawer mounts while open or closing.
+ * Auth chrome mirrors desktop nav (Login/Register vs Logout) from the
+ * include-time `isAuthenticated` prop.
  *
  * @param {{ isAuthenticated?: boolean }} props - Session auth flag from SSR.
  * @returns {ReactElement} Interactive island markup.
@@ -86,67 +88,71 @@ export default function MobileNavigation({
         <Icon name="list" />
       </button>
 
-      <div
-        className={backdropClassName}
-        onClick={toggleDrawer}
-        onAnimationEnd={handleAnimationEnd}
-        aria-hidden={!open && !closing}
-      />
-
-      <div
-        className={drawerClassName}
-        onAnimationEnd={handleAnimationEnd}
-        aria-hidden={!open && !closing}
-      >
-        <div className={`${styles.navigationDrawerHeader} d-flex p-4`}>
-          <h5 className="display-6 mb-0">Navigation</h5>
-          <button
-            className={`${styles.navigationDrawerCloseButton} btn btn-light btn-sm d-flex`}
+      {(open || closing) && (
+        <>
+          <div
+            className={backdropClassName}
             onClick={toggleDrawer}
+            onAnimationEnd={handleAnimationEnd}
+            aria-hidden={!open && !closing}
+          />
+
+          <div
+            className={drawerClassName}
+            onAnimationEnd={handleAnimationEnd}
+            aria-hidden={!open && !closing}
           >
-            <Icon name="x-lg" />
-          </button>
-        </div>
+            <div className={`${styles.navigationDrawerHeader} d-flex p-4`}>
+              <h5 className="display-6 mb-0">Navigation</h5>
+              <button
+                className={`${styles.navigationDrawerCloseButton} btn btn-light btn-sm d-flex`}
+                onClick={toggleDrawer}
+              >
+                <Icon name="x-lg" />
+              </button>
+            </div>
 
-        <div className={`${styles.navigationDrawerContent} p-3`}>
-          <ul className="list-unstyled mb-0">
-            <li>
-              <a href="/" className="p-3">
-                Home
-              </a>
-            </li>
-            <li>
-              <a href="/api/docs" className="p-3">
-                Swagger Docs
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <div className={`${styles.navigationDrawerFooter} p-3`}>
-          <ul className="list-unstyled mb-0">
-            {isAuthenticated ? (
-              <li className="p-3">
-                {/* Same control as desktop; composed here (not a nested Island). */}
-                <LogoutButton />
-              </li>
-            ) : (
-              <>
+            <div className={`${styles.navigationDrawerContent} p-3`}>
+              <ul className="list-unstyled mb-0">
                 <li>
-                  <a href="/login" className="p-3">
-                    Login
+                  <a href="/" className="p-3">
+                    Home
                   </a>
                 </li>
                 <li>
-                  <a href="/register" className="p-3">
-                    Register
+                  <a href="/api/docs" className="p-3">
+                    Swagger Docs
                   </a>
                 </li>
-              </>
-            )}
-          </ul>
-        </div>
-      </div>
+              </ul>
+            </div>
+
+            <div className={`${styles.navigationDrawerFooter} p-3`}>
+              <ul className="list-unstyled mb-0">
+                {isAuthenticated ? (
+                  <li className="p-3">
+                    {/* Same control as desktop; composed here (not a nested Island). */}
+                    <LogoutButton />
+                  </li>
+                ) : (
+                  <>
+                    <li>
+                      <a href="/login" className="p-3">
+                        Login
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/register" className="p-3">
+                        Register
+                      </a>
+                    </li>
+                  </>
+                )}
+              </ul>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 }

@@ -1,4 +1,6 @@
 import react from '@vitejs/plugin-react';
+import { dehydratePlugin } from '@drih/dehydrate/plugin';
+import { hydratePlugin } from '@drih/hydrate/plugin';
 import doiuse from 'doiuse';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -7,32 +9,39 @@ import { defineConfig } from 'vite';
 import { shellCssBudgetPlugin } from '@archipielago/vite/plugins/vite-shell-css-budget.js';
 import { stripIslandCssFromModulePreload } from '@archipielago/vite/plugins/vite-strip-island-css-preload.js';
 import { suppressIslandCssClientInject } from '@archipielago/vite/plugins/vite-suppress-island-css-inject.js';
+import { writeIslandCssSidecar } from '@archipielago/vite/plugins/vite-write-island-css-sidecar.js';
 
 const repoRoot = dirname(fileURLToPath(import.meta.url));
 
 /**
- * Client and server builds for the React page layer.
+ * Client build for the React island layer.
  *
  * `vite build` emits the browser hydrate entry and its lazy island chunks.
- * `vite build --ssr` emits the Node render bundle. `nest build` still owns
- * the API. Island chunks stay dynamic imports so a page does not download
- * components it did not render.
+ * `nest build` still owns the API. Handlebars owns the document. Island chunks
+ * stay dynamic imports so a page does not download components it did not include.
  *
  * CSS: Sass → PostCSS (media-query sort + doiuse warn) → Lightning CSS minify
  * at Baseline Widely Available. The shell sheet is its own client input.
  *
  * Path aliases (@ui / @protocol / @api) match tsconfig.web.json.
  */
-export default defineConfig(({ isSsrBuild }) => ({
+export default defineConfig({
   plugins: [
+    hydratePlugin(),
+    dehydratePlugin(),
+    writeIslandCssSidecar({
+      islandsDir: 'src/web/ui/islands',
+      outDir: 'views/components/dehydrated-css',
+    }),
     react(),
-    // Dev: island CSS stays on SSR sibling <style>; do not also inject head tags.
+    // Dev: island CSS stays on the Drih sibling <style>; do not also inject head tags.
     suppressIslandCssClientInject(),
-    ...(isSsrBuild
-      ? []
-      : [shellCssBudgetPlugin(), stripIslandCssFromModulePreload()]),
+    shellCssBudgetPlugin(),
+    stripIslandCssFromModulePreload(),
   ],
   resolve: {
+    // One React copy for the host and Drih. A local `link:` overlay needs this too.
+    dedupe: ['react', 'react-dom'],
     // Prefer explicit aliases; tsconfigPaths alone may miss tsconfig.web.json.
     alias: {
       '@ui': resolve(repoRoot, 'src/web/ui'),
@@ -40,34 +49,33 @@ export default defineConfig(({ isSsrBuild }) => ({
       '@api': resolve(repoRoot, 'src/api'),
     },
   },
+  server: {
+    fs: {
+      allow: [repoRoot],
+    },
+  },
   build: {
     // Lean modern evergreen targets; older browsers are TD-013 / TD-015.
     target: 'baseline-widely-available',
     cssMinify: 'lightningcss',
-    ...(isSsrBuild
-      ? {
-          outDir: 'dist/web-server',
-          emptyOutDir: false,
-          ssr: true,
-          rollupOptions: {
-            input: 'src/web/ui/runtime/ssr/entry-server.tsx',
-          },
-        }
-      : {
-          outDir: 'dist/client',
-          emptyOutDir: false,
-          manifest: true,
-          rollupOptions: {
-            input: {
-              hydrate: 'src/web/ui/runtime/island/hydrate-entry.tsx',
-              shell: 'src/web/ui/styles/shell.scss',
-              // Opt-in sibling; only pages that declare it get a head link.
-              forms: 'src/web/ui/styles/forms.scss',
-            },
-          },
-        }),
+    outDir: 'dist/client',
+    emptyOutDir: false,
+    manifest: true,
+    rollupOptions: {
+      input: {
+        hydrate: 'src/web/ui/runtime/island/hydrate-entry.tsx',
+        shell: 'src/web/ui/styles/shell.scss',
+        // Opt-in sibling; only pages that declare it get a head link.
+        forms: 'src/web/ui/styles/forms.scss',
+      },
+    },
   },
   css: {
+    preprocessorOptions: {
+      scss: {
+        quietDeps: true,
+      },
+    },
     postcss: {
       plugins: [
         sortMediaQueries({ sort: 'mobile-first' }),
@@ -81,4 +89,4 @@ export default defineConfig(({ isSsrBuild }) => ({
       ],
     },
   },
-}));
+});

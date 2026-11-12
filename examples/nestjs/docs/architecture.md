@@ -7,9 +7,9 @@ this example and anyone copying its style.
 Host-agnostic product guide: [docs/archipielago/guide/](../../../docs/archipielago/guide/README.md).
 Monorepo process (including agent plans): [workflow.md](../../../docs/archipielago/workflow.md).
 
-In the Nest example, one Nest process serves two surfaces. The JSON API lives under `/api`. HTML pages live at the root. Nest owns routes and data. React owns the HTML: it server-renders the document and hydrates only the islands a page actually rendered.
+In the Nest example, one Nest process serves two surfaces. The JSON API lives under `/api`. HTML pages live at the root. Nest owns routes and data. Handlebars owns the document. React hydrates only the islands a page actually included.
 
-A controller picks a page name and a plain props object. It does not import `.tsx`. See [ADR-0001](../../../docs/adr/0001-one-nest-process.md) and [ADR-0002](../../../docs/adr/0002-islands-ssr-ui.md). Decision index: [docs/adr/](../../../docs/adr/README.md).
+A controller uses `@Render` and returns a typed locals object. It does not import `.tsx`. See [ADR-0001](../../../docs/adr/0001-one-nest-process.md), [ADR-0002](../../../docs/adr/0002-islands-ssr-ui.md), and [ADR-0035](../../../docs/adr/0035-handlebars-drih-islands.md). Decision index: [docs/adr/](../../../docs/adr/README.md).
 
 ## Request split
 
@@ -22,9 +22,8 @@ flowchart TD
   api --> pipe[StandardSchemaValidationPipe]
   pipe --> svc[Service]
   svc --> json[JSON or plain text]
-  web --> view[ArchipielagoViewService]
-  view --> ssr[React renderToString]
-  ssr --> html[HTML document]
+  web --> hbs[Handlebars view then layout]
+  hbs --> html[HTML document]
 ```
 
 | Surface     | Owner                     | Examples                                                        | Response                                               |
@@ -46,20 +45,22 @@ Folder names do not create URL prefixes. `RouterModule` does ([ADR-0003](../../.
 
 ```text
 packages/
-  core/                   RenderResult, PageAssets, paths, config, island helpers
-  react/                  island marker/hydrate + renderDocument SSR engine
+  core/                   PageAssets, paths, config, shell CSS budget
+  react/                  lazy island hydrate + props codec
   vite/                   page loader, asset delivery, pipeline, and Vite plugins
-  nestjs/                 injectable renderer, dynamic module, asset mount helper
+  nestjs/                 asset mount helper
 examples/nestjs/
   src/
-    main.ts               bootstrap
+    main.ts               bootstrap (Handlebars + Drih + assets)
     app.module.ts         wires API, web, and the /api prefix
     api/                  JSON feature code
     persistence/          PrismaModule / PrismaService / PrismaPg helper
     generated/prisma/     Prisma Client output (`prisma generate`; gitignored)
     web/                  Nest controller and product-owned page policy
-      protocol/           App-owned SSR props and island manifest
-      ui/                 Product Vite/React UI
+      protocol/           App-owned view locals
+      ui/                 Product Vite/React islands
+  views/                  Handlebars layouts, partials, and pages
+    components/           gitignored dehydrated HTML and island CSS sidecars
   prisma/                 schema, migrations, and seed
   test/                   HTTP and browser e2e support
 ```
@@ -68,13 +69,15 @@ The root package owns orchestration and shared tooling. `pnpm build` compiles
 core, Vite, and Nest adapters before filtering into the Nest example. Inside
 the example, `tsconfig.build.json` excludes `src/web/ui/**`, while
 `tsconfig.web.json` typechecks product UI, `packages/react`, and protocol.
-Vite emits the browser and SSR bundles that actually run. See
+Vite emits the browser hydrate bundle that actually runs. See
 [ADR-0017](../../../docs/adr/0017-dual-typescript-build.md) and
 [ADR-0032](../../../docs/adr/0032-archipielago-pnpm-monorepo.md).
+`src/web/ui` is Vite-owned, not Nest emit; leaving it under `src/` next to the
+Nest HTML host is [TD-040](../../../docs/known-tech-debt.md).
 
 **Import specifiers:** Nest-emitted graphs (`examples/nestjs/src/api/`, Nest web root, `web/protocol`) and Node packages (`packages/core`, `packages/vite`, `packages/nestjs`) use **`.js`** emit names under `"type": "module"` + `nodenext`. Vite-owned `examples/nestjs/src/web/ui/**` and `packages/react/**` use **extensionless** relatives (`bundler` resolution). Consumers import engines through real `@archipielago/core`, `@archipielago/react`, `@archipielago/vite`, and `@archipielago/nestjs` package exports; product aliases remain `@ui` / `@protocol` / `@api` ([ADR-0027](../../../docs/adr/0027-ui-path-aliases.md)). See [ADR-0024](../../../docs/adr/0024-dual-import-resolution.md). Product UI components use **one folder per component** with a thin `index.ts` barrel; island hydrate loaders import the concrete implementation file ([ADR-0025](../../../docs/adr/0025-per-component-folders.md)). Colocated Storybook stories (`pnpm storybook`) are a local workshop, not QA ([ADR-0026](../../../docs/adr/0026-storybook-ui-workshop.md)).
 
-Prefer `.tsx` where the file is mostly a React tree (pages, islands, document, hydrate entry). Prefer plain `.ts` for Nest controllers, services, protocol props, registries, and tests. Specs stay `.ts` and use `createElement` when they need elements; a test may pass an explicit type argument (for example `Island<{ start: number }>`) so `component` and `props` still typecheck.
+Prefer `.tsx` where the file is mostly a React tree (islands, hydrate entry, shared components). Prefer plain `.ts` for Nest controllers, protocol locals, registries, and tests. Specs stay `.ts` and use `createElement` when they need elements.
 
 ## JSON API
 
@@ -136,7 +139,7 @@ Browser mutations use cookie sessions plus a CSRF token ([ADR-0006](../../../doc
 
 - **Session middleware** loads or creates a guest session from the HttpOnly `sid` cookie and attaches it to the request for HTML pages and `/api` (Vite/static asset paths are skipped).
 - **CsrfGuard** (global) requires header `X-CSRF-TOKEN` to match the session token on mutating `/api` methods (`POST` / `PATCH` / `DELETE` / `PUT`). Safe methods and non-API routes pass through.
-- SSR embeds `<meta name="csrf-token" content="…">` on HTML documents. The session token reaches that tag through [document props](#document-props-in-this-example). There is **no** JSON CSRF mint endpoint; e2e obtains the token by loading `/register` or `/login` (same as the browser).
+- The Handlebars layout prints `<meta name="csrf-token" content="…">` when `csrfToken` is set. The session token reaches that tag as a [template local](#csrf-and-other-template-locals). There is **no** JSON CSRF mint endpoint; e2e obtains the token by loading `/register` or `/login` (same as the browser).
 - Login regenerates the session id and attaches `userId` (see AuthModule). Session rows live in Postgres (`sessions`).
 
 ```mermaid
@@ -166,7 +169,7 @@ Login/register islands submit via `useApiMutation` (react-hook-form + Zod on the
 3. Reuse shared Zod pieces from `src/shared/schemas/` (e.g. `passwordSchema`, `emailSchema`) and compose with API DTOs (`createUserSchema`, `loginSchema`) for RHF resolvers — do not re-state field rules in the island.
 4. Map HTTP outcomes to UI: client Zod / **400** field errors, **409** uniqueness on register, **401** generic login failure (“Invalid credentials”), **403** missing/invalid CSRF, **429** throttle. Form-level API errors use plain colored text (`.form-api-error`), not Bootstrap alerts.
 5. Register succeeds with **201** then navigates to `/login` (no auto-login). Login succeeds with **200** then navigates to `/`. Logout is best-effort (always navigate to `/login` after the attempt).
-6. Nav auth chrome is SSR-driven from `req.session.userId` (`isAuthenticated` page prop). `/login` and `/register` redirect authenticated users to `/`.
+6. Nav auth chrome is template-driven from `req.session.userId` (`isAuthenticated` local). Desktop logout is an island; the closed mobile-nav tree is the button. `/login` and `/register` redirect authenticated users to `/`.
 
 UI unit tests run in Vitest browser mode; auth journeys use Playwright against Nest ([ADR-0021](../../../docs/adr/0021-vitest-browser-ui-testing.md)). HTTP e2e remains the API contract gate. Local browser installs target Playwright’s durable default cache via `env -u PLAYWRIGHT_BROWSERS_PATH` on Unix/WSL ([ADR-0022](../../../docs/adr/0022-unix-wsl-playwright-browser-cache.md); [TD-027](../../../docs/known-tech-debt.md)).
 
@@ -242,103 +245,78 @@ Product home (vision and milestones): [docs/archipielago/](../../../docs/archipi
 
 ### Roles
 
-| Piece                                              | Responsibility                                                         |
-| -------------------------------------------------- | ---------------------------------------------------------------------- |
-| `WebController`                                    | Chooses the page name and builds JSON props. Sets `text/html`.         |
-| `ArchipielagoViewService` (`@archipielago/nestjs`) | Loads the server entry; returns `RenderResult.html` for Nest.          |
-| `ui/runtime/ssr/entry-server`                      | App page map + Document; calls `@archipielago/react` `renderDocument`. |
-| `@archipielago/react` `renderDocument`             | Two-pass SSR engine; Nest-free `RenderResult`.                         |
-| Page component                                     | Server-only body. May place islands in the tree.                       |
-| `Island`                                           | Server-renders the component and writes the hydration marker.          |
-| `@archipielago/react` `hydrateIslands`             | Browser entry. Hydrates markers and nothing else.                      |
+| Piece                                     | Responsibility                                                                 |
+| ----------------------------------------- | ------------------------------------------------------------------------------ |
+| `WebController`                           | `@Render` plus typed locals (`WebViewLocals`). Guest-only redirects stay here. |
+| Handlebars layout `views/layouts/app.hbs` | Document shell, CSRF meta, asset helpers, header/footer partials.              |
+| `{{{hydrate "name"}}}`                    | Drih include: sidecar `<style>` plus wrapper div.                              |
+| Page view `views/*.hbs`                   | Page body. May include islands.                                                |
+| `@archipielago/react` `hydrateIslands`    | Browser entry. Hydrates Drih wrappers and nothing else.                        |
 
-SSR embed props live in `protocol/page-props/*-page.ssr-props.ts` (`*PageSsrProps`). The controller imports those types, not the component ([ADR-0029](../../../docs/adr/0029-archipielago-in-repo-isolation.md); SSR props quirk from ADR-0023).
+View locals live in `protocol/page-props/*-page.locals.ts` (`*PageLocals`) plus `csrfToken` and `pageStylesheets` on `WebViewLocals`. The controller imports those types, not React ([ADR-0029](../../../docs/adr/0029-archipielago-in-repo-isolation.md); [ADR-0035](../../../docs/adr/0035-handlebars-drih-islands.md)).
 
-### Document props in this example
+### CSRF and other template locals
 
-Shell data for a request travels in the opaque `documentProps` bag ([ADR-0034](../../../docs/adr/0034-host-document-props.md), [guide](../../../docs/archipielago/guide/concepts.md#document-props)). Page embed props stay in `protocol/page-props/`. `@archipielago/nestjs` and `renderDocument` forward the bag and do not name its fields.
+`csrfToken` is a Handlebars local on the same object as page fields. The layout prints `<meta name="csrf-token">` when it is set. Packages do not name that field. TD-037 and TD-038 are closed.
 
-This example passes the session CSRF token on `home`, `login`, and `register`:
+### Request render
 
-| Step          | File                                                 | What it does                                                                            |
-| ------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| Build the bag | `src/web/web.controller.ts`                          | `render(page, props, { documentProps: { csrfToken: req.session?.csrfToken } })`         |
-| Forward it    | `src/web/ui/runtime/ssr/entry-server.tsx`            | Fourth argument is `documentProps?: { csrfToken?: string }`, passed to `renderDocument` |
-| Read it       | `src/web/ui/server-components/document/document.tsx` | When `csrfToken` is set, emits `<meta name="csrf-token" content="…">`                   |
-
-`ArchipielagoViewService` copies `options.documentProps` into `entry.render` as the fourth argument. Pass 2 of SSR spreads that object onto `Document` with the asset tags. The three sites each write `csrfToken`. The adapter types the bag as `object`, so a wrong key in the controller still typechecks ([TD-037](../../../docs/known-tech-debt.md)).
-
-`loadServerEntry` builds the module specifier from `ArchipielagoPaths` at runtime:
-
-- Development: `vite.ssrLoadModule` of the configured entry-server URL.
-- Tests: dynamic import of the configured entry-server source (Vitest transforms it).
-- Production: configured `dist/web-server/entry-server.js`.
-
-A static import of the TSX entry from Nest would pull React into the Nest compile ([ADR-0017](../../../docs/adr/0017-dual-typescript-build.md)).
-
-### Server render
-
-Rendering is two passes of `renderToString` ([ADR-0011](../../../docs/adr/0011-two-pass-render-to-string.md)).
+Drih writes island HTML before the request. Nest renders the view, then the layout ([ADR-0035](../../../docs/adr/0035-handlebars-drih-islands.md)).
 
 ```mermaid
 sequenceDiagram
   participant W as WebController
-  participant V as ArchipielagoViewService
-  participant E as entry-server
+  participant V as Handlebars view
+  participant L as layout
   participant B as Browser
-  W->>V: render("home", props, documentProps)
-  V->>E: render(page, props, createAssets, documentProps)
-  E->>E: pass 1, collect island names
-  E->>V: createAssets(names)
-  V-->>E: script and style URLs
-  E->>E: pass 2, Document plus page
-  E-->>W: HTML string
+  W->>V: @Render locals
+  V->>V: hydrate helper records view islands
+  V->>L: body HTML
+  L->>L: assetHead shell and page sheets
+  L->>L: header hydrate records layout islands
+  L->>L: assetScripts from drihSeen
+  L-->>W: full document
   W-->>B: text/html
-  opt page rendered an island
+  opt page included an island
     B->>B: load hydrate entry
     B->>B: dynamic import of named islands only
-    B->>B: hydrateRoot on each marker
+    B->>B: hydrateRoot on each wrapper
   end
 ```
 
-Pass 1 renders the page inside `IslandNamesContext`. Each `Island` adds its name to that set. Pass 2 renders `Document` around the same page and spreads `documentProps` onto that shell ([ADR-0034](../../../docs/adr/0034-host-document-props.md)). The context is null on pass 2, so the second render still emits the marker and the server HTML, and it does not change the asset list.
-
-`createAssets([])` returns the shared stylesheet and no scripts. A page with no islands does not download the hydrate entry.
-
-The home page keeps its sentence in one template string. Adjacent text expressions would become HTML comments, and the sentence would not match as a single string.
+`createPageAssets([])` returns the shared stylesheet and no hydrate script. `{{{assetHead}}}` always uses that bag. `{{{assetScripts}}}` reads `drihSeen` after the layout header, so home navigation islands still load the hydrate entry. A page with no islands at all does not download it.
 
 ### Islands
 
-An island is a client component with its own React root. The server page places it with the `Island` helper (`Island<P>`). See [ADR-0012](../../../docs/adr/0012-island-boundaries.md).
+An island is a client component with its own React root. The template includes it with `{{{hydrate "name"}}}`. See [ADR-0012](../../../docs/adr/0012-island-boundaries.md) and [ADR-0035](../../../docs/adr/0035-handlebars-drih-islands.md).
 
-The server marker is:
+The wrapper is:
 
 ```html
-<div data-island="mobile-navigation" data-props="...">
-  <!-- island SSR HTML -->
+<style data-css-island="mobile-navigation">
+  /* hashed module rules, first include only */
+</style>
+<div data-component-name="mobile-navigation" data-component-props="{...}">
+  <!-- dehydrated HTML -->
 </div>
 ```
 
-`data-props` is `encodeURIComponent(JSON.stringify(props))`. The decoder rejects arrays, null, and non-objects. Props must be JSON-serializable plain objects.
+`data-component-props` is JSON (Handlebars may hex-escape quotes). The decoder rejects arrays, null, and non-objects. Props must be JSON-serializable plain objects.
 
-`hydrateRoot` is called on the marker element. React hydrates the component as that element's children. The marker div is the container, not part of the component tree.
+`hydrateRoot` is called on the wrapper element. React hydrates the component as that element's children. The wrapper div is the container, not part of the component tree.
 
 Islands do not share React context or state after hydration (see [TD-008](../../../docs/known-tech-debt.md)).
 
 ### Lazy chunks
 
-The app hydrate entry (`ui/runtime/island/hydrate-entry.tsx`) injects the islands manifest via `registerIslands`, then calls Archipielago `hydrateIslands`. Loaders come from a filtered `import.meta.glob` of `ui/islands/*/*.tsx` (dirname===basename only). Nest never reads the manifest — only Archipielago engines use it while building HTML. Host `archipielago.config.ts` chooses `auto` sync vs `manual` manifest ownership ([ADR-0028](../../../docs/adr/0028-island-filesystem-manifest.md), [ADR-0029](../../../docs/adr/0029-archipielago-in-repo-isolation.md), [ADR-0030](../../../docs/adr/0030-archipielago-host-config.md)).
+The app hydrate entry (`ui/runtime/island/hydrate-entry.tsx`) calls Archipielago `hydrateIslands`. Loaders come from a filtered `import.meta.glob` of `ui/islands/*/*.tsx` (dirname===basename only). The DOM is the allowlist; unknown names are skipped.
 
 Vite emits a separate chunk per dynamic `import()`. `assetTagsFromManifest` emits the hydrate entry and its static `imports`; it does not walk `dynamicImports`. Vite may still inject runtime `modulepreload` when a dynamic `import()` runs ([ADR-0012](../../../docs/adr/0012-island-boundaries.md); revisit with [TD-010](../../../docs/known-tech-debt.md)).
 
-The registry's `isIslandName` check uses `hasOwnProperty` against the generated protocol table. An unknown name throws before hydration.
-
-Product islands live under `examples/nestjs/src/web/ui/islands/`; marker,
-loaders registry, props codec, and hydrate live under
+Product islands live under `examples/nestjs/src/web/ui/islands/`; loaders registry, props codec, and hydrate live under
 `packages/react/src/runtime/island/` ([ADR-0018](../../../docs/adr/0018-island-runtime-folder.md);
 [TD-019](../../../docs/known-tech-debt.md) closed). The Nest consumer is a workspace package
-under `examples/nestjs`; its controller uses `@archipielago/nestjs`, while page
-names and stylesheet policy remain example-owned
+under `examples/nestjs`; page names and stylesheet policy remain example-owned
 ([ADR-0032](../../../docs/adr/0032-archipielago-pnpm-monorepo.md)).
 
 ### Styles
@@ -355,15 +333,15 @@ CSS ships in **three lanes**:
 
 **Shell** (`src/web/ui/styles/shell.scss`): handpicked Bootstrap Option B — config (including the utilities Sass map), `root`, `reboot`, `type`, `images`, `containers`, and `grid`, plus handpicked `_buttons.scss`. No Bootstrap forms in the shell. Own Vite client input. Compilation: Sass → PostCSS (media-query sort + doiuse warn) → Lightning CSS minify at **Baseline Widely Available**. Build **reports** raw + gzip vs `SHELL_CSS_BUDGET_BYTES` (default 50 KiB). **Production** inlines the shell as `<style data-css="shell">` when **raw** size ≤ that budget; otherwise keeps a `<link>`. **Development** always `<link href="/src/web/ui/styles/shell.scss">` plus `/@vite/client` for HMR. Fixture tests cover both shell modes.
 
-**Forms sibling:** [`examples/nestjs/src/web/ui/styles/forms.scss`](../src/web/ui/styles/forms.scss) (Vite input `forms`). Pages list `'forms'` in the example-owned [`pageStylesheetsByPage`](../src/web/page-stylesheets.ts), which `WebModule` passes to the Nest adapter. Selective Bootstrap partials: `forms/labels`, `forms/form-control`, `forms/form-text`, `forms/validation`. Measured size ~11 KiB raw / ~2 KiB gzip. Revisit triggers: [TD-021](../../../docs/known-tech-debt.md).
+**Forms sibling:** [`examples/nestjs/src/web/ui/styles/forms.scss`](../src/web/ui/styles/forms.scss) (Vite input `forms`). Pages list `'forms'` in the example-owned [`pageStylesheetsByPage`](../src/web/page-stylesheets.ts), which the controller puts on view locals. Selective Bootstrap partials: `forms/labels`, `forms/form-control`, `forms/form-text`, `forms/validation`. Measured size ~11 KiB raw / ~2 KiB gzip. Revisit triggers: [TD-021](../../../docs/known-tech-debt.md).
 
-**Island CSS:** Import `*.module.scss` beside the component; use `styles/_tokens.scss` for Sass API only. Do not re-import shell or Bootstrap CSS-emitting partials ([TD-016](../../../docs/known-tech-debt.md)). After SSR pass 1, `createPageAssets` loads CSS text; `Island` emits a sibling `<style data-css-island="{name}">` above the marker. Hydrate loads JS only (mapDeps CSS filtered in prod; `updateStyle` rewritten in dev).
+**Island CSS:** Import `*.module.scss` beside the component; use `styles/_tokens.scss` for Sass API only. Do not re-import shell or Bootstrap CSS-emitting partials ([TD-016](../../../docs/known-tech-debt.md)). An `@archipielago/vite` sidecar plugin writes compiled CSS into gitignored `views/components/dehydrated-css/<name>.css`. The Handlebars hydrate helper prints a sibling `<style data-css-island="{name}">` on first include. Hydrate loads JS only (mapDeps CSS filtered in prod; `updateStyle` rewritten in dev).
 
 ```html
 <style data-css-island="mobile-navigation">
   /* hashed module rules */
 </style>
-<div data-island="mobile-navigation" data-props="…">…</div>
+<div data-component-name="mobile-navigation" data-component-props="…">…</div>
 ```
 
 **Icons:** Handpicked Bootstrap Icons SVGs in [`examples/nestjs/src/web/ui/shared-components/icon/`](../src/web/ui/shared-components/icon/) ([ADR-0016](../../../docs/adr/0016-handpicked-bootstrap-icons.md)). Authoring: [how-to-web-ui.md](../../../docs/how-to-web-ui.md#icons).
@@ -372,29 +350,29 @@ Hydrating every island as soon as the entry loads (including below the fold) is 
 
 ### Development and production
 
-|                                          | Development                                                                                                                                                                                                                                                                              | Production                                                                                                                                                |
-| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| How it starts                            | `pnpm start` / `start:dev`                                                                                                                                                                                                                                                               | `NODE_ENV=production` via `pnpm start:prod`                                                                                                               |
-| SSR                                      | Vite middleware mode, `ssrLoadModule`                                                                                                                                                                                                                                                    | `dist/web-server/entry-server.js`                                                                                                                         |
-| Client scripts when an island is present | `/@id/@vitejs/plugin-react/preamble`, `/@vite/client`, `/src/web/ui/runtime/island/hydrate-entry.tsx`                                                                                                                                                                                    | Manifest entry and its static imports, under `/`                                                                                                          |
-| Styles                                   | Shell `<link href="/src/web/ui/styles/shell.scss">` plus `/@vite/client`. Opt-in siblings (e.g. forms) as extra `<link>`s when the page opts in. Island CSS inlined as sibling `<style>`; Vite client inject is rewritten to update that sibling (no `data-vite-dev-id` head duplicate). | Shell `<style>` or `<link>` by raw-size budget. Opt-in siblings as `<link>`s. Island CSS inlined as sibling `<style>`; hydrate mapDeps has no island CSS. |
-| Static files                             | Vite serves source                                                                                                                                                                                                                                                                       | `express.static` on `dist/client`, with `index: false`                                                                                                    |
+|                                          | Development                                                                                                                                                                                                | Production                                                                                                                                                |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| How it starts                            | `pnpm start` / `start:dev` (runs `pnpm dehydrate` first)                                                                                                                                                   | `NODE_ENV=production` via `pnpm start:prod`                                                                                                               |
+| HTML                                     | Handlebars includes gitignored dehydrated HTML                                                                                                                                                             | Same files, produced at build                                                                                                                             |
+| Client scripts when an island is present | `/@id/@vitejs/plugin-react/preamble`, `/@vite/client`, `/src/web/ui/runtime/island/hydrate-entry.tsx`                                                                                                      | Manifest entry and its static imports, under `/`                                                                                                          |
+| Styles                                   | Shell `<link href="/src/web/ui/styles/shell.scss">` plus `/@vite/client`. Opt-in siblings (e.g. forms) as extra `<link>`s when the page opts in. Island CSS inlined as sibling `<style>` from the sidecar. | Shell `<style>` or `<link>` by raw-size budget. Opt-in siblings as `<link>`s. Island CSS inlined as sibling `<style>`; hydrate mapDeps has no island CSS. |
+| Static files                             | Vite serves source                                                                                                                                                                                         | `express.static` on `dist/client`, with `index: false`                                                                                                    |
 
 The React refresh preamble is required in development because this app writes its own HTML. Without `window.$RefreshReg$`, an island module throws before `hydrateRoot` runs. Production builds do not include the refresh runtime.
 
-`pnpm build` runs four steps ([ADR-0017](../../../docs/adr/0017-dual-typescript-build.md)): `nest build`, `tsc -p tsconfig.web.json --noEmit`, `vite build` (client), and `vite build --ssr`. `emptyOutDir` is false on both Vite builds so they can share `dist/`.
+`pnpm build` runs dehydrate, then three compile steps ([ADR-0017](../../../docs/adr/0017-dual-typescript-build.md)): `nest build`, `tsc -p tsconfig.web.json --noEmit`, and `vite build` (client).
 
 ```mermaid
 flowchart LR
   subgraph compile [pnpm build]
+    dehydrate[drih-dehydrate]
     nest[nest build]
     check[tsc web noEmit]
     client[vite build]
-    ssr[vite build --ssr]
   end
+  dehydrate --> htmlOut["views/components dehydrated HTML and CSS"]
   nest --> apiOut["dist/ main and API"]
   client --> clientOut["dist/client manifest and chunks"]
-  ssr --> ssrOut["dist/web-server/entry-server.js"]
 ```
 
 ## Adding a page or island
@@ -403,8 +381,8 @@ Portable quick reference: [archipielago/guide/authoring.md](../../../docs/archip
 
 ## Related docs
 
-- [Architecture Decision Records](../../../docs/adr/README.md) — durable tradeoffs (ADR-0001–ADR-0017).
-- [Guide authoring](../../../docs/archipielago/guide/authoring.md) — post-connect island vs SSR quick reference.
+- [Architecture Decision Records](../../../docs/adr/README.md) — durable tradeoffs (including [ADR-0035](../../../docs/adr/0035-handlebars-drih-islands.md)).
+- [Guide authoring](../../../docs/archipielago/guide/authoring.md) — post-connect island vs page quick reference.
 - [How to add web UI](../../../docs/how-to-web-ui.md) — dogfood / Nest-example website UI cookbook; handpicked icons; scaffold.
 - [Testing and coverage](../../../docs/testing-and-coverage.md) — unit/e2e/coverage policy; Testcontainers for e2e ([ADR-0010](../../../docs/adr/0010-e2e-testcontainers.md)).
 - [Known tech debt](../../../docs/known-tech-debt.md) — deferred work (TD-IDs). Shared island client state is TD-008; below-the-fold hydrate is TD-010.

@@ -1,27 +1,33 @@
-import { decodeIslandProps, encodeIslandProps } from './island-props';
+import { decodeComponentProps } from './island-props';
 
 describe('island props', () => {
-  it('round-trips a props object', () => {
-    const props = { start: 0, note: '<b>"' };
-    const encoded = encodeIslandProps(props);
+  it('parses a JSON object from the Drih attribute', () => {
+    const encoded = '{"start":0,"note":"<b>\\""}';
 
-    expect(encoded).not.toContain('<');
-    expect(encoded).not.toContain('"');
-    expect(decodeIslandProps(encoded)).toEqual(props);
+    expect(decodeComponentProps(encoded)).toEqual({ start: 0, note: '<b>"' });
+  });
+
+  it('parses hex-escaped quotes the way the Handlebars shell writes them', () => {
+    const encoded = JSON.stringify({ isAuthenticated: true }).replaceAll(
+      '"',
+      '\\u0022',
+    );
+
+    expect(decodeComponentProps(encoded)).toEqual({ isAuthenticated: true });
+  });
+
+  it('treats an empty attribute as empty props', () => {
+    expect(decodeComponentProps('')).toEqual({});
   });
 
   it('rejects JSON that is not an object', () => {
-    const encodedNull = encodeURIComponent('null');
-    const encodedArray = encodeURIComponent('[1]');
-    const encodedString = encodeURIComponent('"nope"');
-
-    expect(() => decodeIslandProps(encodedNull)).toThrow(
+    expect(() => decodeComponentProps('null')).toThrow(
       'Island props must be a JSON object.',
     );
-    expect(() => decodeIslandProps(encodedArray)).toThrow(
+    expect(() => decodeComponentProps('[1]')).toThrow(
       'Island props must be a JSON object.',
     );
-    expect(() => decodeIslandProps(encodedString)).toThrow(
+    expect(() => decodeComponentProps('"nope"')).toThrow(
       'Island props must be a JSON object.',
     );
   });

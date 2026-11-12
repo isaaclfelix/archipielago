@@ -1,5 +1,3 @@
-import type { IslandName } from './islands.js';
-
 /** One `<style>` block to emit in the document head (e.g. inlined shell). */
 export interface InlineStyleTag {
   id: string;
@@ -18,11 +16,13 @@ export interface AssetTags {
 }
 
 /**
- * Document tags plus island CSS text for SSR sibling `<style>` tags.
+ * Document tags for one HTML response.
+ *
+ * Island CSS is not in this bag. The host prints island `<style data-css-island>`
+ * from prebuilt sidecar files when it includes a dehydrated island.
  */
 export interface PageAssets {
   tags: AssetTags;
-  islandCss: Readonly<Partial<Record<IslandName, string>>>;
 }
 
 /** No client JavaScript and no stylesheets. */

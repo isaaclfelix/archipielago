@@ -1,3 +1,5 @@
+'use client';
+
 import type { ReactElement } from 'react';
 import { assignLocation } from '@ui/api-fetch/assign-location';
 import { useApiMutation } from '@ui/hooks/use-api-mutation';

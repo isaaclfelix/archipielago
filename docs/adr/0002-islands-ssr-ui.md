@@ -1,6 +1,6 @@
 # ADR-0002: Islands SSR UI (not SPA, Next, or full-page React)
 
-- **Status:** Accepted
+- **Status:** Accepted (amended by [ADR-0035](./0035-handlebars-drih-islands.md))
 - **Date:** 2026-10-28
 
 ## Context

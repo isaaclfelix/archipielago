@@ -6,7 +6,7 @@ import type { App } from 'supertest/types.js';
 import { AppModule } from '../src/app.module.js';
 import { createDevAssetPipeline } from '@archipielago/vite/asset-pipeline.js';
 import { setViteDevServer } from '@archipielago/vite/page-loader.js';
-import { registerAppIslands } from '../src/web/register-app-islands.js';
+import { configureWebViews } from '../src/web/configure-web-views.js';
 import type { E2eAppOptions } from './e2e-app.js';
 import { truncateDatabase } from './e2e-truncate.js';
 
@@ -41,14 +41,12 @@ export async function createBrowserE2eApp(
   // Clear rows from the previous test before wiring a new Nest app.
   await truncateDatabase();
 
-  // Same island injection as main.ts (engines need the manifest; Nest does not).
-  registerAppIslands();
-
   const moduleFixture: TestingModule = await Test.createTestingModule({
     imports: [AppModule],
   }).compile();
 
-  const app = moduleFixture.createNestApplication() as NestExpressApplication;
+  const app = moduleFixture.createNestApplication<NestExpressApplication>();
+  await configureWebViews(app);
   // Default validation on so form POSTs match production pipe behavior.
   if (options.validationPipe !== false) {
     app.useGlobalPipes(new StandardSchemaValidationPipe());
