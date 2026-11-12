@@ -236,19 +236,10 @@ importers:
 
   packages/nestjs:
     dependencies:
-      '@archipielago/core':
-        specifier: workspace:*
-        version: link:../core
       '@archipielago/vite':
         specifier: workspace:*
         version: link:../vite
     devDependencies:
-      '@nestjs/common':
-        specifier: ^12.0.1
-        version: 12.2.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@7.2.0)
-      '@nestjs/core':
-        specifier: ^12.0.1
-        version: 12.2.0(@nestjs/common@12.2.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@7.2.0))(@nestjs/platform-express@12.2.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@types/node':
         specifier: ^24.0.0
         version: 24.19.2

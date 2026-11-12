@@ -2,7 +2,6 @@ import {
   clientAssetsRoot,
   createDevAssetPipeline,
 } from '@archipielago/vite/asset-pipeline.js';
-import { ArchipielagoModule } from './archipielago.module.js';
 import {
   mountArchipielagoAssets,
   type ArchipielagoAssetHost,
@@ -14,12 +13,6 @@ vi.mock('@archipielago/vite/asset-pipeline.js', () => ({
     middlewares: 'vite-middleware',
   })),
 }));
-
-describe('ArchipielagoModule', () => {
-  it('is a Nest module with no renderer providers', () => {
-    expect(ArchipielagoModule).toBeDefined();
-  });
-});
 
 describe('mountArchipielagoAssets', () => {
   it('mounts the built client directory in production', async () => {
