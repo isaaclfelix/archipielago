@@ -40,7 +40,7 @@ export default defineConfig({
     stripIslandCssFromModulePreload(),
   ],
   resolve: {
-    // One React copy when @drih packages are linked from the sibling checkout.
+    // One React copy for the host and Drih. A local `link:` overlay needs this too.
     dedupe: ['react', 'react-dom'],
     // Prefer explicit aliases; tsconfigPaths alone may miss tsconfig.web.json.
     alias: {
@@ -51,7 +51,7 @@ export default defineConfig({
   },
   server: {
     fs: {
-      allow: [repoRoot, resolve(repoRoot, '../../../drih')],
+      allow: [repoRoot],
     },
   },
   build: {

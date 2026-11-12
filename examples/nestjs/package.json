@@ -33,6 +33,7 @@
     "@archipielago/nestjs": "workspace:*",
     "@archipielago/react": "workspace:*",
     "@archipielago/vite": "workspace:*",
+    "@drih/handlebars": "^1.0.5",
     "@hookform/resolvers": "^6.0.1",
     "@nestjs/common": "^12.0.1",
     "@nestjs/core": "^12.0.1",
@@ -53,6 +54,8 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@drih/dehydrate": "^1.0.5",
+    "@drih/hydrate": "^1.0.5",
     "@nestjs/cli": "^12.0.0",
     "@nestjs/mau": "^0.2.6",
     "@nestjs/schematics": "^12.0.0",

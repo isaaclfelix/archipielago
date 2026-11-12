@@ -39,6 +39,14 @@ node --version
 
 ## Setup
 
+`@drih/*` installs from the private GitLab project registry. The committed [`.npmrc`](./.npmrc) maps the scope and has no token. Put a GitLab personal access token with `read_api` (or a deploy token with `read_package_registry`) in your user `~/.npmrc`:
+
+```ini
+//gitlab.com/api/v4/projects/88728766/packages/npm/:_authToken=<token>
+```
+
+CI uses the `GITLAB_NPM_TOKEN` repository secret the same way.
+
 ```bash
 pnpm install
 ```
